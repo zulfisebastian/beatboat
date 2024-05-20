@@ -819,10 +819,6 @@ class TransactionController extends GetxController {
 
   printBillThermal(AddTransactionData _data) async {
     await _base.getProfile();
-    final profile = await CapabilityProfile.load();
-    final generator = Generator(PaperSize.mm80, profile);
-    List<int> bytes = [];
-
     final printer = PrinterNetworkManager(_base.printerLink.value);
     PosPrintResult connect = await printer.connect();
 
@@ -831,52 +827,38 @@ class TransactionController extends GetxController {
       Colors.black,
       Colors.white,
     );
-    if (connect == PosPrintResult.success) {      
-      PosPrintResult printing = await printer.printTicket(await testTicket(_data));
-
-      print(printing.msg);
-      printer.disconnect();
-    } else {
-      CToast.showWithoutCOntext(
-        "No printer found of ${_base.printerLink.value}, check your printer thermal link in profile page",
-        Colors.red,
-        Colors.white,
-      );
-    }
-  }
-
-  Future<List<int>> testTicket(AddTransactionData _data) async {
-    final profile = await CapabilityProfile.load();
-    final generator = Generator(PaperSize.mm80, profile);
-    List<int> bytes = [];
-bytes +=  generator.row([
+    if (connect == PosPrintResult.success) {
+      final profile = await CapabilityProfile.load();
+      final generator = Generator(PaperSize.mm80, profile);
+      List<int> bytes = [];
+      bytes += generator.row([
         PosColumn(
           text: "Order No: ",
           width: 3,
           styles: const PosStyles(align: PosAlign.left, underline: false),
         ),
         PosColumn(
-          text: "200 / 1",
+          text: _data.order_no.toString(),
           width: 9,
           styles: const PosStyles(align: PosAlign.left, underline: false),
         ),
       ]);
-      bytes +=  generator.row([
+      bytes += generator.row([
         PosColumn(
           text: "Customer: ",
           width: 3,
           styles: const PosStyles(align: PosAlign.left, underline: false),
         ),
         PosColumn(
-          text: "Zulfi",
+          text: _data.customer_name ?? "-",
           width: 9,
           styles: const PosStyles(align: PosAlign.left, underline: false),
         ),
       ]);
       //Item
-      bytes +=  generator.feed(1);
+      bytes += generator.feed(1);
       for (var _data in listCart) {
-        bytes +=  generator.row([
+        bytes += generator.row([
           PosColumn(
             text: _data.name ?? "-",
             width: 8,
@@ -897,34 +879,44 @@ bytes +=  generator.row([
           ),
         ]);
       }
-      bytes +=  generator.feed(1);
-      bytes +=  generator.text(
+      bytes += generator.feed(1);
+      bytes += generator.text(
         'No: ${_data.trx_number}',
         styles: PosStyles(
           align: PosAlign.left,
         ),
       );
-      bytes +=  generator.text(
+      bytes += generator.text(
         'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
         styles: PosStyles(
           align: PosAlign.left,
         ),
       );
-      bytes +=  generator.text(
+      bytes += generator.text(
         'Cashier: ${_base.dataProfile.value.full_name}',
         styles: PosStyles(
           align: PosAlign.left,
         ),
       );
-      bytes +=  generator.text(
+      bytes += generator.text(
         'Table Name: ${_data.table_name}',
         styles: PosStyles(
           align: PosAlign.left,
         ),
       );
-    bytes += generator.feed(4);
-    bytes += generator.cut();
-    return bytes;
+      bytes += generator.feed(4);
+      bytes += generator.cut();
+      PosPrintResult printing = await printer.printTicket(bytes);
+
+      print(printing.msg);
+      printer.disconnect();
+    } else {
+      CToast.showWithoutCOntext(
+        "No printer found of ${_base.printerLink.value}, check your printer thermal link in profile page",
+        Colors.red,
+        Colors.white,
+      );
+    }
   }
 
   Future<Uint8List> readFileBytes(String path) async {

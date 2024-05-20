@@ -4,7 +4,6 @@ import 'package:beatboat/widgets/components/customInputForm.dart';
 import 'package:beatboat/widgets/components/customInputPass.dart';
 import 'package:beatboat/widgets/components/text/ctext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../constants/dimension.dart';
 import '../../controllers/auth/auth_controller.dart';
@@ -41,14 +40,17 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: CDimension.space72,
+                  height: CDimension.space56,
                 ),
-                SvgPicture.asset(
-                  "assets/icons/logo.svg",
-                  width: 200,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(160),
+                  child: Image.asset(
+                    "assets/images/icon.png",
+                    width: 160,
+                  ),
                 ),
                 SizedBox(
-                  height: CDimension.space64,
+                  height: CDimension.space24,
                 ),
                 Container(
                   padding: EdgeInsets.all(CDimension.space24),

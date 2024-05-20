@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:beatboat/constants/endpoints.dart';
+import 'package:beatboat/models/global/print_model.dart';
 import 'package:beatboat/models/transaction/transaction_model.dart';
 import 'package:beatboat/pages/auth/login.dart';
 import 'package:beatboat/repositories/global/global_repo.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:get/get.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:share_files_and_screenshot_widgets/share_files_and_screenshot_widgets.dart';
 import 'package:sunmi_printer_plus/column_maker.dart';
 import 'package:sunmi_printer_plus/enums.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
@@ -63,6 +63,7 @@ class BaseController extends GetxController {
 
   onInitiate() async {
     await initLink();
+    await initPrinterIP();
     initNFC();
     triggerPrinter(500);
     getBaseVersion();
@@ -79,6 +80,17 @@ class BaseController extends GetxController {
       return link;
     } else {
       return Endpoint.baseUrl;
+    }
+  }
+
+  RxList<PrinterData> printerThermal = <PrinterData>[].obs;
+
+  initPrinterIP() async {
+    var _resp = await _globalRepo.getPrinterSetting();
+
+    if (_resp.data != null) {
+      printerThermal.value = _resp.data!;
+      printerThermal.refresh();
     }
   }
 
@@ -200,17 +212,6 @@ class BaseController extends GetxController {
     // } else {
     //   //
     // }
-  }
-
-  shareScreenshot(String title, String desc) {
-    ShareFilesAndScreenshotWidgets().shareScreenshot(
-      keyScreenshot,
-      1800,
-      title,
-      "$title.png",
-      "image/png",
-      text: '$desc',
-    );
   }
 
   Rx<ProfileData> dataProfile = ProfileData().obs;

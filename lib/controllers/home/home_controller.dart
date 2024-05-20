@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import '../../models/auth/menu_model.dart';
 import '../../services/databases/product/category_table.dart';
 import '../../services/databases/profile/menu_table.dart';
-import '../../widgets/popups/update_app.dart';
 import '../base/base_controller.dart';
 
 class HomeController extends GetxController {

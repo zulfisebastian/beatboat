@@ -1,5 +1,6 @@
 import 'package:beatboat/models/base/base_response.dart';
 import 'package:beatboat/models/global/nationality_model.dart';
+import 'package:beatboat/models/global/print_model.dart';
 import 'package:beatboat/models/global/reason_model.dart';
 import 'package:beatboat/models/global/trigger_model.dart';
 import '../../../models/base/base_result.dart';
@@ -72,6 +73,16 @@ class GlobalRepo extends BaseRepo {
         return VersionResponse.fromJson(response.data);
       default:
         return VersionResponse(status: false, message: response.errorMessage);
+    }
+  }
+
+  Future<PrinterResponse> getPrinterSetting() async {
+    BaseResult response = await get("/device-printer");
+    switch (response.status) {
+      case ResponseStatus.Success:
+        return PrinterResponse.fromJson(response.data);
+      default:
+        return PrinterResponse(message: response.errorMessage);
     }
   }
 }
