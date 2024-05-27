@@ -1,10 +1,8 @@
 import 'package:beatboat/controllers/profile/profile_controller.dart';
 import 'package:beatboat/utils/extensions.dart';
-import 'package:beatboat/widgets/components/customButton.dart';
 import 'package:beatboat/widgets/components/text/ctext.dart';
 import 'package:beatboat/widgets/sheets/sheet_device.dart';
 import 'package:beatboat/widgets/sheets/sheet_logout.dart';
-import 'package:beatboat/widgets/sheets/sheet_printer_thermal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -209,34 +207,34 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: CDimension.space16,
-                    ),
-                    CDivider(
-                      height: 1,
-                    ),
-                    SizedBox(
-                      height: CDimension.space16,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CText(
-                          "Printer Thermal",
-                          fontSize: 16,
-                          color: _theme.textTitle.value,
-                        ),
-                        CustomButtonBlue(
-                          "Setting",
-                          onPressed: () {
-                            Get.bottomSheet(
-                              SheetPrinterThermal(),
-                              isScrollControlled: true,
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                    // SizedBox(
+                    //   height: CDimension.space16,
+                    // ),
+                    // CDivider(
+                    //   height: 1,
+                    // ),
+                    // SizedBox(
+                    //   height: CDimension.space16,
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     CText(
+                    //       "Printer Thermal",
+                    //       fontSize: 16,
+                    //       color: _theme.textTitle.value,
+                    //     ),
+                    //     CustomButtonBlue(
+                    //       "Setting",
+                    //       onPressed: () {
+                    //         Get.bottomSheet(
+                    //           SheetPrinterThermal(),
+                    //           isScrollControlled: true,
+                    //         );
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

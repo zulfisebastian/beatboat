@@ -2,6 +2,8 @@ import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/category_model.dart';
 import 'package:beatboat/repositories/product/product_repo.dart';
 import 'package:beatboat/services/databases/transaction/cart_table.dart';
+import 'package:beatboat/widgets/components/ctoast.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../models/product/product_model.dart';
@@ -111,6 +113,7 @@ class ProductController extends GetxController {
     _cart.sell_price = _product.sell_price;
     _cart.stock = _product.stock;
     _cart.status = _product.status;
+    _cart.order_serve = _product.order_serve;
     _cart.unit = _product.unit;
     _cart.image_url = _product.image_url;
 
@@ -137,6 +140,7 @@ class ProductController extends GetxController {
     _cart.sell_price = _product.sell_price;
     _cart.stock = _product.stock;
     _cart.status = _product.status;
+    _cart.order_serve = _product.order_serve;
     _cart.unit = _product.unit;
     _cart.image_url = _product.image_url;
 
@@ -173,13 +177,21 @@ class ProductController extends GetxController {
       if (_resp[0].qty! > 1) {
         _cart.qty = _resp[0].qty! - 1;
         CartTable().updateCart(_cart);
+        renewListCart();
       } else {
         CartTable().deleteCart(_cart);
+        if (listCart.length > 1) {
+          renewListCart();
+        } else {
+          Get.back();
+          listCart.clear();
+          listCart.refresh();
+        }
       }
     } else {
       CartTable().deleteCart(_cart);
+      renewListCart();
     }
-    renewListCart();
   }
 
   int getTotalCart() {

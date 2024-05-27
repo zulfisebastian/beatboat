@@ -8,6 +8,7 @@ class CartData {
   int? sell_price;
   int? stock;
   String? status;
+  String? order_serve;
   String? unit;
   String? image_url;
   int? qty;
@@ -22,6 +23,7 @@ class CartData {
     this.sell_price,
     this.stock,
     this.status,
+    this.order_serve,
     this.unit,
     this.image_url,
     this.qty,
@@ -37,6 +39,7 @@ class CartData {
     sell_price = json['sell_price'];
     stock = json['stock'];
     status = json['status'];
+    order_serve = json['order_serve'];
     unit = json['unit'];
     image_url = json['image_url'];
     qty = json['qty'];
@@ -53,6 +56,7 @@ class CartData {
     data['sell_price'] = this.sell_price;
     data['stock'] = this.stock;
     data['status'] = this.status;
+    data['order_serve'] = this.order_serve;
     data['unit'] = this.unit;
     data['image_url'] = this.image_url;
     data['qty'] = this.qty;

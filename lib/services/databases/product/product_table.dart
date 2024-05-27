@@ -18,6 +18,7 @@ class ProductTable {
       "show" INTEGER NOT NULL,
       "unit" STRING NOT NULL,
       "status" STRING NOT NULL,
+      "order_serve" STRING NOT NULL,
       "image_url" STRING NOT NULL,
       PRIMARY KEY("id")
     );""");

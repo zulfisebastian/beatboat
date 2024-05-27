@@ -42,6 +42,7 @@ class ProductData {
   int? stock;
   int? show;
   String? status;
+  String? order_serve;
   String? unit;
   String? image_url;
 
@@ -55,6 +56,7 @@ class ProductData {
     this.sell_price,
     this.stock,
     this.status,
+    this.order_serve,
     this.show,
     this.unit,
     this.image_url,
@@ -70,6 +72,7 @@ class ProductData {
     sell_price = json['sell_price'];
     stock = json['stock'];
     status = json['status'];
+    order_serve = json['order_serve'];
     unit = json['unit'];
     show = json['show'];
     image_url = json['image_url'];
@@ -86,6 +89,7 @@ class ProductData {
     data['sell_price'] = this.sell_price;
     data['stock'] = this.stock;
     data['status'] = this.status;
+    data['order_serve'] = this.order_serve;
     data['unit'] = this.unit;
     data['show'] = this.show;
     data['image_url'] = this.image_url;
