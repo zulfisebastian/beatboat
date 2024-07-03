@@ -1,5 +1,5 @@
 class Endpoint {
-  static const String baseUrl = "https://beatboat.ninefoxlab.com/api";
+  static const String baseUrl = "https://app.beatboat.site/api";
   static const String defaultFood =
       "https://img.freepik.com/free-photo/top-view-banquet-with-lots-food_52683-101175.jpg?size=626&ext=jpg&ga=GA1.1.735520172.1710806400&semt=ais";
 
@@ -14,6 +14,9 @@ class Endpoint {
 
   //activity
   static const String activity = "/activities";
+
+  //activity
+  static const String package = "/packages/{nfc}";
 
   //product
   static const String category = "/categories";
@@ -32,6 +35,7 @@ class Endpoint {
 
   //transaction
   static const String transaction = "/transactions";
+  static const String transactionRefund = "/refund/{nfc}";
   static const String checkin = "/check-in/validate";
   static const String voucher = "/voucher/check";
   static const String refund = "/refund";

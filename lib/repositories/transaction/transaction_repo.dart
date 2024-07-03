@@ -64,6 +64,20 @@ class TransactionRepo extends BaseRepo {
     }
   }
 
+  Future<TransactionResponse> getRefundTransaction(dynamic uuid) async {
+    BaseResult response = await get(
+      Endpoint.transactionRefund.replaceAll("{nfc}", uuid),
+    );
+
+    switch (response.status) {
+      case ResponseStatus.Success:
+        var _resp = TransactionResponse.fromJson(response.data);
+        return _resp;
+      default:
+        return TransactionResponse(message: response.errorMessage);
+    }
+  }
+
   Future<BaseResponse> refundTransaction(body) async {
     BaseResult response = await post(Endpoint.refund, body: body);
     switch (response.status) {

@@ -49,7 +49,7 @@ class CardTransaction extends StatelessWidget {
           BlendMode.saturation,
         ),
         child: Container(
-          color: data.refunds!.length == 0 ? Colors.transparent : Colors.blue,
+          color: data.refunds!.length == 0 ? Colors.transparent : Colors.grey,
           width: OtherExt().getWidth(context),
           padding: EdgeInsets.symmetric(
             vertical: CDimension.space16,
@@ -66,7 +66,7 @@ class CardTransaction extends StatelessWidget {
                 ),
                 color: data.refunds!.length == 0
                     ? _theme.textSubtitle.value
-                    : Colors.grey,
+                    : Colors.white,
                 fontSize: 12,
               ),
               SizedBox(
@@ -76,7 +76,9 @@ class CardTransaction extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     "assets/icons/${getIconTransaction()}.svg",
-                    color: _theme.accent.value,
+                    color: data.refunds!.length == 0
+                        ? _theme.accent.value
+                        : Colors.white,
                     width: CDimension.space24,
                   ),
                   SizedBox(
@@ -92,7 +94,7 @@ class CardTransaction extends StatelessWidget {
                               : "Transaction",
                           color: data.refunds!.length == 0
                               ? _theme.textTitle.value
-                              : Colors.grey,
+                              : Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
@@ -103,7 +105,7 @@ class CardTransaction extends StatelessWidget {
                           data.number,
                           color: data.refunds!.length == 0
                               ? _theme.textSubtitle.value
-                              : Colors.grey,
+                              : Colors.white,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
@@ -115,7 +117,9 @@ class CardTransaction extends StatelessWidget {
                   ),
                   CText(
                     StringExt.formatRupiah(data.total_amount),
-                    color: _theme.accent.value,
+                    color: data.refunds!.length == 0
+                        ? _theme.accent.value
+                        : Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),

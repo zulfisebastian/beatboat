@@ -33,7 +33,6 @@ class CategoryCircleCard extends StatelessWidget {
       },
       behavior: HitTestBehavior.opaque,
       child: Container(
-        width: size + border,
         child: Column(
           children: [
             SizedBox(

@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../controllers/checkin/checkin_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
+import '../components/customButton.dart';
+import '../components/customInputForm.dart';
 import '../components/draggable_bottom_sheet.dart';
 import '../components/text/ctext.dart';
 
@@ -48,94 +50,199 @@ class _SheetScanState extends State<SheetScan> {
         child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               DraggableBottomSheet(),
               SizedBox(
-                height: CDimension.space24,
+                height: CDimension.space16,
               ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  CDimension.space24,
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: _theme.line.value,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    CDimension.space16,
+                  ),
                 ),
-                child: Container(
-                  width: OtherExt().getWidth(context),
-                  height: 540,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned.fill(
-                        child: _buildQrView(context),
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        child: Container(
-                          width: OtherExt().getWidth(context),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: CDimension.space16,
-                            vertical: CDimension.space16,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  await _controller.qrController?.toggleFlash();
-                                  setState(() {});
-                                },
-                                child: FutureBuilder(
-                                  future: _controller.qrController
-                                      ?.getFlashStatus(),
-                                  builder: (context, snapshot) {
-                                    return Container(
-                                      width: CDimension.space48,
-                                      height: CDimension.space48,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        "assets/icons/ic_flashlight.svg",
-                                        width: 16,
-                                      ),
-                                    );
-                                  },
-                                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _controller.changeTypeSearch("SCAN");
+                          _controller.qrController!.resumeCamera();
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Obx(
+                          () => Container(
+                            decoration: BoxDecoration(
+                              color: _controller.typeSearch.value == "SCAN"
+                                  ? _theme.accent.value
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                CDimension.space16,
                               ),
-                            ],
+                            ),
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: CText(
+                                "SCAN",
+                                color: _controller.typeSearch.value == "SCAN"
+                                    ? Colors.white
+                                    : _theme.textTitle.value,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      width: CDimension.space12,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          _controller.changeTypeSearch("MANUAL");
+                          _controller.qrController!.stopCamera();
+                        },
+                        behavior: HitTestBehavior.opaque,
+                        child: Obx(
+                          () => Container(
+                            decoration: BoxDecoration(
+                              color: _controller.typeSearch.value == "MANUAL"
+                                  ? _theme.accent.value
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(
+                                CDimension.space16,
+                              ),
+                            ),
+                            padding: EdgeInsets.all(16),
+                            child: Center(
+                              child: CText(
+                                "MANUAL",
+                                color: _controller.typeSearch.value == "MANUAL"
+                                    ? Colors.white
+                                    : _theme.textTitle.value,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(
-                height: CDimension.space24,
-              ),
-              CText(
-                "Scan your barcode that you received in your email",
-                fontSize: 14,
-                lineHeight: 1.5,
-                align: TextAlign.center,
-                overflow: TextOverflow.visible,
-                color: _theme.textTitle.value,
               ),
               SizedBox(
                 height: CDimension.space16,
               ),
+              Obx(
+                () => _controller.typeSearch.value == "SCAN"
+                    ? Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              CDimension.space24,
+                            ),
+                            child: Container(
+                              width: OtherExt().getWidth(context),
+                              height: 400,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Positioned.fill(
+                                    child: _buildQrView(context),
+                                  ),
+                                  Positioned(
+                                    bottom: 10,
+                                    child: Container(
+                                      width: OtherExt().getWidth(context),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: CDimension.space16,
+                                        vertical: CDimension.space16,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () async {
+                                              await _controller.qrController
+                                                  ?.toggleFlash();
+                                              setState(() {});
+                                            },
+                                            child: FutureBuilder(
+                                              future: _controller.qrController
+                                                  ?.getFlashStatus(),
+                                              builder: (context, snapshot) {
+                                                return Container(
+                                                  width: CDimension.space48,
+                                                  height: CDimension.space48,
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/ic_flashlight.svg",
+                                                    width: 16,
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: CDimension.space24,
+                          ),
+                          CText(
+                            "Scan your barcode that you received in your email",
+                            fontSize: 14,
+                            lineHeight: 1.5,
+                            align: TextAlign.center,
+                            overflow: TextOverflow.visible,
+                            color: _theme.textTitle.value,
+                          ),
+                          SizedBox(
+                            height: CDimension.space16,
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          CustomInputForm(
+                            textEditingController: _controller.barcode.value,
+                            hintText: "Input The Barcode",
+                            errorMessage: "Please Input The Barcode",
+                            onChanged: (v) {},
+                          ),
+                          SizedBox(
+                            height: CDimension.space24,
+                          ),
+                          CustomButtonBlue(
+                            "Check Barcode",
+                            width: OtherExt().getWidth(context),
+                            onPressed: () {
+                              _controller.checkInEvent(
+                                context,
+                                _controller.barcode.value.text,
+                              );
+                            },
+                          ),
+                          SizedBox(height: 24),
+                        ],
+                      ),
+              ),
               SizedBox(
                 height: CDimension.space32,
               ),
-              // CustomButtonBlue(
-              //   "Simulate Scanned Card",
-              //   width: OtherExt().getWidth(context),
-              //   onPressed: () {
-              //     widget.onTap();
-              //   },
-              // ),
-              // SizedBox(height: 24),
             ],
           ),
         ),
@@ -154,7 +261,7 @@ class _SheetScanState extends State<SheetScan> {
         borderWidth: 5,
         overlayColor: Colors.black45,
         cutOutWidth: OtherExt().getWidth(context) - CDimension.space48,
-        cutOutHeight: 180,
+        cutOutHeight: 140,
         cutOutBottomOffset: 30,
       ),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),

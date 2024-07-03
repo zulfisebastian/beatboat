@@ -1,24 +1,24 @@
-import 'package:beatboat/widgets/card/card_transaction.dart';
+import 'package:beatboat/widgets/card/card_package.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/text/ctext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/dimension.dart';
-import '../../controllers/refund/refund_controller.dart';
+import '../../controllers/package/package_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../widgets/components/customAppBar.dart';
 
-class RefundPage extends StatefulWidget {
-  const RefundPage({Key? key}) : super(key: key);
+class PackagePage extends StatefulWidget {
+  const PackagePage({Key? key}) : super(key: key);
 
   @override
-  State<RefundPage> createState() => _RefundPageState();
+  State<PackagePage> createState() => _PackagePageState();
 }
 
-class _RefundPageState extends State<RefundPage> {
+class _PackagePageState extends State<PackagePage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
-  final RefundController _refundController = Get.find(
-    tag: "RefundController",
+  final PackageController _refundController = Get.find(
+    tag: "PackageController",
   );
 
   @override
@@ -27,14 +27,14 @@ class _RefundPageState extends State<RefundPage> {
       backgroundColor: _theme.backgroundApp.value,
       appBar: CustomAppBar(
         context: context,
-        title: "Transaction Refund",
+        title: "Wristband Package",
       ),
       body: SingleChildScrollView(
         child: Obx(
-          () => _refundController.listTransaction.length > 0
+          () => _refundController.listPackage.length > 0
               ? Container(
                   child: ListView.separated(
-                    itemCount: _refundController.listTransaction.length,
+                    itemCount: _refundController.listPackage.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     separatorBuilder: (BuildContext context, int index) {
@@ -46,8 +46,8 @@ class _RefundPageState extends State<RefundPage> {
                       );
                     },
                     itemBuilder: (BuildContext context, int index) {
-                      var _data = _refundController.listTransaction[index];
-                      return CardTransaction(
+                      var _data = _refundController.listPackage[index];
+                      return CardPackage(
                         data: _data,
                       );
                     },
@@ -62,7 +62,7 @@ class _RefundPageState extends State<RefundPage> {
                     children: [
                       Container(
                         child: CText(
-                          "No Data Transaction",
+                          "No Package Data",
                           color: _theme.textTitle.value,
                         ),
                       ),

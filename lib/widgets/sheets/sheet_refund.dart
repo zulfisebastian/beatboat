@@ -1,10 +1,8 @@
 import 'package:beatboat/constants/dimension.dart';
-import 'package:beatboat/constants/enums.dart';
 import 'package:beatboat/constants/size.dart';
 import 'package:beatboat/controllers/refund/refund_controller.dart';
 import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/components/customButton.dart';
-import 'package:beatboat/widgets/sheets/sheet_nfc.dart';
 import 'package:beatboat/widgets/sheets/sheet_reason.dart';
 import 'package:beatboat/widgets/sheets/sheet_refund_qty.dart';
 import '../../../controllers/theme/theme_controller.dart';
@@ -15,7 +13,6 @@ import '../components/draggable_bottom_sheet.dart';
 import '../components/text/ctext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../popups/confirmation.dart';
 
 class SheetRefund extends StatefulWidget {
@@ -253,11 +250,7 @@ class _SheetRefundState extends State<SheetRefund> {
                         subtitle: "Are you sure want to refund?",
                         onOk: () {
                           Get.back();
-                          Get.bottomSheet(
-                            SheetNFC(
-                              type: NFCModeType.Refund,
-                            ),
-                          );
+                          _refundController.refundTransaction();
                         },
                       ),
                     );

@@ -17,7 +17,14 @@ import '../../widgets/popups/wristband_registered.dart';
 class CheckinController extends GetxController {
   final scrollController = ScrollController();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  Rx<TextEditingController> barcode = TextEditingController().obs;
   QRViewController? qrController;
+
+  final typeSearch = "SCAN".obs;
+  changeTypeSearch(String _type) {
+    typeSearch.value = _type;
+    typeSearch.refresh();
+  }
 
   final TransactionRepo _transactionRepo = Get.put(TransactionRepo());
   final GlobalRepo _globalRepo = Get.put(GlobalRepo());
@@ -51,6 +58,8 @@ class CheckinController extends GetxController {
   RxList<TextEditingController> listNationalityCtrl =
       <TextEditingController>[].obs;
   RxList<TextEditingController> listGenderCtrl = <TextEditingController>[].obs;
+  RxList<TextEditingController> listTableCtrl = <TextEditingController>[].obs;
+  RxList<TextEditingController> listTagCtrl = <TextEditingController>[].obs;
   RxList<DateTime> listDate = <DateTime>[].obs;
   RxBool sameWithBooker = false.obs;
 
@@ -123,12 +132,19 @@ class CheckinController extends GetxController {
               ? DateFormat("yyyy-MM-dd").parse(_data.dob!)
               : DateTime.now(),
         );
+        listTableCtrl.add(
+          TextEditingController(
+              text: _data.name != null
+                  ? "${_data.name!} / ${_data.resource_tag}"
+                  : ""),
+        );
 
         listPairedUID.add(
           OnboardRequest(
             device_serial_number: udid,
             booking_code: _data.booking_code,
             name: _data.name,
+            resource_tag: _data.resource_tag,
             nfc_uid: _data.wristband_nfc_uid ?? "",
             customer_name: listNameCtrl[index].text,
             nationality: listNationalityCtrl[index].text,

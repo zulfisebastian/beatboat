@@ -2,6 +2,7 @@ class OnboardRequest {
   String? device_serial_number;
   String? booking_code;
   String? name;
+  String? resource_tag;
   String? nfc_uid;
   String? customer_name;
   String? nationality;
@@ -13,6 +14,7 @@ class OnboardRequest {
     this.device_serial_number,
     this.booking_code,
     this.name,
+    this.resource_tag,
     this.nfc_uid,
     this.customer_name,
     this.nationality,
@@ -25,6 +27,7 @@ class OnboardRequest {
     device_serial_number = json['device_serial_number'];
     booking_code = json['booking_code'];
     name = json['name'];
+    resource_tag = json['resource_tag'];
     nfc_uid = json['nfc_uid'];
     customer_name = json['customer_name'];
     nationality = json['nationality'];

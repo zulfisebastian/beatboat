@@ -148,9 +148,10 @@ class CheckinSuccessPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CText(
-                                _book.name,
-                                fontSize: 12,
-                                color: _theme.textSubtitle.value,
+                                "${_book.name} / ${_book.resource_tag}",
+                                fontSize: 14,
+                                color: _theme.accent.value,
+                                fontWeight: FontWeight.bold,
                               ),
                               SizedBox(
                                 height: CDimension.space16,
@@ -226,7 +227,7 @@ class CheckinSuccessPage extends StatelessWidget {
                                             height: CDimension.space16,
                                           ),
                                           CText(
-                                            "Wristband NFC UI",
+                                            "Wristband NFC UID",
                                             fontSize: CFontSize.font14,
                                             color: _theme.textSubtitle.value,
                                           ),
@@ -244,45 +245,45 @@ class CheckinSuccessPage extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          if (index == 0)
-                                            Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child: Obx(
-                                                    () => Checkbox(
-                                                      onChanged: (value) {
-                                                        _checkinController
-                                                            .changeSameWithBooker();
-                                                      },
-                                                      value: _checkinController
-                                                          .sameWithBooker.value,
-                                                      checkColor: Colors.white,
-                                                      activeColor:
-                                                          _theme.accent.value,
-                                                      side: BorderSide(
-                                                        color: _theme
-                                                            .textTitle.value,
-                                                        width: 1,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 8,
-                                                ),
-                                                CText(
-                                                  'Same with Booker',
-                                                  color: _theme.textTitle.value,
-                                                  fontSize: 14,
-                                                ),
-                                              ],
-                                            ),
-                                          if (index == 0)
-                                            SizedBox(
-                                              height: CDimension.space16,
-                                            ),
+                                          // if (index == 0)
+                                          //   Row(
+                                          //     children: [
+                                          //       SizedBox(
+                                          //         width: 20,
+                                          //         height: 20,
+                                          //         child: Obx(
+                                          //           () => Checkbox(
+                                          //             onChanged: (value) {
+                                          //               _checkinController
+                                          //                   .changeSameWithBooker();
+                                          //             },
+                                          //             value: _checkinController
+                                          //                 .sameWithBooker.value,
+                                          //             checkColor: Colors.white,
+                                          //             activeColor:
+                                          //                 _theme.accent.value,
+                                          //             side: BorderSide(
+                                          //               color: _theme
+                                          //                   .textTitle.value,
+                                          //               width: 1,
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //       SizedBox(
+                                          //         width: 8,
+                                          //       ),
+                                          //       CText(
+                                          //         'Same with Booker',
+                                          //         color: _theme.textTitle.value,
+                                          //         fontSize: 14,
+                                          //       ),
+                                          //     ],
+                                          //   ),
+                                          // if (index == 0)
+                                          //   SizedBox(
+                                          //     height: CDimension.space16,
+                                          //   ),
                                           CText(
                                             "Name",
                                             fontSize: CFontSize.font14,
@@ -563,8 +564,9 @@ class CheckinSuccessPage extends StatelessWidget {
                                                           .refresh();
                                                       Get.bottomSheet(
                                                         SheetNFC(
-                                                            type: NFCModeType
-                                                                .CheckIn),
+                                                          type: NFCModeType
+                                                              .CheckIn,
+                                                        ),
                                                       );
                                                     },
                                                   )

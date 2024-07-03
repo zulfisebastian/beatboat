@@ -2,10 +2,8 @@ import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/category_model.dart';
 import 'package:beatboat/repositories/product/product_repo.dart';
 import 'package:beatboat/services/databases/transaction/cart_table.dart';
-import 'package:beatboat/widgets/components/ctoast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../models/product/product_model.dart';
 import '../../services/databases/product/category_table.dart';
 import '../../services/databases/product/product_table.dart';
@@ -13,6 +11,7 @@ import '../base/base_controller.dart';
 
 class ProductController extends GetxController {
   final BaseController _base = Get.find(tag: "BaseController");
+  Rx<TextEditingController> search = TextEditingController().obs;
 
   final ProductRepo _productRepo = Get.put(ProductRepo());
 

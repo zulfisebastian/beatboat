@@ -196,6 +196,8 @@ class _RefundDetailPageState extends State<RefundDetailPage> {
                                             _detail
                                                 .product!.name!.capitalizeFirst,
                                             color: _theme.textTitle.value,
+                                            overflow: TextOverflow.visible,
+                                            lineHeight: 1.4,
                                           ),
                                           SizedBox(
                                             height: CDimension.space8,

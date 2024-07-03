@@ -52,6 +52,97 @@ class _OrderPageState extends State<OrderPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CText(
+                    "Sub Total",
+                    color: _theme.textTitle.value,
+                    fontSize: 14,
+                  ),
+                  Obx(
+                    () => CText(
+                      StringExt.formatRupiah(
+                        _transController.getTotalCart(),
+                      ),
+                      color: _theme.textTitle.value,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: CDimension.space6,
+              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     CText(
+              //       "Discount",
+              //       color: _theme.textTitle.value,
+              //       fontSize: 14,
+              //     ),
+              //     Obx(
+              //       () => CText(
+              //         "- " +
+              //             StringExt.formatRupiah(
+              //               _transController.calculateDiscount(),
+              //             ),
+              //         color: _theme.success.value,
+              //         fontSize: 14,
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(
+              //   height: CDimension.space6,
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CText(
+                    "Admin Fee (10%)",
+                    color: _theme.textTitle.value,
+                    fontSize: 14,
+                  ),
+                  Obx(
+                    () => CText(
+                      "+ " +
+                          StringExt.formatRupiah(_transController.getAdminTax(
+                            _transController.getTotalCartAfterDiscount(),
+                          )),
+                      color: _theme.error.value,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: CDimension.space6,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CText(
+                    "Service Fee (8%)",
+                    color: _theme.textTitle.value,
+                    fontSize: 14,
+                  ),
+                  Obx(
+                    () => CText(
+                      "+ " +
+                          StringExt.formatRupiah(_transController.getServiceTax(
+                            _transController.getTotalCartAfterDiscount(),
+                          )),
+                      color: _theme.error.value,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: CDimension.space6,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CText(
                     "Total Payment",
                     color: _theme.textTitle.value,
                     fontSize: 14,
@@ -59,10 +150,10 @@ class _OrderPageState extends State<OrderPage> {
                   Obx(
                     () => CText(
                       StringExt.formatRupiah(
-                        // _transController.getTotalAfterPPNCart(),
-                        _transController.getTotalCart(),
+                        _transController.getTotalAfterPPNCart(),
+                        // _transController.getTotalCart(),
                       ),
-                      color: _theme.textTitle.value,
+                      color: _theme.accent.value,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),

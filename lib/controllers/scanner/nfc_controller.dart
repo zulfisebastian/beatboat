@@ -1,10 +1,13 @@
 import 'package:beatboat/constants/enums.dart';
 import 'package:beatboat/controllers/balance/transfer_controller.dart';
 import 'package:beatboat/controllers/checkin/checkin_controller.dart';
+import 'package:beatboat/controllers/package/package_controller.dart';
 import 'package:beatboat/controllers/refund/refund_controller.dart';
 import 'package:beatboat/pages/home/home.dart';
 import 'package:beatboat/pages/balance/topup.dart';
 import 'package:beatboat/pages/balance/transfer.dart';
+import 'package:beatboat/pages/package/package.dart';
+import 'package:beatboat/pages/refund/refund.dart';
 import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/popups/update_balance.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
@@ -15,6 +18,7 @@ import '../../pages/transaction/transaction.dart';
 import '../../repositories/balance/balance_repo.dart';
 import '../../widgets/pages/loading.dart';
 import '../../widgets/sheets/sheet_failed.dart';
+import '../../widgets/sheets/sheet_success.dart';
 import '../transaction/transaction_controller.dart';
 
 class NFCController extends GetxController {
@@ -96,9 +100,22 @@ class NFCController extends GetxController {
               Get.find(tag: 'TransactionController');
           _transController.addParticipant(balance.value);
         } else if (type == NFCModeType.Refund) {
-          final RefundController _refundController =
-              Get.find(tag: 'RefundController');
-          _refundController.refundTransaction(_mapUUID);
+          Get.back();
+          final RefundController _refundController = Get.put(
+            RefundController(),
+            tag: "RefundController",
+          );
+          _refundController.uuid.value = _mapUUID;
+          Get.to(RefundPage());
+        } else if (type == NFCModeType.Package) {
+          Get.back();
+          final PackageController _packageController = Get.put(
+            PackageController(),
+            tag: "PackageController",
+          );
+          _packageController.uuid.value = _mapUUID;
+          _packageController.getDataPackage();
+          Get.to(PackagePage());
         } else {
           //
         }
@@ -149,13 +166,12 @@ class NFCController extends GetxController {
       final CheckinController _checkinController =
           Get.find(tag: "CheckinController");
 
-      _checkinController.updatePairedUID(_mapUUID);
       var _data = _checkinController
           .listPairedUID[_checkinController.activeIndex.value];
       var body = {
         "device_serial_number": _data.device_serial_number,
         "booking_code": _data.booking_code,
-        "nfc_uid": _data.nfc_uid,
+        "nfc_uid": _mapUUID,
         "customer_name": _data.customer_name,
         "nationality": _data.nationality,
         "dob": _data.dob,
@@ -167,7 +183,13 @@ class NFCController extends GetxController {
 
       if (_resp.code != null) {
         if (_resp.code == "SCC-ONBOARD-001") {
+          _checkinController.updatePairedUID(_mapUUID);
           Get.back();
+          Get.bottomSheet(
+            SheetSuccess(
+              message: "Wristband paired successfully",
+            ),
+          );
         } else {
           Get.back();
           Get.bottomSheet(

@@ -17,13 +17,15 @@ class RefundController extends GetxController {
     getDataTransaction();
   }
 
+  RxString uuid = "".obs;
+
   RxList<TransactionData> listTransaction = <TransactionData>[].obs;
   getDataTransaction() async {
     Get.dialog(Loading());
-    var _resp = await _transactionRepo.getAllTransaction();
+    var _resp = await _transactionRepo.getRefundTransaction(uuid.value);
     Get.back();
 
-    if (_resp.data!.length > 0) {
+    if (_resp.data != null) {
       listTransaction.value = _resp.data!;
       listTransaction.refresh();
     }
@@ -63,7 +65,7 @@ class RefundController extends GetxController {
             choosedReason.value == "";
   }
 
-  refundTransaction(String nfc_uid) async {
+  refundTransaction() async {
     String udid = Get.find(tag: "udid");
 
     List refundItems = [];
@@ -80,7 +82,7 @@ class RefundController extends GetxController {
       "device_serial_number": udid,
       "trx_number": choosedTransaction.value.number,
       "reason": choosedReason.value,
-      "nfc_uid": nfc_uid,
+      "nfc_uid": uuid.value,
       "refund_items": refundItems,
     };
 

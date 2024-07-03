@@ -1,6 +1,7 @@
 import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
+import 'package:beatboat/widgets/components/csearch.dart';
 import 'package:beatboat/widgets/sheets/sheet_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -25,7 +26,7 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
-  final ProductController _productController =
+  final ProductController _product =
       Get.put(ProductController(), tag: 'ProductController');
 
   @override
@@ -33,7 +34,7 @@ class _ProductPageState extends State<ProductPage> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.categoryId != null) {
-        _productController.getProductByCategory(widget.categoryId!);
+        _product.getProductByCategory(widget.categoryId!);
       }
     });
   }
@@ -51,7 +52,7 @@ class _ProductPageState extends State<ProductPage> {
                 margin: EdgeInsets.only(top: 56),
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    _productController.initAllData();
+                    _product.initAllData();
                   },
                   child: SingleChildScrollView(
                     child: Column(
@@ -76,10 +77,10 @@ class _ProductPageState extends State<ProductPage> {
                                   border: 8,
                                   title: "All",
                                   image_url: Endpoint.defaultFood,
-                                  active: "All" ==
-                                      _productController.choosedCategory.value,
+                                  active:
+                                      "All" == _product.choosedCategory.value,
                                   onClick: () {
-                                    _productController.onChooseCategory("All");
+                                    _product.onChooseCategory("All");
                                   },
                                 ),
                               ),
@@ -90,8 +91,7 @@ class _ProductPageState extends State<ProductPage> {
                                 height: 54,
                                 child: Obx(
                                   () => ListView.separated(
-                                    itemCount:
-                                        _productController.listCategory.length,
+                                    itemCount: _product.listCategory.length,
                                     separatorBuilder:
                                         (BuildContext context, int index) {
                                       return SizedBox(
@@ -103,22 +103,19 @@ class _ProductPageState extends State<ProductPage> {
                                     physics: NeverScrollableScrollPhysics(),
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      var _data = _productController
-                                          .listCategory[index];
+                                      var _data = _product.listCategory[index];
                                       return Obx(
                                         () => CategoryCircleCard(
                                           size: 54,
                                           border: 8,
                                           title: _data.name ?? "",
                                           active: _data.id ==
-                                              _productController
-                                                  .choosedCategory.value,
+                                              _product.choosedCategory.value,
                                           image_url: _data.image_url ??
                                               Endpoint.defaultFood,
                                           onClick: () {
-                                            _productController
-                                                .getProductByCategory(
-                                                    _data.id!);
+                                            _product.getProductByCategory(
+                                                _data.id!);
                                           },
                                         ),
                                       );
@@ -138,6 +135,22 @@ class _ProductPageState extends State<ProductPage> {
                         SizedBox(
                           height: CDimension.space16,
                         ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: CDimension.space16,
+                          ),
+                          child: CSearch(
+                            textEditingController: _product.search.value,
+                            hintText: "Search Product By Name",
+                            errorMessage: "Not Found",
+                            onChanged: (v) {
+                              //
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: CDimension.space16,
+                        ),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: CDimension.space16,
@@ -146,11 +159,21 @@ class _ProductPageState extends State<ProductPage> {
                             () => Wrap(
                               spacing: CDimension.space16,
                               runSpacing: CDimension.space16,
-                              children: (_productController
-                                              .choosedCategory.value ==
-                                          "All"
-                                      ? _productController.listProduct
-                                      : _productController.listProductCategory)
+                              children: (_product.choosedCategory.value == "All"
+                                      ? _product.listProduct
+                                          .where((e) => e.name!
+                                              .toLowerCase()
+                                              .contains(_product
+                                                  .search.value.text
+                                                  .toLowerCase()))
+                                          .toList()
+                                      : _product.listProductCategory
+                                          .where((e) => e.name!
+                                              .toLowerCase()
+                                              .contains(_product
+                                                  .search.value.text
+                                                  .toLowerCase()))
+                                          .toList())
                                   .map((_data) {
                                 return Container(
                                   child: Column(
@@ -185,8 +208,7 @@ class _ProductPageState extends State<ProductPage> {
                                                 child: _data.stock! > 0
                                                     ? GestureDetector(
                                                         onTap: () {
-                                                          if (_productController
-                                                                  .listCart
+                                                          if (_product.listCart
                                                                   .where((e) =>
                                                                       e.id ==
                                                                       _data.id)
@@ -198,7 +220,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                   true,
                                                             );
                                                           } else {
-                                                            _productController
+                                                            _product
                                                                 .addProductToCart(
                                                                     _data);
                                                           }
@@ -220,7 +242,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                   .accent.value,
                                                             ),
                                                             child: Center(
-                                                              child: _productController
+                                                              child: _product
                                                                           .listCart
                                                                           .where((e) =>
                                                                               e.id ==
@@ -228,7 +250,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                           .length >
                                                                       0
                                                                   ? CText(
-                                                                      _productController
+                                                                      _product
                                                                           .listCart
                                                                           .firstWhere((e) =>
                                                                               e.id ==
@@ -257,32 +279,39 @@ class _ProductPageState extends State<ProductPage> {
                                       SizedBox(
                                         height: CDimension.space8,
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CText(
-                                            _data.name!.capitalizeFirst,
-                                            color: _theme.textTitle.value,
-                                            fontSize: 16,
-                                            decoration: _data.stock! > 0
-                                                ? TextDecoration.none
-                                                : TextDecoration.lineThrough,
-                                          ),
-                                          SizedBox(
-                                            height: CDimension.space12,
-                                          ),
-                                          CText(
-                                            StringExt.formatRupiah(
-                                                _data.sell_price),
-                                            color: _theme.textTitle.value,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                            decoration: _data.stock! > 0
-                                                ? TextDecoration.none
-                                                : TextDecoration.lineThrough,
-                                          ),
-                                        ],
+                                      SizedBox(
+                                        width: (OtherExt().getWidth(context) -
+                                                48) /
+                                            2,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CText(
+                                              _data.name!.capitalizeFirst,
+                                              color: _theme.textTitle.value,
+                                              fontSize: 16,
+                                              decoration: _data.stock! > 0
+                                                  ? TextDecoration.none
+                                                  : TextDecoration.lineThrough,
+                                              overflow: TextOverflow.visible,
+                                              lineHeight: 1.4,
+                                            ),
+                                            SizedBox(
+                                              height: CDimension.space12,
+                                            ),
+                                            CText(
+                                              StringExt.formatRupiah(
+                                                  _data.sell_price),
+                                              color: _theme.textTitle.value,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                              decoration: _data.stock! > 0
+                                                  ? TextDecoration.none
+                                                  : TextDecoration.lineThrough,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -345,7 +374,7 @@ class _ProductPageState extends State<ProductPage> {
             Positioned(
               bottom: 0,
               child: Obx(
-                () => _productController.listCart.length > 0
+                () => _product.listCart.length > 0
                     ? GestureDetector(
                         onTap: () {
                           Get.bottomSheet(
@@ -377,14 +406,14 @@ class _ProductPageState extends State<ProductPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CText(
-                                "${_productController.listCart.length} item",
+                                "${_product.listCart.length} item",
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
                               CText(
                                 StringExt.formatRupiah(
-                                  _productController.getTotalCart(),
+                                  _product.getTotalCart(),
                                 ),
                                 color: Colors.white,
                                 fontSize: 14,

@@ -1,8 +1,6 @@
 import 'package:beatboat/widgets/components/customButton.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../controllers/base/base_controller.dart';
 import '../../utils/extensions.dart';
 import '../components/text/ctext.dart';
 
@@ -12,8 +10,6 @@ class UpdateApp extends StatelessWidget {
     Key? key,
     required this.oncallbackCancel,
   }) : super(key: key);
-
-  final BaseController _base = Get.find(tag: "BaseController");
 
   @override
   Widget build(BuildContext context) {
