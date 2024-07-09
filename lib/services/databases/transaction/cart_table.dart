@@ -19,6 +19,7 @@ class CartTable {
       "status" STRING NOT NULL,
       "order_serve" STRING NOT NULL,
       "image_url" STRING NOT NULL,
+      "note" STRING NOT NULL,
       "qty" INTEGER NOT NULL,
       PRIMARY KEY("id")
     );""");

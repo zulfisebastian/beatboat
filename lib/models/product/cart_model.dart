@@ -11,6 +11,7 @@ class CartData {
   String? order_serve;
   String? unit;
   String? image_url;
+  String? note;
   int? qty;
 
   CartData({
@@ -26,6 +27,7 @@ class CartData {
     this.order_serve,
     this.unit,
     this.image_url,
+    this.note,
     this.qty,
   });
 
@@ -42,6 +44,7 @@ class CartData {
     order_serve = json['order_serve'];
     unit = json['unit'];
     image_url = json['image_url'];
+    note = json['note'];
     qty = json['qty'];
   }
 
@@ -59,6 +62,7 @@ class CartData {
     data['order_serve'] = this.order_serve;
     data['unit'] = this.unit;
     data['image_url'] = this.image_url;
+    data['note'] = this.note;
     data['qty'] = this.qty;
     return data;
   }

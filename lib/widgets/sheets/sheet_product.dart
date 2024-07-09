@@ -102,6 +102,9 @@ class _SheetProductState extends State<SheetProduct> {
                               onDelete: () {
                                 _productController.decreaseCart(_data);
                               },
+                              onEditNote: (_note) {
+                                _productController.editNote(_data, _note);
+                              },
                             );
                           },
                         ),

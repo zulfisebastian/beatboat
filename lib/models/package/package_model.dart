@@ -47,6 +47,7 @@ class PackageData {
   String? order_serve;
   String? image_url;
   String? status;
+  String? addon_uid;
   int? serve_qty;
 
   PackageData({
@@ -66,6 +67,7 @@ class PackageData {
     this.image_url,
     this.status,
     this.serve_qty,
+    this.addon_uid,
   });
 
   PackageData.fromJson(Map<String, dynamic> json) {
@@ -85,6 +87,7 @@ class PackageData {
     image_url = json['image_url'];
     status = json['status'];
     serve_qty = json['serve_qty'];
+    addon_uid = json['addon_uid'];
   }
 
   Map<String, dynamic> toJson() {
@@ -105,6 +108,7 @@ class PackageData {
     data['image_url'] = this.image_url;
     data['status'] = this.status;
     data['serve_qty'] = this.serve_qty;
+    data['addon_uid'] = this.addon_uid;
     return data;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:beatboat/models/checkin/checkin_model.dart';
+import 'package:beatboat/pages/checkin/checkin_detail.dart';
 import 'package:beatboat/pages/home/home.dart';
 import 'package:beatboat/repositories/global/global_repo.dart';
 import 'package:beatboat/repositories/transaction/transaction_repo.dart';
@@ -10,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../models/balance/balance_model.dart';
 import '../../models/transaction/onboard_model.dart';
-import '../../pages/checkin/checkin_success.dart';
 import '../../widgets/pages/loading.dart';
 import '../../widgets/popups/wristband_registered.dart';
 
@@ -150,6 +150,9 @@ class CheckinController extends GetxController {
             nationality: listNationalityCtrl[index].text,
             dob: listDateCtrl[index].text,
             gender: listGenderCtrl[index].text,
+            min_spending: _data.min_spending,
+            max_onboard: _data.max_onboard,
+            booking_type: _data.booking_type,
             isFromResp: _data.wristband_nfc_uid != null ? true : false,
           ),
         );
@@ -158,7 +161,7 @@ class CheckinController extends GetxController {
       checkFormDisabled();
 
       Get.to(
-        CheckinSuccessPage(
+        CheckinDetailPage(
           title: "Checkin Success",
           data: _resp.data!,
           action: "Scan Wristband",
@@ -255,5 +258,15 @@ class CheckinController extends GetxController {
         listGenderCtrl[index].text == "" ||
         listNationalityCtrl[index].text == "" ||
         listNameCtrl[index].text == "";
+  }
+
+  List<OnboardRequest> getListMaster() {
+    return listPairedUID.where((e) => e.max_onboard! > 0).toList();
+  }
+
+  List getListOther(_booking_code) {
+    return listPairedUID
+        .where((e) => e.max_onboard! == 0 && e.booking_code == _booking_code)
+        .toList();
   }
 }

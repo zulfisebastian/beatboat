@@ -5,6 +5,7 @@ enum NFCModeType {
   TransferTo,
   Refund,
   Package,
+  Activity,
   Participant,
   CheckIn,
   UpdateAfterPay,

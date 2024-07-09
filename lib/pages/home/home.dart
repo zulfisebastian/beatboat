@@ -164,6 +164,13 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         );
                                         return;
+                                      case "activity":
+                                        Get.bottomSheet(
+                                          SheetNFC(
+                                            type: NFCModeType.Activity,
+                                          ),
+                                        );
+                                        return;
                                       case "transfer":
                                         Get.bottomSheet(
                                           SheetNFC(

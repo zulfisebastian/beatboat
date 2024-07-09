@@ -44,10 +44,19 @@ class OrderCard extends StatelessWidget {
                 height: 64,
                 child: Container(
                   alignment: Alignment.topLeft,
-                  child: CCachedImage(
-                    width: 56,
-                    height: 56,
-                    url: cart.image_url ?? Endpoint.defaultFood,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: _theme.line.value,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: CCachedImage(
+                      width: 56,
+                      height: 56,
+                      url: cart.image_url ?? Endpoint.defaultFood,
+                    ),
                   ),
                 ),
               ),
@@ -98,6 +107,43 @@ class OrderCard extends StatelessWidget {
                   fontSize: 12,
                   maxLines: 2,
                   overflow: TextOverflow.visible,
+                ),
+                SizedBox(
+                  height: CDimension.space8,
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: _theme.line.value,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: CDimension.space8,
+                    vertical: CDimension.space4,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.sticky_note_2_outlined,
+                        color: _theme.textSubtitle.value,
+                        size: 14,
+                      ),
+                      SizedBox(
+                        width: CDimension.space8,
+                      ),
+                      CText(
+                        cart.note,
+                        color: _theme.textTitle.value,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        maxLines: 2,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

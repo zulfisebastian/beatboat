@@ -1,4 +1,4 @@
-import 'package:beatboat/widgets/card/card_package.dart';
+import 'package:beatboat/widgets/card/package_card.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/text/ctext.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 import '../../constants/dimension.dart';
 import '../../controllers/package/package_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
+import '../../utils/extensions.dart';
 import '../../widgets/components/customAppBar.dart';
+import '../../widgets/components/customButton.dart';
 
 class PackagePage extends StatefulWidget {
   const PackagePage({Key? key}) : super(key: key);
@@ -29,6 +31,26 @@ class _PackagePageState extends State<PackagePage> {
         context: context,
         title: "Wristband Package",
       ),
+      bottomSheet: Material(
+        elevation: 20,
+        child: Container(
+          width: OtherExt().getWidth(context),
+          decoration: BoxDecoration(
+            color: Colors.white,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: CDimension.space16,
+            vertical: CDimension.space12,
+          ),
+          child: CustomButtonBlue(
+            "SERVE NOW",
+            disabled: false,
+            onPressed: () {
+              _refundController.servePackage();
+            },
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Obx(
           () => _refundController.listPackage.length > 0
@@ -47,7 +69,7 @@ class _PackagePageState extends State<PackagePage> {
                     },
                     itemBuilder: (BuildContext context, int index) {
                       var _data = _refundController.listPackage[index];
-                      return CardPackage(
+                      return PackageCard(
                         data: _data,
                       );
                     },

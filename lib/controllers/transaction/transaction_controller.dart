@@ -367,6 +367,7 @@ class TransactionController extends GetxController {
             (e) => {
               "product_id": e.id,
               "qty": e.qty,
+              "note": e.note,
             },
           )
           .toList(),
@@ -444,6 +445,7 @@ class TransactionController extends GetxController {
             (e) => {
               "product_id": e.id,
               "qty": e.qty,
+              "note": e.note,
             },
           )
           .toList(),
@@ -506,7 +508,7 @@ class TransactionController extends GetxController {
     await SunmiPrinter.startTransactionPrint(true);
     //Logo
     await SunmiPrinter.printText(
-      'Order No: 1',
+      'Order No: ' + _data.order_no.toString(),
       style: SunmiStyle(
         fontSize: SunmiFontSize.MD,
         bold: false,
@@ -742,7 +744,7 @@ class TransactionController extends GetxController {
         align: SunmiPrintAlign.LEFT,
       ),
       ColumnMaker(
-        text: "200 / 1",
+        text: _data.order_no.toString(),
         width: 10,
         align: SunmiPrintAlign.LEFT,
       ),

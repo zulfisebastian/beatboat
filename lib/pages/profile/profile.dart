@@ -11,6 +11,7 @@ import '../../constants/dimension.dart';
 import '../../controllers/base/base_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../widgets/components/cdivider.dart';
+import '../../widgets/components/customButton.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -204,6 +205,31 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                           ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: CDimension.space16,
+                    ),
+                    CDivider(
+                      height: 1,
+                    ),
+                    SizedBox(
+                      height: CDimension.space16,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CText(
+                          "Test Network Printer",
+                          fontSize: 16,
+                          color: _theme.textTitle.value,
+                        ),
+                        CustomButtonBlue(
+                          "Test",
+                          onPressed: () {
+                            //
+                          },
                         ),
                       ],
                     ),

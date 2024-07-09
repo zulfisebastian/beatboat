@@ -115,6 +115,7 @@ class ProductController extends GetxController {
     _cart.order_serve = _product.order_serve;
     _cart.unit = _product.unit;
     _cart.image_url = _product.image_url;
+    _cart.note = "";
 
     var _resp = await CartTable().getCartById(_cart);
 
@@ -199,5 +200,16 @@ class ProductController extends GetxController {
       total += data.sell_price! * data.qty!;
     }
     return total;
+  }
+
+  Rx<TextEditingController> noteCtrl = TextEditingController().obs;
+  editNote(CartData _cart, _note) async {
+    var _resp = await CartTable().getCartById(_cart);
+
+    if (_resp != null) {
+      _cart.note = _note;
+      CartTable().updateCart(_cart);
+    }
+    renewListCart();
   }
 }

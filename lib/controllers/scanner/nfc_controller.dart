@@ -1,8 +1,10 @@
 import 'package:beatboat/constants/enums.dart';
+import 'package:beatboat/controllers/activity/activity_byid_controller.dart';
 import 'package:beatboat/controllers/balance/transfer_controller.dart';
 import 'package:beatboat/controllers/checkin/checkin_controller.dart';
 import 'package:beatboat/controllers/package/package_controller.dart';
 import 'package:beatboat/controllers/refund/refund_controller.dart';
+import 'package:beatboat/pages/activity/activity_byid.dart';
 import 'package:beatboat/pages/home/home.dart';
 import 'package:beatboat/pages/balance/topup.dart';
 import 'package:beatboat/pages/balance/transfer.dart';
@@ -116,6 +118,15 @@ class NFCController extends GetxController {
           _packageController.uuid.value = _mapUUID;
           _packageController.getDataPackage();
           Get.to(PackagePage());
+        } else if (type == NFCModeType.Activity) {
+          Get.back();
+          final ActivityByIdController _activityController = Get.put(
+            ActivityByIdController(),
+            tag: "ActivityByIdController",
+          );
+          _activityController.uuid.value = _mapUUID;
+          _activityController.getDataActivity();
+          Get.to(ActivityByIdPage());
         } else {
           //
         }

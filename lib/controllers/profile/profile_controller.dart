@@ -3,7 +3,8 @@ import 'package:beatboat/services/databases/profile/profile_table.dart';
 import 'package:beatboat/widgets/components/ctoast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
+import 'package:flutter_esc_pos_network/flutter_esc_pos_network.dart';
 import '../../repositories/auth/profile_repo.dart';
 import '../../widgets/pages/loading.dart';
 import '../../widgets/sheets/sheet_failed.dart';
@@ -84,6 +85,45 @@ class ProfileController extends GetxController {
           errorMessage: _resp.message!,
         ),
       );
+    }
+  }
+
+  printBillThermal() async {
+    await _base.getProfile();
+    for (var _printer in _base.printerThermal) {
+      final printer = PrinterNetworkManager(_printer.ip!);
+
+      PosPrintResult connect = await printer.connect();
+
+      CToast.showWithoutCOntext(
+        "Connecting to ${_printer.ip!}",
+        Colors.black,
+        Colors.white,
+      );
+      if (connect == PosPrintResult.success) {
+        final profile = await CapabilityProfile.load();
+        final generator = Generator(PaperSize.mm80, profile);
+        List<int> bytes = [];
+        bytes += generator.feed(1);
+        bytes += generator.text(
+          'Testing Network Printer',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.feed(1);
+        bytes += generator.cut();
+        PosPrintResult printing = await printer.printTicket(bytes);
+
+        print(printing.msg);
+        await printer.disconnect();
+      } else {
+        CToast.showWithoutCOntext(
+          connect.msg,
+          Colors.red,
+          Colors.white,
+        );
+      }
     }
   }
 }

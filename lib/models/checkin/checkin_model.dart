@@ -1,3 +1,5 @@
+import 'package:beatboat/models/package/package_model.dart';
+
 class CheckinResponse {
   CheckinData? data;
   String? message;
@@ -38,6 +40,7 @@ class CheckinData {
   String? booking_status;
   String? region;
   bool? valid;
+  List<PackageData>? packages;
   List<DetailCheckinData>? details;
 
   CheckinData({
@@ -53,6 +56,7 @@ class CheckinData {
     this.region,
     this.valid,
     this.details,
+    this.packages,
   });
 
   CheckinData.fromJson(Map<String, dynamic> json) {
@@ -76,6 +80,12 @@ class CheckinData {
         details?.add(new DetailCheckinData.fromJson(v));
       });
     }
+    if (json['packages'] != null) {
+      packages = <PackageData>[];
+      json['packages'].forEach((v) {
+        packages?.add(new PackageData.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -97,6 +107,9 @@ class CheckinData {
     if (this.details != null) {
       data['details'] = this.details?.map((v) => v.toJson()).toList();
     }
+    if (this.packages != null) {
+      data['packages'] = this.packages?.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
@@ -113,6 +126,9 @@ class DetailCheckinData {
   String? gender;
   String? dob;
   int? age;
+  int? min_spending;
+  int? max_onboard;
+  String? booking_type;
 
   DetailCheckinData({
     this.booking_code,
@@ -126,6 +142,9 @@ class DetailCheckinData {
     this.gender,
     this.dob,
     this.age,
+    this.min_spending,
+    this.max_onboard,
+    this.booking_type,
   });
 
   DetailCheckinData.fromJson(Map<String, dynamic> json) {
@@ -140,6 +159,9 @@ class DetailCheckinData {
     gender = json['gender'];
     dob = json['dob'];
     age = json['age'];
+    min_spending = json['min_spending'];
+    max_onboard = json['max_onboard'];
+    booking_type = json['booking_type'];
   }
 
   Map<String, dynamic> toJson() {
@@ -155,6 +177,8 @@ class DetailCheckinData {
     data['gender'] = this.gender;
     data['dob'] = this.dob;
     data['age'] = this.age;
+    data['min_spending'] = this.min_spending;
+    data['max_onboard'] = this.max_onboard;
     return data;
   }
 }
