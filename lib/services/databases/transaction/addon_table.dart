@@ -1,33 +1,26 @@
+import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/services/databases/database_services.dart';
 import 'package:sqflite/sqflite.dart';
-import '../../../models/product/cart_model.dart';
 
-class CartTable {
-  final tableName = "cart";
+import '../../../models/product/addon_model.dart';
+
+class AddonTable {
+  final tableName = "addon";
 
   Future<void> createTable(db) async {
     await db.execute("""CREATE TABLE IF NOT EXISTS $tableName (
       "id" STRING NOT NULL,
+      "addon_id" STRING NOT NULL,
       "product_id" STRING NOT NULL,
-      "category_id" STRING NOT NULL,
-      "sku" STRING NOT NULL,
+      "cart_id" STRING NOT NULL,
       "name" STRING NOT NULL,
-      "description" STRING NOT NULL,
-      "buy_price" INTEGER NOT NULL,
-      "sell_price" INTEGER NOT NULL,
-      "stock" INTEGER NOT NULL,
-      "unit" STRING NOT NULL,
-      "status" STRING NOT NULL,
-      "order_serve" STRING NOT NULL,
-      "image_url" STRING NOT NULL,
-      "note" STRING NOT NULL,
+      "price" INTEGER NOT NULL,
       "qty" INTEGER NOT NULL,
-      "min_selection" INTEGER NOT NULL,
       PRIMARY KEY("id")
     );""");
   }
 
-  Future<int> addCart(CartData data) async {
+  Future<int> addAddon(AddonData data) async {
     final db = await DatabaseServices().database;
     return await db.insert(
       tableName,
@@ -36,18 +29,18 @@ class CartTable {
     );
   }
 
-  Future<int> updateCart(CartData data) async {
+  Future<int> updateAddon(AddonData data, CartData cart) async {
     final db = await DatabaseServices().database;
     return await db.update(
       tableName,
       data.toJson(),
-      where: 'id = ?',
-      whereArgs: [data.id],
+      where: 'id = ? AND cart_id = ?',
+      whereArgs: [data.id, cart.id],
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<int> deleteCart(CartData data) async {
+  Future<int> deleteAddon(AddonData data) async {
     final db = await DatabaseServices().database;
     return await db.delete(
       tableName,
@@ -56,26 +49,26 @@ class CartTable {
     );
   }
 
-  Future<List<CartData>?> getCartById(CartData data) async {
+  Future<List<AddonData>?> getAddonByCartId(String id, CartData cart) async {
     final db = await DatabaseServices().database;
 
     final List<Map<String, dynamic>> maps = await db.query(
       tableName,
-      where: 'id = ?',
-      whereArgs: [data.id],
+      where: 'addon_id = ? AND cart_id = ?',
+      whereArgs: [id, cart.id],
     );
 
     if (maps.isEmpty) return null;
 
     return List.generate(
       maps.length,
-      (index) => CartData.fromJson(
+      (index) => AddonData.fromJson(
         maps[index],
       ),
     );
   }
 
-  Future<List<CartData>?> getAllCart() async {
+  Future<List<AddonData>?> getAllData() async {
     final db = await DatabaseServices().database;
 
     final List<Map<String, dynamic>> maps = await db.query(tableName);
@@ -84,13 +77,13 @@ class CartTable {
 
     return List.generate(
       maps.length,
-      (index) => CartData.fromJson(
+      (index) => AddonData.fromJson(
         maps[index],
       ),
     );
   }
 
-  Future<int> truncateCart() async {
+  Future<int> truncateAddon() async {
     final db = await DatabaseServices().database;
     return await db.delete(
       tableName,

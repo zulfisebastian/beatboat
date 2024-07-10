@@ -10,20 +10,15 @@ import '../components/ccached_image.dart';
 import '../components/text/ctext.dart';
 
 class OrderCard extends StatelessWidget {
-  final VoidCallback onAdd;
-  final VoidCallback onDelete;
   final CartData cart;
 
   OrderCard({
     Key? key,
-    required this.onAdd,
-    required this.onDelete,
     required this.cart,
   }) : super(key: key);
 
   final ThemeController _theme = Get.find(tag: 'ThemeController');
-  final ProductController _productController =
-      Get.find(tag: 'ProductController');
+  final ProductController _product = Get.find(tag: 'ProductController');
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +67,7 @@ class OrderCard extends StatelessWidget {
                   ),
                   child: Center(
                     child: CText(
-                      _productController.listCart
-                          .firstWhere((e) => e.id == cart.id)
-                          .qty,
+                      _product.listCart.firstWhere((e) => e.id == cart.id).qty,
                       fontSize: 12,
                       color: Colors.white,
                     ),
@@ -102,11 +95,16 @@ class OrderCard extends StatelessWidget {
                   height: CDimension.space8,
                 ),
                 CText(
-                  (cart.description ?? "-").capitalizeFirst,
-                  color: _theme.textTitle.value,
+                  _product.listAddons
+                      .where((e) =>
+                          e.cart_id == cart.id &&
+                          e.product_id == cart.product_id)
+                      .map((e) => "x${e.qty} ${e.name!.capitalizeFirst}")
+                      .join(", "),
                   fontSize: 12,
-                  maxLines: 2,
+                  color: _theme.textSubtitle.value,
                   overflow: TextOverflow.visible,
+                  lineHeight: 1.4,
                 ),
                 SizedBox(
                   height: CDimension.space8,
@@ -135,9 +133,13 @@ class OrderCard extends StatelessWidget {
                         width: CDimension.space8,
                       ),
                       CText(
-                        cart.note,
-                        color: _theme.textTitle.value,
-                        fontWeight: FontWeight.bold,
+                        cart.note != "" ? cart.note! : "No additional note",
+                        color: cart.note != ""
+                            ? _theme.textTitle.value
+                            : _theme.textSubtitle.value,
+                        fontWeight: cart.note != ""
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                         fontSize: 12,
                         maxLines: 2,
                         overflow: TextOverflow.visible,
@@ -152,7 +154,7 @@ class OrderCard extends StatelessWidget {
             width: CDimension.space16,
           ),
           CText(
-            StringExt.formatRupiah(cart.sell_price! * cart.qty!),
+            StringExt.formatRupiah(_product.getTotalPricePerItem(cart)),
             color: _theme.textTitle.value,
             fontSize: 14,
             fontWeight: FontWeight.bold,

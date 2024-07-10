@@ -36,6 +36,7 @@ class CartCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -54,40 +55,37 @@ class CartCard extends StatelessWidget {
               SizedBox(
                 width: CDimension.space16,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CText(
-                    cart.name!.capitalizeFirst,
-                    color: _theme.textTitle.value,
-                    fontSize: 14,
-                    maxLines: 2,
-                    overflow: TextOverflow.visible,
-                  ),
-                  SizedBox(
-                    height: CDimension.space12,
-                  ),
-                  Row(
-                    children: [
-                      CText(
-                        StringExt.formatRupiah(cart.sell_price!),
-                        color: _theme.textTitle.value,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      CText(
-                        " / item",
-                        color: _theme.textSubtitle.value,
-                        fontSize: 12,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: CDimension.space12,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CText(
+                      cart.name!.capitalizeFirst,
+                      color: _theme.textTitle.value,
+                      fontSize: 14,
+                      maxLines: 2,
+                      overflow: TextOverflow.visible,
+                    ),
+                    SizedBox(
+                      height: CDimension.space6,
+                    ),
+                    CText(
+                      _productController.listAddons
+                          .where((e) =>
+                              e.cart_id == cart.id &&
+                              e.product_id == cart.product_id)
+                          .map((e) => "x${e.qty} ${e.name!.capitalizeFirst}")
+                          .join(", "),
+                      fontSize: 12,
+                      color: _theme.textSubtitle.value,
+                      overflow: TextOverflow.visible,
+                      lineHeight: 1.4,
+                    ),
+                    SizedBox(
+                      height: CDimension.space12,
+                    ),
+                    Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
@@ -158,6 +156,48 @@ class CartCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: CDimension.space16,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      CText(
+                        StringExt.formatRupiah(cart.sell_price!),
+                        color: _theme.textTitle.value,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      CText(
+                        " / item",
+                        color: _theme.textSubtitle.value,
+                        fontSize: 12,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: CDimension.space6,
+                  ),
+                  Row(
+                    children: [
+                      CText(
+                        "+ ${StringExt.formatRupiah(
+                          _productController.getTotalAddonPricePerItem(cart),
+                        )}",
+                        color: _theme.error.value,
+                        fontSize: 12,
+                      ),
+                      CText(
+                        " / item",
+                        color: _theme.textSubtitle.value,
+                        fontSize: 12,
+                      ),
+                    ],
                   ),
                 ],
               ),

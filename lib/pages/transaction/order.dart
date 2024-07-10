@@ -14,7 +14,7 @@ import '../../utils/extensions.dart';
 import '../../widgets/components/cdivider.dart';
 import '../../widgets/components/customAppBar.dart';
 import '../../widgets/components/text/ctext.dart';
-import '../../widgets/sheets/sheet_product.dart';
+import '../../widgets/sheets/sheet_cart.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
@@ -203,12 +203,7 @@ class _OrderPageState extends State<OrderPage> {
                 height: CDimension.space16,
               ),
               OrderSummary(),
-              SizedBox(
-                height: CDimension.space128,
-              ),
-              SizedBox(
-                height: CDimension.space24,
-              ),
+              SizedBox(height: 200),
             ],
           ),
         ),
@@ -237,7 +232,7 @@ class _OrderPageState extends State<OrderPage> {
                 onTap: () {
                   Get.back();
                   Get.bottomSheet(
-                    SheetProduct(),
+                    SheetCart(),
                     isScrollControlled: true,
                   );
                 },
@@ -275,15 +270,7 @@ class _OrderPageState extends State<OrderPage> {
               var _filtered =
                   _transController.listCart.where((e) => e.qty! > 0).toList();
               var _data = _filtered[index];
-              return OrderCard(
-                cart: _data,
-                onAdd: () {
-                  _transController.increaseCart(_data);
-                },
-                onDelete: () {
-                  _transController.decreaseCart(_data);
-                },
-              );
+              return OrderCard(cart: _data);
             },
           ),
         ),
@@ -296,88 +283,6 @@ class _OrderPageState extends State<OrderPage> {
         SizedBox(
           height: CDimension.space12,
         ),
-        // Padding(
-        //   padding: EdgeInsets.symmetric(
-        //     horizontal: CDimension.space16,
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       CText(
-        //         "Sub Total",
-        //         color: _theme.textTitle.value,
-        //         fontSize: 14,
-        //       ),
-        //       Obx(
-        //         () => CText(
-        //           StringExt.formatRupiah(
-        //             _transController.getTotalCart(),
-        //           ),
-        //           color: _theme.textTitle.value,
-        //           fontWeight: FontWeight.bold,
-        //           fontSize: 14,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // SizedBox(
-        //   height: CDimension.space16,
-        // ),
-        // Padding(
-        //   padding: EdgeInsets.symmetric(
-        //     horizontal: CDimension.space16,
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       CText(
-        //         "PPN (10%)",
-        //         color: _theme.textTitle.value,
-        //         fontSize: 14,
-        //       ),
-        //       Obx(
-        //         () => CText(
-        //           "+ ${StringExt.formatRupiah(
-        //             _transController.getTotalCart() * 0.1,
-        //           )}",
-        //           color: _theme.textTitle.value,
-        //           fontWeight: FontWeight.bold,
-        //           fontSize: 14,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // SizedBox(
-        //   height: CDimension.space16,
-        // ),
-        // Padding(
-        //   padding: EdgeInsets.symmetric(
-        //     horizontal: CDimension.space16,
-        //   ),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //     children: [
-        //       CText(
-        //         "Total",
-        //         color: _theme.textTitle.value,
-        //         fontSize: 14,
-        //       ),
-        //       Obx(
-        //         () => CText(
-        //           StringExt.formatRupiah(
-        //             _transController.getTotalCart() +
-        //                 (_transController.getTotalCart() * 0.1),
-        //           ),
-        //           color: _theme.accent.value,
-        //           fontWeight: FontWeight.bold,
-        //           fontSize: 16,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }

@@ -1,8 +1,10 @@
+import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/card/card_transaction.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/text/ctext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import '../../constants/dimension.dart';
 import '../../controllers/refund/refund_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
@@ -53,18 +55,24 @@ class _RefundPageState extends State<RefundPage> {
                     },
                   ),
                 )
-              : Padding(
+              : Container(
+                  width: OtherExt().getWidth(context),
+                  height: OtherExt().getHeight(context) - 40,
                   padding: const EdgeInsets.all(
                     CDimension.space16,
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        child: CText(
-                          "No Data Transaction",
-                          color: _theme.textTitle.value,
-                        ),
+                      Lottie.asset(
+                        'assets/json/sad.json',
+                        width: 240,
+                        repeat: false,
+                      ),
+                      CText(
+                        "No Data Transaction",
+                        color: _theme.textTitle.value,
                       ),
                     ],
                   ),

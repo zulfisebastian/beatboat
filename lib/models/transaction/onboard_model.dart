@@ -12,6 +12,7 @@ class OnboardRequest {
   int? max_onboard;
   String? booking_type;
   bool isFromResp = false;
+  List<OnboardOtherRequest>? others;
 
   OnboardRequest({
     this.device_serial_number,
@@ -27,6 +28,7 @@ class OnboardRequest {
     this.max_onboard,
     this.booking_type,
     this.isFromResp = false,
+    this.others,
   });
 
   OnboardRequest.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,13 @@ class OnboardRequest {
     max_onboard = json['max_onboard'];
     booking_type = json['booking_type'];
     isFromResp = json['isFromResp'];
+
+    if (json['others'] != null) {
+      others = <OnboardOtherRequest>[];
+      json['others'].forEach((v) {
+        others?.add(new OnboardOtherRequest.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +68,52 @@ class OnboardRequest {
     data['max_onboard'] = this.max_onboard;
     data['booking_type'] = this.booking_type;
     data['isFromResp'] = this.isFromResp;
+
+    if (this.others != null) {
+      data['others'] = this.others?.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class OnboardOtherRequest {
+  String? type;
+  String? booking_code;
+  String? nfc_uid;
+  String? customer_name;
+  String? nationality;
+  String? dob;
+  String? gender;
+
+  OnboardOtherRequest({
+    this.type,
+    this.booking_code,
+    this.nfc_uid,
+    this.customer_name,
+    this.nationality,
+    this.gender,
+    this.dob,
+  });
+
+  OnboardOtherRequest.fromJson(Map<String, dynamic> json) {
+    type = json['type'];
+    booking_code = json['booking_code'];
+    nfc_uid = json['nfc_uid'];
+    customer_name = json['customer_name'];
+    nationality = json['nationality'];
+    dob = json['dob'];
+    gender = json['gender'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['types'] = this.type;
+    data['booking_code'] = this.booking_code;
+    data['nfc_uid'] = this.nfc_uid;
+    data['customer_name'] = this.customer_name;
+    data['nationality'] = this.nationality;
+    data['dob'] = this.dob;
+    data['gender'] = this.gender;
     return data;
   }
 }

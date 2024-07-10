@@ -1,12 +1,15 @@
+import 'package:beatboat/models/product/addon_model.dart';
 import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/category_model.dart';
 import 'package:beatboat/repositories/product/product_repo.dart';
+import 'package:beatboat/services/databases/transaction/addon_table.dart';
 import 'package:beatboat/services/databases/transaction/cart_table.dart';
+import 'package:beatboat/widgets/sheets/sheet_failed.dart';
+import 'package:beatboat/widgets/sheets/sheet_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/product/product_model.dart';
 import '../../services/databases/product/category_table.dart';
-import '../../services/databases/product/product_table.dart';
 import '../base/base_controller.dart';
 
 class ProductController extends GetxController {
@@ -28,6 +31,7 @@ class ProductController extends GetxController {
     getDataCategory();
     getDataProduct();
     renewListCart();
+    renewListAddOn();
   }
 
   RxList<CategoryData> listCategory = <CategoryData>[].obs;
@@ -51,21 +55,27 @@ class ProductController extends GetxController {
 
   RxList<ProductData> listProduct = <ProductData>[].obs;
   getDataProduct() async {
-    if (_base.isConnected.value) {
-      var _resp = await _productRepo.getProduct();
+    var _resp = await _productRepo.getProduct();
 
-      if (_resp.data!.length > 0) {
-        listProduct.value = _resp.data!.where((e) => e.show! == 1).toList();
-        listProduct.refresh();
-      }
-    } else {
-      var _resp = await ProductTable().getAllProduct();
-
-      if (_resp != null) {
-        listProduct.value = _resp.where((e) => e.show! == 1).toList();
-        listProduct.refresh();
-      }
+    if (_resp.data!.length > 0) {
+      listProduct.value = _resp.data!.where((e) => e.show! == 1).toList();
+      listProduct.refresh();
     }
+    // if (_base.isConnected.value) {
+    //   var _resp = await _productRepo.getProduct();
+
+    //   if (_resp.data!.length > 0) {
+    //     listProduct.value = _resp.data!.where((e) => e.show! == 1).toList();
+    //     listProduct.refresh();
+    //   }
+    // } else {
+    //   var _resp = await ProductTable().getAllProduct();
+
+    //   if (_resp != null) {
+    //     listProduct.value = _resp.where((e) => e.show! == 1).toList();
+    //     listProduct.refresh();
+    //   }
+    // }
     checkIsCategoryChecked();
   }
 
@@ -101,9 +111,19 @@ class ProductController extends GetxController {
     }
   }
 
+  RxList<AddonData> listAddons = <AddonData>[].obs;
+  renewListAddOn() async {
+    var _resp = await AddonTable().getAllData();
+    if (_resp != null) {
+      listAddons.value = _resp;
+      listAddons.refresh();
+    }
+  }
+
   addProductToCart(ProductData _product) async {
     CartData _cart = new CartData();
-    _cart.id = _product.id;
+    _cart.id = DateTime.now().toString();
+    _cart.product_id = _product.id;
     _cart.category_id = _product.category_id;
     _cart.sku = _product.sku;
     _cart.name = _product.name;
@@ -116,48 +136,18 @@ class ProductController extends GetxController {
     _cart.unit = _product.unit;
     _cart.image_url = _product.image_url;
     _cart.note = "";
-
-    var _resp = await CartTable().getCartById(_cart);
-
-    if (_resp != null) {
-      _cart.qty = _resp[0].qty! + 1;
-      CartTable().updateCart(_cart);
-    } else {
-      _cart.qty = 1;
-      CartTable().addCart(_cart);
-    }
-    renewListCart();
-  }
-
-  deleteProductFromCart(ProductData _product) {
-    CartData _cart = new CartData();
-    _cart.id = _product.id;
-    _cart.category_id = _product.category_id;
-    _cart.sku = _product.sku;
-    _cart.name = _product.name;
-    _cart.description = _product.description;
-    _cart.buy_price = _product.buy_price;
-    _cart.sell_price = _product.sell_price;
-    _cart.stock = _product.stock;
-    _cart.status = _product.status;
-    _cart.order_serve = _product.order_serve;
-    _cart.unit = _product.unit;
-    _cart.image_url = _product.image_url;
-
-    CartTable().getCartById(_cart).then((data) {
-      if (data == null) {
-        return;
-      }
-
-      if (data.length == 1) {
-        CartTable().deleteCart(_cart);
-        return;
-      } else {
-        _cart.qty = _cart.qty! - 1;
-        CartTable().updateCart(_cart);
-      }
-    });
-    renewListCart();
+    _cart.qty = 1;
+    _cart.min_selection =
+        _product.addons != null ? _product.addons!.min_selection : 0;
+    _cart.qty = 1;
+    CartTable().addCart(_cart);
+    await renewListCart();
+    Get.bottomSheet(
+      SheetProduct(
+        data: _cart,
+      ),
+      isScrollControlled: true,
+    );
   }
 
   increaseCart(CartData _cart) async {
@@ -182,6 +172,7 @@ class ProductController extends GetxController {
         CartTable().deleteCart(_cart);
         if (listCart.length > 1) {
           renewListCart();
+          Get.back();
         } else {
           Get.back();
           listCart.clear();
@@ -194,10 +185,79 @@ class ProductController extends GetxController {
     }
   }
 
+  increaseAddons(ProductAddonDetailData _data, CartData _cart) async {
+    var _resp = await CartTable().getCartById(_cart);
+
+    if (_resp != null) {
+      if (_resp[0].min_selection! -
+              getAddonLength(_data.addon_id!, _cart.id!) ==
+          0) {
+        Get.bottomSheet(SheetFailed(
+          errorMessage: "You cannot add Add-ons anymore",
+        ));
+      } else {
+        var _searchAddon =
+            await AddonTable().getAddonByCartId(_data.addon_id!, _cart);
+
+        if (_searchAddon != null) {
+          _searchAddon[0].qty = _searchAddon[0].qty! + 1;
+          AddonTable().updateAddon(_searchAddon[0], _cart);
+        } else {
+          AddonData _addon = new AddonData();
+          _addon.id = DateTime.now().toString();
+          _addon.addon_id = _data.addon_id;
+          _addon.product_id = _data.product_id;
+          _addon.cart_id = _cart.id;
+          _addon.name = _data.name;
+          _addon.price = _data.price;
+          _addon.qty = 1;
+          AddonTable().addAddon(_addon);
+        }
+      }
+    }
+    renewListAddOn();
+  }
+
+  decreaseAddons(ProductAddonDetailData _data, CartData _cart) async {
+    var _resp = await AddonTable().getAddonByCartId(_data.addon_id!, _cart);
+
+    if (_resp != null) {
+      if (_resp[0].qty! > 1) {
+        _resp[0].qty = _resp[0].qty! - 1;
+        AddonTable().updateAddon(_resp[0], _cart);
+      } else {
+        AddonTable().deleteAddon(_resp[0]);
+      }
+    }
+    renewListAddOn();
+  }
+
   int getTotalCart() {
     int total = 0;
     for (var data in listCart) {
-      total += data.sell_price! * data.qty!;
+      int totalAddon = 0;
+      for (var addon in listAddons.where((e) => e.cart_id == data.id)) {
+        totalAddon += addon.price! * addon.qty!;
+      }
+      total += (data.sell_price! + totalAddon) * data.qty!;
+    }
+    return total;
+  }
+
+  int getTotalPricePerItem(CartData _cart) {
+    var qty = listCart.firstWhere((e) => e.id == _cart.id).qty!;
+    int total = 0;
+    total += _cart.sell_price!;
+    for (var data in listAddons.where((e) => e.cart_id == _cart.id)) {
+      total += data.price! * data.qty!;
+    }
+    return total * qty;
+  }
+
+  int getTotalAddonPricePerItem(CartData _cart) {
+    int total = 0;
+    for (var data in listAddons.where((e) => e.cart_id == _cart.id)) {
+      total += data.price! * data.qty!;
     }
     return total;
   }
@@ -211,5 +271,56 @@ class ProductController extends GetxController {
       CartTable().updateCart(_cart);
     }
     renewListCart();
+  }
+
+  ProductData getProductByProductId(CartData _cart) {
+    return listProduct.where((e) => e.id == _cart.product_id).toList().first;
+  }
+
+  List<CartData> getAllCartByProductId(String _product_id) {
+    return listCart.where((e) => e.product_id == _product_id).toList();
+  }
+
+  CartData getCartByProductId(String _product_id) {
+    return listCart.where((e) => e.product_id == _product_id).toList().first;
+  }
+
+  int getAddonQty(String _addon_id, String cart_id) {
+    var data = listAddons
+        .where((e) => e.addon_id == _addon_id && e.cart_id == cart_id)
+        .toList();
+    if (data.length > 0) {
+      return data[0].qty!;
+    } else {
+      return 0;
+    }
+  }
+
+  int getAddonLength(String _addon_id, String cart_id) {
+    var data = listAddons.where((e) => e.cart_id == cart_id).toList();
+    if (data.length > 0) {
+      var total = 0;
+      for (var _data in data) {
+        total += _data.qty!;
+      }
+      return total;
+    } else {
+      return 0;
+    }
+  }
+
+  int getCartQtyLength(ProductData _data) {
+    var total = 0;
+    for (var _data in listCart.where((e) => e.product_id == _data.id)) {
+      total += _data.qty!;
+    }
+    return total;
+  }
+
+  int getAddonQtyLength(String _addon_id, String cart_id) {
+    return listAddons
+        .where((e) => e.addon_id == _addon_id && e.cart_id == cart_id)
+        .toList()
+        .length;
   }
 }

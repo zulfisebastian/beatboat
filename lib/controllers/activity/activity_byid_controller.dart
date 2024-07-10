@@ -1,4 +1,5 @@
 import 'package:beatboat/models/activity/activity_model.dart';
+import 'package:beatboat/models/balance/balance_model.dart';
 import 'package:beatboat/repositories/activity/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,14 +31,14 @@ class ActivityByIdController extends GetxController {
     }
   }
 
-  RxString uuid = "".obs;
+  Rx<BalanceData> balance = BalanceData().obs;
 
   RxList<ActivityData> listActivity = <ActivityData>[].obs;
   getDataActivity([bool isMore = false]) async {
     var body = {
       "per_page": 10,
       "page": page.value + 1,
-      "nfc_uid": uuid.value,
+      "nfc_uid": balance.value.nfc_uid,
     };
 
     var _resp = await _activityRepo.getActivity(body);

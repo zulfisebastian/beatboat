@@ -18,9 +18,10 @@ import 'package:sunmi_printer_plus/column_maker.dart';
 import 'package:sunmi_printer_plus/enums.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import 'package:sunmi_printer_plus/sunmi_style.dart';
-import '../../models/product/product_model.dart';
+import '../../models/product/addon_model.dart';
 import '../../pages/transaction/splitbill.dart';
 import '../../repositories/transaction/transaction_repo.dart';
+import '../../services/databases/transaction/addon_table.dart';
 import '../balance/balance_controller.dart';
 import '../base/base_controller.dart';
 import '../home/home_controller.dart';
@@ -55,6 +56,7 @@ class TransactionController extends GetxController {
 
   initAllData() {
     renewListCart();
+    renewListAddOn();
   }
 
   RxList<CartData> listCart = <CartData>[].obs;
@@ -66,86 +68,13 @@ class TransactionController extends GetxController {
     }
   }
 
-  addProductToCart(ProductData _product) async {
-    CartData _cart = new CartData();
-    _cart.id = _product.id;
-    _cart.category_id = _product.category_id;
-    _cart.sku = _product.sku;
-    _cart.name = _product.name;
-    _cart.description = _product.description;
-    _cart.buy_price = _product.buy_price;
-    _cart.sell_price = _product.sell_price;
-    _cart.stock = _product.stock;
-    _cart.status = _product.status;
-    _cart.unit = _product.unit;
-    _cart.image_url = _product.image_url;
-
-    var _resp = await CartTable().getCartById(_cart);
-
+  RxList<AddonData> listAddons = <AddonData>[].obs;
+  renewListAddOn() async {
+    var _resp = await AddonTable().getAllData();
     if (_resp != null) {
-      _cart.qty = _resp[0].qty! + 1;
-      CartTable().updateCart(_cart);
-    } else {
-      _cart.qty = 1;
-      CartTable().addCart(_cart);
+      listAddons.value = _resp;
+      listAddons.refresh();
     }
-    renewListCart();
-  }
-
-  deleteProductFromCart(ProductData _product) {
-    CartData _cart = new CartData();
-    _cart.id = _product.id;
-    _cart.category_id = _product.category_id;
-    _cart.sku = _product.sku;
-    _cart.name = _product.name;
-    _cart.description = _product.description;
-    _cart.buy_price = _product.buy_price;
-    _cart.sell_price = _product.sell_price;
-    _cart.stock = _product.stock;
-    _cart.status = _product.status;
-    _cart.unit = _product.unit;
-    _cart.image_url = _product.image_url;
-
-    CartTable().getCartById(_cart).then((data) {
-      if (data == null) {
-        return;
-      }
-
-      if (data.length == 1) {
-        CartTable().deleteCart(_cart);
-        return;
-      } else {
-        _cart.qty = _cart.qty! - 1;
-        CartTable().updateCart(_cart);
-      }
-    });
-    renewListCart();
-  }
-
-  increaseCart(CartData _cart) async {
-    var _resp = await CartTable().getCartById(_cart);
-
-    if (_resp != null) {
-      _cart.qty = _resp[0].qty! + 1;
-      CartTable().updateCart(_cart);
-    }
-    renewListCart();
-  }
-
-  decreaseCart(CartData _cart) async {
-    var _resp = await CartTable().getCartById(_cart);
-
-    if (_resp != null) {
-      if (_resp[0].qty! > 1) {
-        _cart.qty = _resp[0].qty! - 1;
-        CartTable().updateCart(_cart);
-      } else {
-        CartTable().deleteCart(_cart);
-      }
-    } else {
-      CartTable().deleteCart(_cart);
-    }
-    renewListCart();
   }
 
   Rx<TextEditingController> voucher = TextEditingController().obs;
@@ -182,7 +111,11 @@ class TransactionController extends GetxController {
   int getTotalCart() {
     int total = 0;
     for (var data in listCart) {
-      total += data.sell_price! * data.qty!;
+      int totalAddon = 0;
+      for (var addon in listAddons.where((e) => e.cart_id == data.id)) {
+        totalAddon += addon.price! * addon.qty!;
+      }
+      total += (data.sell_price! + totalAddon) * data.qty!;
     }
     return total;
   }
@@ -365,9 +298,17 @@ class TransactionController extends GetxController {
       "items": listCart
           .map(
             (e) => {
-              "product_id": e.id,
+              "product_id": e.product_id,
               "qty": e.qty,
               "note": e.note,
+              "addons": listAddons
+                  .map(
+                    (_addon) => {
+                      "id": _addon.addon_id,
+                      "qty": _addon.qty,
+                    },
+                  )
+                  .toList(),
             },
           )
           .toList(),
@@ -378,7 +319,9 @@ class TransactionController extends GetxController {
 
     if (_resp.code != null) {
       CartTable().truncateCart();
+      AddonTable().truncateAddon();
       renewListCart();
+      renewListAddOn();
       printStruck(_resp.data!, "Stand Alone");
       printBillThermal(_resp.data!);
       Get.back();
@@ -867,26 +810,44 @@ class TransactionController extends GetxController {
           bytes += generator.feed(1);
           for (var _data in listCart) {
             if (_printer.value == _data.order_serve) {
-              bytes += generator.row([
-                PosColumn(
-                  text: _data.name ?? "-",
-                  width: 8,
+              bytes += generator.row(
+                [
+                  PosColumn(
+                    text: _data.name ?? "-",
+                    width: 8,
+                    styles: PosStyles(
+                      align: PosAlign.left,
+                      height: PosTextSize.size2,
+                      width: PosTextSize.size2,
+                    ),
+                  ),
+                  PosColumn(
+                    text: "x${_data.qty!.toString()}",
+                    width: 4,
+                    styles: PosStyles(
+                      align: PosAlign.right,
+                      height: PosTextSize.size2,
+                      width: PosTextSize.size2,
+                    ),
+                  ),
+                ],
+              );
+              if (listAddons.indexWhere((e) => e.cart_id == _data.id) > -1) {
+                bytes += generator.text(
+                  'AddOn: ${listAddons.where((e) => e.cart_id == _data.id && e.product_id == _data.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
                   styles: PosStyles(
                     align: PosAlign.left,
-                    height: PosTextSize.size2,
-                    width: PosTextSize.size2,
                   ),
-                ),
-                PosColumn(
-                  text: "x${_data.qty!.toString()}",
-                  width: 4,
+                );
+              }
+              if (_data.note != null) {
+                bytes += generator.text(
+                  'Note: ${_data.note!}',
                   styles: PosStyles(
-                    align: PosAlign.right,
-                    height: PosTextSize.size2,
-                    width: PosTextSize.size2,
+                    align: PosAlign.left,
                   ),
-                ),
-              ]);
+                );
+              }
             }
           }
           bytes += generator.feed(1);
@@ -940,5 +901,15 @@ class TransactionController extends GetxController {
 
   Future<Uint8List> _getImageFromAsset(String iconPath) async {
     return await readFileBytes(iconPath);
+  }
+
+  int getTotalPricePerItem(CartData _cart) {
+    var qty = listCart.firstWhere((e) => e.id == _cart.id).qty!;
+    int total = 0;
+    total += _cart.sell_price!;
+    for (var data in listAddons.where((e) => e.cart_id == _cart.id)) {
+      total += data.price! * data.qty!;
+    }
+    return total * qty;
   }
 }

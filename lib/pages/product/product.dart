@@ -2,7 +2,6 @@ import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/csearch.dart';
-import 'package:beatboat/widgets/sheets/sheet_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -12,6 +11,8 @@ import '../../controllers/product/product_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../widgets/card/category_circle_card.dart';
 import '../../widgets/components/text/ctext.dart';
+import '../../widgets/sheets/sheet_another.dart';
+import '../../widgets/sheets/sheet_cart.dart';
 
 class ProductPage extends StatefulWidget {
   final String? categoryId;
@@ -193,14 +194,29 @@ class _ProductPageState extends State<ProductPage> {
                                           ),
                                           child: Stack(
                                             children: [
-                                              CCachedImage(
-                                                width: (OtherExt()
-                                                            .getWidth(context) -
-                                                        CDimension.space48) /
-                                                    2,
-                                                height: 180,
-                                                url: _data.image_url ??
-                                                    Endpoint.defaultFood,
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    width: 1,
+                                                    color: _theme.line.value,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  child: CCachedImage(
+                                                    width: (OtherExt().getWidth(
+                                                                context) -
+                                                            CDimension.space48 -
+                                                            4) /
+                                                        2,
+                                                    height: 180,
+                                                    url: _data.image_url ??
+                                                        Endpoint.defaultFood,
+                                                  ),
+                                                ),
                                               ),
                                               Positioned(
                                                 bottom: 8,
@@ -210,12 +226,14 @@ class _ProductPageState extends State<ProductPage> {
                                                         onTap: () {
                                                           if (_product.listCart
                                                                   .where((e) =>
-                                                                      e.id ==
+                                                                      e.product_id ==
                                                                       _data.id)
                                                                   .length >
                                                               0) {
                                                             Get.bottomSheet(
-                                                              SheetProduct(),
+                                                              SheetAnother(
+                                                                data: _data,
+                                                              ),
                                                               isScrollControlled:
                                                                   true,
                                                             );
@@ -245,17 +263,13 @@ class _ProductPageState extends State<ProductPage> {
                                                               child: _product
                                                                           .listCart
                                                                           .where((e) =>
-                                                                              e.id ==
+                                                                              e.product_id ==
                                                                               _data.id)
                                                                           .length >
                                                                       0
                                                                   ? CText(
-                                                                      _product
-                                                                          .listCart
-                                                                          .firstWhere((e) =>
-                                                                              e.id ==
-                                                                              _data.id)
-                                                                          .qty,
+                                                                      _product.getCartQtyLength(
+                                                                          _data),
                                                                       color: Colors
                                                                           .white,
                                                                     )
@@ -378,9 +392,10 @@ class _ProductPageState extends State<ProductPage> {
                     ? GestureDetector(
                         onTap: () {
                           Get.bottomSheet(
-                            SheetProduct(),
+                            SheetCart(),
                             isScrollControlled: true,
                           );
+                          // Get.to(OrderPage());
                         },
                         child: Container(
                           width:

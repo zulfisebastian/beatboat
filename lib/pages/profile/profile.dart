@@ -228,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         CustomButtonBlue(
                           "Test",
                           onPressed: () {
-                            //
+                            _profileController.printBillThermal();
                           },
                         ),
                       ],

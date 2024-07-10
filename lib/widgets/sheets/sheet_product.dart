@@ -1,20 +1,24 @@
 import 'package:beatboat/constants/dimension.dart';
-import 'package:beatboat/utils/extensions.dart';
+import 'package:beatboat/constants/endpoints.dart';
+import 'package:beatboat/models/product/cart_model.dart';
+import 'package:beatboat/models/product/product_model.dart';
+import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
-import 'package:beatboat/widgets/components/customButton.dart';
-
-import '../../../controllers/theme/theme_controller.dart';
-import '../../controllers/product/product_controller.dart';
-import '../../pages/transaction/order.dart';
-import '../card/cart_cart.dart';
-import '../components/draggable_bottom_sheet.dart';
-import '../components/text/ctext.dart';
+import 'package:beatboat/widgets/components/customInputArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../controllers/theme/theme_controller.dart';
+import '../../controllers/product/product_controller.dart';
+import '../../utils/extensions.dart';
+import '../components/customButton.dart';
+import '../components/text/ctext.dart';
 
 class SheetProduct extends StatefulWidget {
+  final CartData data;
+
   SheetProduct({
     Key? key,
+    required this.data,
   }) : super(key: key);
 
   @override
@@ -23,12 +27,12 @@ class SheetProduct extends StatefulWidget {
 
 class _SheetProductState extends State<SheetProduct> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
-  final ProductController _productController =
-      Get.find(tag: 'ProductController');
+  final ProductController _product = Get.find(tag: 'ProductController');
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    super.dispose();
+    _product.noteCtrl.value.text = "";
   }
 
   @override
@@ -36,81 +40,278 @@ class _SheetProductState extends State<SheetProduct> {
     return DraggableScrollableSheet(
       expand: false,
       snap: true,
-      initialChildSize: 0.65,
-      minChildSize: 0.65,
-      maxChildSize: 0.9,
+      initialChildSize: 0.97,
+      minChildSize: 0.55,
+      maxChildSize: 0.97,
       builder: (context, scrollController) {
         return Stack(
-          children: [
+          children: <Widget>[
             Positioned.fill(
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
-                  ),
                   color: _theme.backgroundApp.value,
                 ),
                 child: SingleChildScrollView(
                   controller: scrollController,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      DraggableBottomSheet(),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Obx(
-                        () => CText(
-                          "Your Cart",
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: _theme.textTitle.value,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1,
+                            color: _theme.line.value,
+                          ),
+                        ),
+                        child: CCachedImage(
+                          width: OtherExt().getWidth(context),
+                          height: 240,
+                          url: widget.data.image_url ?? Endpoint.defaultFood,
+                          rounded: 0,
+                          alignment: Alignment.topCenter,
                         ),
                       ),
                       SizedBox(
-                        height: 20,
+                        height: CDimension.space4,
                       ),
-                      Obx(
-                        () => ListView.separated(
-                          itemCount: _productController.listCart
-                              .where((e) => e.qty! > 0)
-                              .length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: CDimension.space12,
-                              ),
-                              child: CDivider(
-                                height: 1,
-                              ),
-                            );
-                          },
-                          itemBuilder: (BuildContext context, int index) {
-                            var _filtered = _productController.listCart
-                                .where((e) => e.qty! > 0)
-                                .toList();
-                            var _data = _filtered[index];
-                            return CartCard(
-                              cart: _data,
-                              onAdd: () {
-                                _productController.increaseCart(_data);
-                              },
-                              onDelete: () {
-                                _productController.decreaseCart(_data);
-                              },
-                              onEditNote: (_note) {
-                                _productController.editNote(_data, _note);
-                              },
-                            );
-                          },
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: CDimension.space16,
+                          vertical: CDimension.space16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CText(
+                                  widget.data.name!.capitalizeFirst,
+                                  color: _theme.textTitle.value,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                CText(
+                                  StringExt.formatRupiah(
+                                    widget.data.sell_price ?? 0,
+                                  ),
+                                  color: _theme.textTitle.value,
+                                  fontSize: 14,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: CDimension.space12,
+                            ),
+                            CText(
+                              widget.data.description!.capitalizeFirst,
+                              color: _theme.textSubtitle.value,
+                              fontSize: 14,
+                            ),
+                          ],
+                        ),
+                      ),
+                      //Add Ons
+                      SizedBox(
+                        child: _product
+                                    .getProductByProductId(widget.data)
+                                    .addons!
+                                    .items!
+                                    .length >
+                                0
+                            ? Column(
+                                children: [
+                                  CDivider(height: CDimension.space8),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: CDimension.space16,
+                                      vertical: CDimension.space16,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            CText(
+                                              "Addon",
+                                              color: _theme.textTitle.value,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            SizedBox(
+                                              width: CDimension.space8,
+                                            ),
+                                            CText(
+                                              "Max ${widget.data.min_selection ?? 0} item",
+                                              color: _theme.textSubtitle.value,
+                                              fontSize: 14,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: CDimension.space12,
+                                        ),
+                                        ListView.separated(
+                                          itemCount: _product
+                                              .getProductByProductId(
+                                                  widget.data)
+                                              .addons!
+                                              .items!
+                                              .length,
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          separatorBuilder:
+                                              (BuildContext context,
+                                                  int index) {
+                                            return CDivider(height: 1);
+                                          },
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            var _data = _product
+                                                .getProductByProductId(
+                                                    widget.data)
+                                                .addons!
+                                                .items![index];
+                                            return AddonCard(
+                                                data: _data,
+                                                theme: _theme,
+                                                product: _product,
+                                                widget: widget);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : SizedBox(),
+                      ),
+
+                      //Notes
+                      CDivider(height: 10),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: CDimension.space16,
+                          vertical: CDimension.space16,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CText(
+                              "Notes",
+                              color: _theme.textSubtitle.value,
+                              fontSize: 14,
+                            ),
+                            SizedBox(
+                              height: CDimension.space12,
+                            ),
+                            CustomInputArea(
+                              textEditingController: _product.noteCtrl.value,
+                              hintText: "Your Notes",
+                              errorMessage: "",
+                              maxInput: 100,
+                              onChanged: (v) {},
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //Qty
+                      CDivider(height: 10),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: CDimension.space16,
+                          vertical: CDimension.space16,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _product.decreaseCart(widget.data);
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Container(
+                                    width: CDimension.space40,
+                                    height: CDimension.space40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: _theme.accent.value,
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.white,
+                                        size: CDimension.space20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: CDimension.space20,
+                                  ),
+                                  child: Obx(
+                                    () => CText(
+                                      _product.listCart
+                                          .firstWhere(
+                                              (e) => e.id == widget.data.id)
+                                          .qty,
+                                      color: _theme.textTitle.value,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (widget.data.stock! -
+                                            _product.listCart
+                                                .firstWhere((e) =>
+                                                    e.id == widget.data.id)
+                                                .qty! !=
+                                        0) {
+                                      _product.increaseCart(widget.data);
+                                    }
+                                  },
+                                  behavior: HitTestBehavior.opaque,
+                                  child: Container(
+                                    width: CDimension.space40,
+                                    height: CDimension.space40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: widget.data.stock! -
+                                                  _product.listCart
+                                                      .firstWhere((e) =>
+                                                          e.id ==
+                                                          widget.data.id)
+                                                      .qty! !=
+                                              0
+                                          ? _theme.accent.value
+                                          : _theme.textSubtitle.value,
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: CDimension.space20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(
-                        height: CDimension.space128,
+                        height: CDimension.space150,
                       ),
                     ],
                   ),
@@ -125,22 +326,161 @@ class _SheetProductState extends State<SheetProduct> {
                   vertical: CDimension.space12,
                 ),
                 color: Colors.white,
-                child: Obx(
-                  () => CustomButtonBlue(
-                    "Pay - ${StringExt.formatRupiah(
-                      _productController.getTotalCart(),
-                    )}",
-                    width: OtherExt().getWidth(context) - CDimension.space32,
-                    onPressed: () {
-                      Get.off(OrderPage());
-                    },
-                  ),
+                child: CustomButtonBlue(
+                  "Update Cart",
+                  width: OtherExt().getWidth(context) - 32,
+                  onPressed: () {
+                    _product.editNote(
+                        widget.data, _product.noteCtrl.value.text);
+                    _product.noteCtrl.value.text = "";
+                    _product.noteCtrl.refresh();
+                    Get.back();
+                  },
                 ),
               ),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class AddonCard extends StatelessWidget {
+  const AddonCard({
+    Key? key,
+    required ProductAddonDetailData data,
+    required ThemeController theme,
+    required ProductController product,
+    required this.widget,
+  })  : _data = data,
+        _theme = theme,
+        _product = product,
+        super(key: key);
+
+  final ProductAddonDetailData _data;
+  final ThemeController _theme;
+  final ProductController _product;
+  final SheetProduct widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: CDimension.space12,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CText(
+                _data.name!.capitalizeFirst,
+                color: _theme.textTitle.value,
+              ),
+              SizedBox(
+                height: CDimension.space4,
+              ),
+              CText(
+                _data.price != null
+                    ? _data.price == 0
+                        ? "Free"
+                        : StringExt.formatRupiah(_data.price!)
+                    : "Free",
+                fontSize: 14,
+                color: _theme.accent.value,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (_product.getAddonQtyLength(
+                          _data.addon_id!, widget.data.id!) >
+                      0) {
+                    _product.decreaseAddons(
+                      _data,
+                      widget.data,
+                    );
+                  }
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Obx(
+                  () => Container(
+                    width: CDimension.space32,
+                    height: CDimension.space32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _product.getAddonQtyLength(
+                                  _data.addon_id!, widget.data.id!) >
+                              0
+                          ? _theme.accent.value
+                          : _theme.textSubtitle.value,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.remove,
+                        color: Colors.white,
+                        size: CDimension.space20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: CDimension.space20,
+                ),
+                child: Obx(
+                  () => CText(
+                    _product.getAddonQty(_data.addon_id!, widget.data.id!),
+                    color: _theme.textTitle.value,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  if (widget.data.min_selection! -
+                          _product.getAddonLength(
+                              _data.addon_id!, widget.data.id!) !=
+                      0) {
+                    _product.increaseAddons(_data, widget.data);
+                  }
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Obx(
+                  () => Container(
+                    width: CDimension.space32,
+                    height: CDimension.space32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: widget.data.min_selection! -
+                                  _product.getAddonLength(
+                                      _data.addon_id!, widget.data.id!) !=
+                              0
+                          ? _theme.accent.value
+                          : _theme.textSubtitle.value,
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: CDimension.space20,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

@@ -235,7 +235,7 @@ class _TopUpPageState extends State<TopUpPage> {
                       ),
                       Obx(
                         () => CText(
-                          _balanceController.balance.value.customer_name ?? "",
+                          "${_balanceController.balance.value.customer_name ?? ""} / ${_balanceController.balance.value.table_name ?? ""}",
                           fontSize: 12,
                           color: Colors.white,
                         ),

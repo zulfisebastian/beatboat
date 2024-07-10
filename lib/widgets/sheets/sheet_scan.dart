@@ -230,6 +230,7 @@ class _SheetScanState extends State<SheetScan> {
                             "Check Barcode",
                             width: OtherExt().getWidth(context),
                             onPressed: () {
+                              Get.back();
                               _controller.checkInEvent(
                                 context,
                                 _controller.barcode.value.text,

@@ -154,9 +154,61 @@ class CheckinController extends GetxController {
             max_onboard: _data.max_onboard,
             booking_type: _data.booking_type,
             isFromResp: _data.wristband_nfc_uid != null ? true : false,
+            others: [],
           ),
         );
+
         index += 1;
+        for (var _others in _data.others!) {
+          listNameCtrl
+              .add(TextEditingController(text: _others.customer_name ?? ""));
+          listDateCtrl.add(
+            TextEditingController(
+              text: _others.dob != null
+                  ? DateExt.reformat(
+                      _others.dob!, "yyyy-MM-dd", "EEE, dd MMM yyyy")
+                  : "",
+            ),
+          );
+          listNationalityCtrl.add(
+            TextEditingController(
+                text: _others.nationality != null
+                    ? _others.nationality!.capitalizeFirst
+                    : ""),
+          );
+          listGenderCtrl.add(
+            TextEditingController(
+                text: _others.gender != null
+                    ? _others.gender!.capitalizeFirst
+                    : ""),
+          );
+          listDate.add(
+            _others.dob != null
+                ? DateFormat("yyyy-MM-dd").parse(_others.dob!)
+                : DateTime.now(),
+          );
+          listTableCtrl.add(TextEditingController(text: ""));
+
+          listPairedUID.add(
+            OnboardRequest(
+              device_serial_number: udid,
+              booking_code: _others.booking_code,
+              name: _data.name,
+              resource_tag: _data.resource_tag,
+              nfc_uid: _others.wristband_nfc_uid ?? "",
+              customer_name: listNameCtrl[index].text,
+              nationality: listNationalityCtrl[index].text,
+              dob: listDateCtrl[index].text,
+              gender: listGenderCtrl[index].text,
+              min_spending: _data.min_spending,
+              max_onboard: _data.max_onboard,
+              booking_type: _others.type,
+              isFromResp: false,
+              others: [],
+            ),
+          );
+          index += 1;
+        }
       }
       checkFormDisabled();
 
@@ -258,6 +310,21 @@ class CheckinController extends GetxController {
         listGenderCtrl[index].text == "" ||
         listNationalityCtrl[index].text == "" ||
         listNameCtrl[index].text == "";
+  }
+
+  List<OnboardRequest> getListCategory() {
+    var set = Set<String>();
+    List<OnboardRequest> uniqueUser =
+        listPairedUID.where((e) => set.add(e.resource_tag!)).toList();
+    return uniqueUser;
+  }
+
+  List<OnboardRequest> getListFormByCategory(String resource_tag) {
+    return listPairedUID.where((e) => e.resource_tag == resource_tag).toList();
+  }
+
+  int getIndexByResource(String bookingCode) {
+    return listPairedUID.indexWhere((e) => e.booking_code == bookingCode);
   }
 
   List<OnboardRequest> getListMaster() {

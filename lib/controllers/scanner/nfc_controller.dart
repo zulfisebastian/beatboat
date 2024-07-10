@@ -124,7 +124,7 @@ class NFCController extends GetxController {
             ActivityByIdController(),
             tag: "ActivityByIdController",
           );
-          _activityController.uuid.value = _mapUUID;
+          _activityController.balance.value = balance.value;
           _activityController.getDataActivity();
           Get.to(ActivityByIdPage());
         } else {
@@ -182,6 +182,7 @@ class NFCController extends GetxController {
       var body = {
         "device_serial_number": _data.device_serial_number,
         "booking_code": _data.booking_code,
+        "type": _data.booking_type,
         "nfc_uid": _mapUUID,
         "customer_name": _data.customer_name,
         "nationality": _data.nationality,

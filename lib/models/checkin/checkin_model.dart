@@ -129,6 +129,7 @@ class DetailCheckinData {
   int? min_spending;
   int? max_onboard;
   String? booking_type;
+  List<DetailCheckinDataOther>? others;
 
   DetailCheckinData({
     this.booking_code,
@@ -145,6 +146,7 @@ class DetailCheckinData {
     this.min_spending,
     this.max_onboard,
     this.booking_type,
+    this.others,
   });
 
   DetailCheckinData.fromJson(Map<String, dynamic> json) {
@@ -162,6 +164,12 @@ class DetailCheckinData {
     min_spending = json['min_spending'];
     max_onboard = json['max_onboard'];
     booking_type = json['booking_type'];
+    if (json['others'] != null) {
+      others = <DetailCheckinDataOther>[];
+      json['others'].forEach((v) {
+        others?.add(new DetailCheckinDataOther.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -179,6 +187,52 @@ class DetailCheckinData {
     data['age'] = this.age;
     data['min_spending'] = this.min_spending;
     data['max_onboard'] = this.max_onboard;
+    data['booking_type'] = this.booking_type;
+    if (this.others != null) {
+      data['others'] = this.others?.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class DetailCheckinDataOther {
+  String? type;
+  String? booking_code;
+  String? wristband_nfc_uid;
+  String? customer_name;
+  String? nationality;
+  String? dob;
+  String? gender;
+
+  DetailCheckinDataOther({
+    this.type,
+    this.booking_code,
+    this.wristband_nfc_uid,
+    this.customer_name,
+    this.nationality,
+    this.gender,
+    this.dob,
+  });
+
+  DetailCheckinDataOther.fromJson(Map<String, dynamic> json) {
+    type = json['type'];
+    booking_code = json['booking_code'];
+    wristband_nfc_uid = json['wristband_nfc_uid'];
+    customer_name = json['customer_name'];
+    nationality = json['nationality'];
+    dob = json['dob'];
+    gender = json['gender'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['types'] = this.type;
+    data['booking_code'] = this.booking_code;
+    data['wristband_nfc_uid'] = this.wristband_nfc_uid;
+    data['customer_name'] = this.customer_name;
+    data['nationality'] = this.nationality;
+    data['dob'] = this.dob;
+    data['gender'] = this.gender;
     return data;
   }
 }

@@ -265,11 +265,45 @@ class _TransactionPageState extends State<TransactionPage> {
                         return Row(
                           children: [
                             Expanded(
-                              child: CText(
-                                _item.name!.capitalizeFirst,
-                                fontSize: 14,
-                                color: _theme.textTitle.value,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CText(
+                                    _item.name!.capitalizeFirst,
+                                    color: _theme.textTitle.value,
+                                  ),
+                                  SizedBox(
+                                    height: CDimension.space6,
+                                  ),
+                                  CText(
+                                    _transactionController.listAddons
+                                        .where((e) =>
+                                            e.cart_id == _item.id &&
+                                            e.product_id == _item.product_id)
+                                        .map((e) =>
+                                            "x${e.qty} ${e.name!.capitalizeFirst}")
+                                        .join(", "),
+                                    fontSize: 12,
+                                    color: _theme.textSubtitle.value,
+                                    overflow: TextOverflow.visible,
+                                    lineHeight: 1.4,
+                                  ),
+                                  if (_item.note != null)
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 4),
+                                      child: CText(
+                                        _item.note!,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: _theme.textTitle.value,
+                                        overflow: TextOverflow.visible,
+                                      ),
+                                    ),
+                                ],
                               ),
+                            ),
+                            SizedBox(
+                              width: CDimension.space12,
                             ),
                             SizedBox(
                               width: CDimension.space40,
@@ -283,7 +317,9 @@ class _TransactionPageState extends State<TransactionPage> {
                               width: CDimension.space80,
                               child: CText(
                                 StringExt.thousandFormatter(
-                                  _item.sell_price! * _item.qty!,
+                                  _transactionController.getTotalPricePerItem(
+                                    _item,
+                                  ),
                                 ),
                                 fontSize: 14,
                                 align: TextAlign.end,

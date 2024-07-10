@@ -290,14 +290,11 @@ class BaseController extends GetxController {
 
           if (_resp.data != null) {
             await printBill(_resp.data!);
-            print("HIT AFTER 5000 ms");
             triggerPrinter(5000);
           } else {
-            print("HIT AFTER 500 ms - true");
             triggerPrinter(2000);
           }
         } else {
-          print("HIT AFTER 500 ms - false");
           triggerPrinter(1000);
         }
       },

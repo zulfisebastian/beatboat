@@ -85,7 +85,6 @@ class UpdateApp extends StatelessWidget {
                           //     _base.dataVersion.value.link_download ?? "";
                           String url =
                               "https://partner.sunmi.com/developManage/app/31662/detail";
-                          // : "https://play.google.com/store/apps/details?id=com.rebelworks.maxi_app_prod";
 
                           await launchUrl(Uri.parse(url));
                         },

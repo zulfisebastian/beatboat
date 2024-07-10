@@ -9,6 +9,7 @@ class CCachedImage extends StatelessWidget {
   final double height;
   final String url;
   final double rounded;
+  final Alignment? alignment;
 
   CCachedImage({
     Key? key,
@@ -16,6 +17,7 @@ class CCachedImage extends StatelessWidget {
     required this.height,
     required this.url,
     this.rounded = 10,
+    this.alignment,
   }) : super(key: key);
 
   final ThemeController _theme = Get.find(tag: "ThemeController");
@@ -42,6 +44,7 @@ class CCachedImage extends StatelessWidget {
           image: DecorationImage(
             image: imageProvider,
             fit: BoxFit.cover,
+            alignment: alignment ?? Alignment.center,
           ),
           border: Border.all(
             width: 0.1,
