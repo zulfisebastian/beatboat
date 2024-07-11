@@ -386,9 +386,17 @@ class TransactionController extends GetxController {
       "items": listCart
           .map(
             (e) => {
-              "product_id": e.id,
+              "product_id": e.product_id,
               "qty": e.qty,
               "note": e.note,
+              "addons": listAddons
+                  .map(
+                    (_addon) => {
+                      "id": _addon.addon_id,
+                      "qty": _addon.qty,
+                    },
+                  )
+                  .toList(),
             },
           )
           .toList(),
