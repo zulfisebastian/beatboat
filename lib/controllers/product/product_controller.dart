@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beatboat/models/product/addon_model.dart';
 import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/category_model.dart';
@@ -45,6 +47,22 @@ class ProductController extends GetxController {
     }
   }
 
+  Timer? _debounce;
+  onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      page.value = 0;
+      totalPage.value = 1;
+      getDataProduct(false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
   initAllData() {
     getDataCategory();
     getDataProduct();
@@ -76,6 +94,7 @@ class ProductController extends GetxController {
     var body = {
       "per_page": 10,
       "page": page.value + 1,
+      "search": search.value.text,
     };
 
     var _resp = await _productRepo.getProduct(body);
@@ -179,9 +198,7 @@ class ProductController extends GetxController {
     CartTable().addCart(_cart);
     await renewListCart();
     Get.bottomSheet(
-      SheetProduct(
-        data: _cart,
-      ),
+      SheetProduct(data: _cart),
       isScrollControlled: true,
     );
   }
@@ -359,4 +376,6 @@ class ProductController extends GetxController {
         .toList()
         .length;
   }
+
+  Rx<ProductData> choosedProduct = ProductData().obs;
 }

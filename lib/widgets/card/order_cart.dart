@@ -1,6 +1,7 @@
 import 'package:beatboat/constants/endpoints.dart';
 import 'package:beatboat/controllers/product/product_controller.dart';
 import 'package:beatboat/utils/extensions.dart';
+import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/dimension.dart';
@@ -83,13 +84,31 @@ class OrderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CText(
-                  cart.name!.capitalizeFirst,
-                  color: _theme.accent.value,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  maxLines: 2,
-                  overflow: TextOverflow.visible,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CText(
+                        cart.name!.capitalizeFirst,
+                        color: _theme.accent.value,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        maxLines: 2,
+                        lineHeight: 1.3,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                    SizedBox(
+                      width: CDimension.space8,
+                    ),
+                    CText(
+                      StringExt.formatRupiah(
+                          _product.getTotalPricePerItem(cart)),
+                      color: _theme.textTitle.value,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ],
                 ),
                 Obx(
                   () => _product.listAddons
@@ -100,7 +119,8 @@ class OrderCard extends StatelessWidget {
                           0
                       ? Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: CDimension.space8),
+                            vertical: CDimension.space6,
+                          ),
                           child: CText(
                             _product.listAddons
                                 .where((e) =>
@@ -109,7 +129,6 @@ class OrderCard extends StatelessWidget {
                                 .map((e) =>
                                     "x${e.qty} ${e.name!.capitalizeFirst}")
                                 .join(", "),
-                            fontSize: 12,
                             color: _theme.textSubtitle.value,
                             overflow: TextOverflow.visible,
                             lineHeight: 1.4,
@@ -119,55 +138,45 @@ class OrderCard extends StatelessWidget {
                           height: CDimension.space8,
                         ),
                 ),
+                CDivider(height: 1),
+                SizedBox(height: CDimension.space4),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color: _theme.line.value,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
                   padding: EdgeInsets.symmetric(
-                    horizontal: CDimension.space8,
                     vertical: CDimension.space4,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.sticky_note_2_outlined,
-                        color: _theme.textSubtitle.value,
-                        size: 14,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 1.0),
+                        child: Icon(
+                          Icons.sticky_note_2_outlined,
+                          color: _theme.textTitle.value,
+                          size: 16,
+                        ),
                       ),
                       SizedBox(
                         width: CDimension.space8,
                       ),
-                      CText(
-                        cart.note != "" ? cart.note! : "No additional note",
-                        color: cart.note != ""
-                            ? _theme.textTitle.value
-                            : _theme.textSubtitle.value,
-                        fontWeight: cart.note != ""
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        fontSize: 12,
-                        maxLines: 2,
-                        overflow: TextOverflow.visible,
+                      Expanded(
+                        child: CText(
+                          cart.note != "" ? cart.note! : "No note",
+                          color: cart.note != ""
+                              ? _theme.textTitle.value
+                              : _theme.textSubtitle.value,
+                          fontWeight: cart.note != ""
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                          fontSize: 16,
+                          overflow: TextOverflow.visible,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-          ),
-          SizedBox(
-            width: CDimension.space16,
-          ),
-          CText(
-            StringExt.formatRupiah(_product.getTotalPricePerItem(cart)),
-            color: _theme.textTitle.value,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
           ),
         ],
       ),

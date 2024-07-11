@@ -146,7 +146,7 @@ class _ProductPageState extends State<ProductPage> {
                             hintText: "Search Product By Name",
                             errorMessage: "Not Found",
                             onChanged: (v) {
-                              //
+                              _product.onSearchChanged(v);
                             },
                           ),
                         ),
@@ -161,22 +161,7 @@ class _ProductPageState extends State<ProductPage> {
                             () => Wrap(
                               spacing: CDimension.space16,
                               runSpacing: CDimension.space16,
-                              children: (_product.choosedCategory.value == "All"
-                                      ? _product.listProduct
-                                          .where((e) => e.name!
-                                              .toLowerCase()
-                                              .contains(_product
-                                                  .search.value.text
-                                                  .toLowerCase()))
-                                          .toList()
-                                      : _product.listProductCategory
-                                          .where((e) => e.name!
-                                              .toLowerCase()
-                                              .contains(_product
-                                                  .search.value.text
-                                                  .toLowerCase()))
-                                          .toList())
-                                  .map((_data) {
+                              children: _product.listProduct.map((_data) {
                                 return Container(
                                   child: Column(
                                     mainAxisAlignment:
@@ -232,10 +217,15 @@ class _ProductPageState extends State<ProductPage> {
                                                                       _data.id)
                                                                   .length >
                                                               0) {
+                                                            _product
+                                                                .choosedProduct
+                                                                .value = _data;
+                                                            _product
+                                                                .choosedProduct
+                                                                .refresh();
+
                                                             Get.bottomSheet(
-                                                              SheetAnother(
-                                                                data: _data,
-                                                              ),
+                                                              SheetAnother(),
                                                               isScrollControlled:
                                                                   true,
                                                             );

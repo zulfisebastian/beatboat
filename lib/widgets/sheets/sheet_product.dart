@@ -13,6 +13,7 @@ import '../../controllers/product/product_controller.dart';
 import '../../utils/extensions.dart';
 import '../components/customButton.dart';
 import '../components/text/ctext.dart';
+import 'sheet_another.dart';
 
 class SheetProduct extends StatefulWidget {
   final CartData data;
@@ -235,35 +236,33 @@ class _SheetProductState extends State<SheetProduct> {
                           horizontal: CDimension.space16,
                           vertical: CDimension.space16,
                         ),
-                        child: Obx(
-                          () => CustomCounter(
-                            qty: _product.listCart
-                                .firstWhere((e) => e.id == widget.data.id)
-                                .qty!,
-                            onDecrease: () {
-                              _product.decreaseCart(widget.data);
-                            },
-                            onIncrease: () {
-                              if (widget.data.stock! -
+                        child: CustomCounter(
+                          qty: _product.listCart
+                              .firstWhere((e) => e.id == widget.data.id)
+                              .qty!,
+                          onDecrease: () {
+                            _product.decreaseCart(widget.data);
+                          },
+                          onIncrease: () {
+                            if (widget.data.stock! -
+                                    _product.listCart
+                                        .firstWhere(
+                                            (e) => e.id == widget.data.id)
+                                        .qty! !=
+                                0) {
+                              _product.increaseCart(widget.data);
+                            }
+                          },
+                          decreaseBackground: _theme.accent.value,
+                          increaseBackground: widget.data.stock! -
                                       _product.listCart
                                           .firstWhere(
                                               (e) => e.id == widget.data.id)
                                           .qty! !=
-                                  0) {
-                                _product.increaseCart(widget.data);
-                              }
-                            },
-                            decreaseBackground: _theme.accent.value,
-                            increaseBackground: widget.data.stock! -
-                                        _product.listCart
-                                            .firstWhere(
-                                                (e) => e.id == widget.data.id)
-                                            .qty! !=
-                                    0
-                                ? _theme.accent.value
-                                : _theme.textSubtitle.value,
-                            qtyColor: _theme.textTitle.value,
-                          ),
+                                  0
+                              ? _theme.accent.value
+                              : _theme.textSubtitle.value,
+                          qtyColor: _theme.textTitle.value,
                         ),
                       ),
                       SizedBox(
@@ -291,6 +290,10 @@ class _SheetProductState extends State<SheetProduct> {
                     _product.noteCtrl.value.text = "";
                     _product.noteCtrl.refresh();
                     Get.back();
+                    Get.bottomSheet(
+                      SheetAnother(),
+                      isScrollControlled: true,
+                    );
                   },
                 ),
               ),

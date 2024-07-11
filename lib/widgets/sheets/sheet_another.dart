@@ -1,5 +1,4 @@
 import 'package:beatboat/constants/dimension.dart';
-import 'package:beatboat/models/product/product_model.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/sheets/sheet_product.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +12,8 @@ import '../components/draggable_bottom_sheet.dart';
 import '../components/text/ctext.dart';
 
 class SheetAnother extends StatefulWidget {
-  final ProductData data;
-
   SheetAnother({
     Key? key,
-    required this.data,
   }) : super(key: key);
 
   @override
@@ -27,6 +23,11 @@ class SheetAnother extends StatefulWidget {
 class _SheetAnotherState extends State<SheetAnother> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
   final ProductController _product = Get.find(tag: 'ProductController');
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,7 @@ class _SheetAnotherState extends State<SheetAnother> {
                     children: <Widget>[
                       DraggableBottomSheet(),
                       CText(
-                        widget.data.name!.capitalizeFirst,
+                        _product.choosedProduct.value.name!.capitalizeFirst,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: _theme.textTitle.value,
@@ -64,37 +65,41 @@ class _SheetAnotherState extends State<SheetAnother> {
                       SizedBox(
                         height: CDimension.space16,
                       ),
-                      ListView.separated(
-                        itemCount: _product
-                            .getAllCartByProductId(widget.data.id!)
-                            .length,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: CDimension.space12,
-                            ),
-                            child: CDivider(height: 1),
-                          );
-                        },
-                        itemBuilder: (BuildContext context, int index) {
-                          var _data = _product
-                              .getAllCartByProductId(widget.data.id!)[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Get.back();
-                              _product.noteCtrl.value.text = _data.note ?? "";
-                              Get.bottomSheet(
-                                SheetProduct(data: _data),
-                                isScrollControlled: true,
-                              );
-                            },
-                            child: OrderCard(
-                              cart: _data,
-                            ),
-                          );
-                        },
+                      Obx(
+                        () => ListView.separated(
+                          itemCount: _product
+                              .getAllCartByProductId(
+                                _product.choosedProduct.value.id!,
+                              )
+                              .length,
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: CDimension.space12,
+                              ),
+                              child: CDivider(height: 1),
+                            );
+                          },
+                          itemBuilder: (BuildContext context, int index) {
+                            var _data = _product.getAllCartByProductId(
+                                _product.choosedProduct.value.id!)[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Get.back();
+                                _product.noteCtrl.value.text = _data.note ?? "";
+                                Get.bottomSheet(
+                                  SheetProduct(data: _data),
+                                  isScrollControlled: true,
+                                );
+                              },
+                              child: OrderCard(
+                                cart: _data,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -114,7 +119,7 @@ class _SheetAnotherState extends State<SheetAnother> {
                   width: OtherExt().getWidth(context) - 32,
                   onPressed: () {
                     _product.addProductToCart(
-                      widget.data,
+                      _product.choosedProduct.value,
                     );
                   },
                 ),
