@@ -302,6 +302,7 @@ class TransactionController extends GetxController {
               "qty": e.qty,
               "note": e.note,
               "addons": listAddons
+                  .where((_data) => _data.cart_id == e.id)
                   .map(
                     (_addon) => {
                       "id": _addon.addon_id,
@@ -390,6 +391,7 @@ class TransactionController extends GetxController {
               "qty": e.qty,
               "note": e.note,
               "addons": listAddons
+                  .where((_data) => _data.cart_id == e.id)
                   .map(
                     (_addon) => {
                       "id": _addon.addon_id,
