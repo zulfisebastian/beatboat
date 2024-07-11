@@ -212,7 +212,7 @@ class CheckinController extends GetxController {
       }
       checkFormDisabled();
 
-      Get.to(
+      Get.off(
         CheckinDetailPage(
           title: "Checkin Success",
           data: _resp.data!,

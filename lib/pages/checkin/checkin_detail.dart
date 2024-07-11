@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import '../../constants/dimension.dart';
 import '../../constants/enums.dart';
 import '../../controllers/checkin/checkin_controller.dart';
+import '../../controllers/package/package_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../widgets/components/customAppBar.dart';
 import '../../widgets/components/customInputForm.dart';
@@ -170,6 +171,10 @@ class CheckinDetailPage extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               var _data = _checkinController
                                   .checkinData.value.packages![index];
+                              final PackageController _ = Get.put(
+                                PackageController(),
+                                tag: "PackageController",
+                              );
                               return PackageCard(
                                 data: _data,
                                 index: index,

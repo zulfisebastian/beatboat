@@ -101,25 +101,27 @@ class PackageCard extends StatelessWidget {
                   height: CDimension.space16,
                 ),
                 Obx(
-                  () => CustomCounter(
-                    qty: _package.listQty[index],
-                    onDecrease: () {
-                      _package.decreaseQty(index);
-                    },
-                    onIncrease: () {
-                      _package.increaseQty(index);
-                    },
-                    decreaseBackground: _package.listQty[index] > 0
-                        ? _theme.accent.value
-                        : _theme.textSubtitle.value,
-                    increaseBackground: _package.listQty[index] <
-                            _package.listPackage[index].serve_qty!
-                        ? _theme.accent.value
-                        : _theme.textSubtitle.value,
-                    qtyColor: _theme.textTitle.value,
-                    sizeIcon: CDimension.space28,
-                    sizeQty: 14,
-                  ),
+                  () => _package.listQty.length > 0
+                      ? CustomCounter(
+                          qty: _package.listQty[index],
+                          onDecrease: () {
+                            _package.decreaseQty(index);
+                          },
+                          onIncrease: () {
+                            _package.increaseQty(index);
+                          },
+                          decreaseBackground: _package.listQty[index] > 0
+                              ? _theme.accent.value
+                              : _theme.textSubtitle.value,
+                          increaseBackground: _package.listQty[index] <
+                                  _package.listPackage[index].serve_qty!
+                              ? _theme.accent.value
+                              : _theme.textSubtitle.value,
+                          qtyColor: _theme.textTitle.value,
+                          sizeIcon: CDimension.space28,
+                          sizeQty: 14,
+                        )
+                      : SizedBox(),
                 ),
               ],
             ),
