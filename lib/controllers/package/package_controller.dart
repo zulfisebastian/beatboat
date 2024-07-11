@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_esc_pos_network/flutter_esc_pos_network.dart';
 import 'package:get/get.dart';
+import '../../models/balance/balance_model.dart';
 import '../../models/package/package_model.dart';
 import '../../models/transaction/add_transaction_model.dart';
 import '../../pages/home/home.dart';
@@ -23,15 +24,31 @@ class PackageController extends GetxController {
     super.onReady();
   }
 
-  RxString uuid = "".obs;
+  Rx<BalanceData> balance = BalanceData().obs;
 
   RxList<PackageData> listPackage = <PackageData>[].obs;
+  RxList<int> listQty = <int>[].obs;
+  increaseQty(int index) {
+    if (listQty[index] == listPackage[index].serve_qty) return;
+    listQty[index]++;
+    listQty.refresh();
+  }
+
+  decreaseQty(int index) {
+    if (listQty[index] == 0) return;
+    listQty[index]--;
+    listQty.refresh();
+  }
+
   getDataPackage() async {
-    var _resp = await _packageRepo.getPackage(uuid.value);
+    var _resp = await _packageRepo.getPackage(balance.value.nfc_uid);
 
     if (_resp.data != null) {
       listPackage.value = _resp.data!;
       listPackage.refresh();
+      for (var _ in listPackage) {
+        listQty.add(0);
+      }
     }
   }
 
@@ -42,13 +59,11 @@ class PackageController extends GetxController {
     for (var i = 0; i < listPackage.length; i++) {
       body.add({
         "addon_id": listPackage[i].addon_uid,
-        "serve_qty": listPackage[i].serve_qty
+        "serve_qty": listQty[i],
       });
     }
 
-    print(body);
-
-    var _resp = await _packageRepo.addPackage(body, uuid.value);
+    var _resp = await _packageRepo.addPackage(body, balance.value.nfc_uid);
     Get.back();
 
     if (_resp.code != null) {
@@ -98,7 +113,7 @@ class PackageController extends GetxController {
             styles: const PosStyles(align: PosAlign.left, underline: false),
           ),
           PosColumn(
-            text: _data.order_no.toString(),
+            text: "N/A",
             width: 9,
             styles: const PosStyles(align: PosAlign.left, underline: false),
           ),
@@ -110,7 +125,7 @@ class PackageController extends GetxController {
             styles: const PosStyles(align: PosAlign.left, underline: false),
           ),
           PosColumn(
-            text: _data.customer_name ?? "-",
+            text: balance.value.customer_name ?? "N/A",
             width: 9,
             styles: const PosStyles(align: PosAlign.left, underline: false),
           ),
@@ -143,12 +158,6 @@ class PackageController extends GetxController {
         }
         bytes += generator.feed(1);
         bytes += generator.text(
-          'No: ${_data.trx_number}',
-          styles: PosStyles(
-            align: PosAlign.left,
-          ),
-        );
-        bytes += generator.text(
           'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
           styles: PosStyles(
             align: PosAlign.left,
@@ -161,7 +170,7 @@ class PackageController extends GetxController {
           ),
         );
         bytes += generator.text(
-          'Table Name: ${_data.table_name}',
+          'Table Name: ${balance.value.table_name}',
           styles: PosStyles(
             align: PosAlign.left,
           ),

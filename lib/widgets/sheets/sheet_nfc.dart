@@ -61,6 +61,7 @@ class _SheetNFCState extends State<SheetNFC> {
   @override
   void dispose() {
     _timer.cancel();
+    Get.delete<NFCController>(tag: "NFCController");
     super.dispose();
   }
 

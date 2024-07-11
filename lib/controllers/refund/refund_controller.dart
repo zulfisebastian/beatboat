@@ -14,7 +14,6 @@ class RefundController extends GetxController {
   void onReady() {
     super.onReady();
     getListReason();
-    getDataTransaction();
   }
 
   RxString uuid = "".obs;

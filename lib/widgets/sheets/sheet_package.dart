@@ -65,6 +65,7 @@ class _SheetPackageState extends State<SheetPackage> {
                     var _data = widget.data[index];
                     return PackageCard(
                       data: _data,
+                      index: index,
                     );
                   },
                 ),

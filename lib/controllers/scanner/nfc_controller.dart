@@ -109,13 +109,14 @@ class NFCController extends GetxController {
           );
           _refundController.uuid.value = _mapUUID;
           Get.to(RefundPage());
+          _refundController.getDataTransaction();
         } else if (type == NFCModeType.Package) {
           Get.back();
           final PackageController _packageController = Get.put(
             PackageController(),
             tag: "PackageController",
           );
-          _packageController.uuid.value = _mapUUID;
+          _packageController.balance.value = balance.value;
           _packageController.getDataPackage();
           Get.to(PackagePage());
         } else if (type == NFCModeType.Activity) {

@@ -4,6 +4,7 @@ import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/product_model.dart';
 import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
+import 'package:beatboat/widgets/components/customCounter.dart';
 import 'package:beatboat/widgets/components/customInputArea.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -82,13 +83,21 @@ class _SheetProductState extends State<SheetProduct> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                CText(
-                                  widget.data.name!.capitalizeFirst,
-                                  color: _theme.textTitle.value,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                Expanded(
+                                  child: CText(
+                                    widget.data.name!.capitalizeFirst,
+                                    color: _theme.textTitle.value,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    overflow: TextOverflow.visible,
+                                    lineHeight: 1.4,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: CDimension.space8,
                                 ),
                                 CText(
                                   StringExt.formatRupiah(
@@ -226,88 +235,35 @@ class _SheetProductState extends State<SheetProduct> {
                           horizontal: CDimension.space16,
                           vertical: CDimension.space16,
                         ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    _product.decreaseCart(widget.data);
-                                  },
-                                  behavior: HitTestBehavior.opaque,
-                                  child: Container(
-                                    width: CDimension.space40,
-                                    height: CDimension.space40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: _theme.accent.value,
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.remove,
-                                        color: Colors.white,
-                                        size: CDimension.space20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: CDimension.space20,
-                                  ),
-                                  child: Obx(
-                                    () => CText(
+                        child: Obx(
+                          () => CustomCounter(
+                            qty: _product.listCart
+                                .firstWhere((e) => e.id == widget.data.id)
+                                .qty!,
+                            onDecrease: () {
+                              _product.decreaseCart(widget.data);
+                            },
+                            onIncrease: () {
+                              if (widget.data.stock! -
                                       _product.listCart
                                           .firstWhere(
                                               (e) => e.id == widget.data.id)
-                                          .qty,
-                                      color: _theme.textTitle.value,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    if (widget.data.stock! -
-                                            _product.listCart
-                                                .firstWhere((e) =>
-                                                    e.id == widget.data.id)
-                                                .qty! !=
-                                        0) {
-                                      _product.increaseCart(widget.data);
-                                    }
-                                  },
-                                  behavior: HitTestBehavior.opaque,
-                                  child: Container(
-                                    width: CDimension.space40,
-                                    height: CDimension.space40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: widget.data.stock! -
-                                                  _product.listCart
-                                                      .firstWhere((e) =>
-                                                          e.id ==
-                                                          widget.data.id)
-                                                      .qty! !=
-                                              0
-                                          ? _theme.accent.value
-                                          : _theme.textSubtitle.value,
-                                    ),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.add,
-                                        color: Colors.white,
-                                        size: CDimension.space20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                          .qty! !=
+                                  0) {
+                                _product.increaseCart(widget.data);
+                              }
+                            },
+                            decreaseBackground: _theme.accent.value,
+                            increaseBackground: widget.data.stock! -
+                                        _product.listCart
+                                            .firstWhere(
+                                                (e) => e.id == widget.data.id)
+                                            .qty! !=
+                                    0
+                                ? _theme.accent.value
+                                : _theme.textSubtitle.value,
+                            qtyColor: _theme.textTitle.value,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -393,91 +349,42 @@ class AddonCard extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (_product.getAddonQtyLength(
-                          _data.addon_id!, widget.data.id!) >
-                      0) {
-                    _product.decreaseAddons(
-                      _data,
-                      widget.data,
-                    );
-                  }
-                },
-                behavior: HitTestBehavior.opaque,
-                child: Obx(
-                  () => Container(
-                    width: CDimension.space32,
-                    height: CDimension.space32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _product.getAddonQtyLength(
-                                  _data.addon_id!, widget.data.id!) >
-                              0
-                          ? _theme.accent.value
-                          : _theme.textSubtitle.value,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.remove,
-                        color: Colors.white,
-                        size: CDimension.space20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                  horizontal: CDimension.space20,
-                ),
-                child: Obx(
-                  () => CText(
-                    _product.getAddonQty(_data.addon_id!, widget.data.id!),
-                    color: _theme.textTitle.value,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  if (widget.data.min_selection! -
+          Obx(
+            () => CustomCounter(
+              qty: _product.getAddonQty(_data.addon_id!, widget.data.id!),
+              sizeQty: 14,
+              onDecrease: () {
+                if (_product.getAddonQtyLength(
+                        _data.addon_id!, widget.data.id!) >
+                    0) {
+                  _product.decreaseAddons(
+                    _data,
+                    widget.data,
+                  );
+                }
+              },
+              onIncrease: () {
+                if (widget.data.min_selection! -
+                        _product.getAddonLength(
+                            _data.addon_id!, widget.data.id!) !=
+                    0) {
+                  _product.increaseAddons(_data, widget.data);
+                }
+              },
+              decreaseBackground:
+                  _product.getAddonQtyLength(_data.addon_id!, widget.data.id!) >
+                          0
+                      ? _theme.accent.value
+                      : _theme.textSubtitle.value,
+              increaseBackground: widget.data.min_selection! -
                           _product.getAddonLength(
                               _data.addon_id!, widget.data.id!) !=
-                      0) {
-                    _product.increaseAddons(_data, widget.data);
-                  }
-                },
-                behavior: HitTestBehavior.opaque,
-                child: Obx(
-                  () => Container(
-                    width: CDimension.space32,
-                    height: CDimension.space32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: widget.data.min_selection! -
-                                  _product.getAddonLength(
-                                      _data.addon_id!, widget.data.id!) !=
-                              0
-                          ? _theme.accent.value
-                          : _theme.textSubtitle.value,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: CDimension.space20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                      0
+                  ? _theme.accent.value
+                  : _theme.textSubtitle.value,
+              qtyColor: _theme.textTitle.value,
+              sizeIcon: CDimension.space32,
+            ),
           ),
         ],
       ),

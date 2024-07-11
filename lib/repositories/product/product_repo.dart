@@ -20,13 +20,14 @@ class ProductRepo extends BaseRepo {
     }
   }
 
-  Future<ProductResponse> getProduct() async {
-    BaseResult response = await get(Endpoint.product);
+  Future<ProductResponse> getProduct(dynamic body) async {
+    BaseResult response = await get(
+      Endpoint.product,
+      queryParameters: body,
+    );
     switch (response.status) {
       case ResponseStatus.Success:
         var _resp = ProductResponse.fromJson(response.data);
-        // await ProductTable().addProductBatch(_resp);
-        // print("Table all product updated");
         return _resp;
       default:
         return ProductResponse(message: response.errorMessage);

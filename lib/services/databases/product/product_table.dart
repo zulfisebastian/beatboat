@@ -36,7 +36,7 @@ class ProductTable {
   Future<void> addProductBatch(ProductResponse allData) async {
     if (allData.data == null) return;
 
-    for (var data in allData.data!) {
+    for (var data in allData.data!.data!) {
       addProduct(data);
     }
   }

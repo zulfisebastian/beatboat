@@ -91,23 +91,33 @@ class OrderCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.visible,
                 ),
-                SizedBox(
-                  height: CDimension.space8,
-                ),
-                CText(
-                  _product.listAddons
-                      .where((e) =>
-                          e.cart_id == cart.id &&
-                          e.product_id == cart.product_id)
-                      .map((e) => "x${e.qty} ${e.name!.capitalizeFirst}")
-                      .join(", "),
-                  fontSize: 12,
-                  color: _theme.textSubtitle.value,
-                  overflow: TextOverflow.visible,
-                  lineHeight: 1.4,
-                ),
-                SizedBox(
-                  height: CDimension.space8,
+                Obx(
+                  () => _product.listAddons
+                              .where((e) =>
+                                  e.cart_id == cart.id &&
+                                  e.product_id == cart.product_id)
+                              .length >
+                          0
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: CDimension.space8),
+                          child: CText(
+                            _product.listAddons
+                                .where((e) =>
+                                    e.cart_id == cart.id &&
+                                    e.product_id == cart.product_id)
+                                .map((e) =>
+                                    "x${e.qty} ${e.name!.capitalizeFirst}")
+                                .join(", "),
+                            fontSize: 12,
+                            color: _theme.textSubtitle.value,
+                            overflow: TextOverflow.visible,
+                            lineHeight: 1.4,
+                          ),
+                        )
+                      : SizedBox(
+                          height: CDimension.space8,
+                        ),
                 ),
                 Container(
                   decoration: BoxDecoration(

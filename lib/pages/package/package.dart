@@ -20,7 +20,7 @@ class PackagePage extends StatefulWidget {
 
 class _PackagePageState extends State<PackagePage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
-  final PackageController _refundController = Get.find(
+  final PackageController _package = Get.find(
     tag: "PackageController",
   );
 
@@ -30,12 +30,12 @@ class _PackagePageState extends State<PackagePage> {
       backgroundColor: _theme.backgroundApp.value,
       appBar: CustomAppBar(
         context: context,
-        title: "Wristband Package",
+        title: "Package",
       ),
       bottomSheet: Material(
         elevation: 20,
         child: Obx(
-          () => _refundController.listPackage.length > 0
+          () => _package.listPackage.length > 0
               ? Container(
                   width: OtherExt().getWidth(context),
                   decoration: BoxDecoration(
@@ -48,9 +48,9 @@ class _PackagePageState extends State<PackagePage> {
                   child: Obx(
                     () => CustomButtonBlue(
                       "SERVE NOW",
-                      disabled: _refundController.listPackage.length == 0,
+                      disabled: _package.listPackage.length == 0,
                       onPressed: () {
-                        _refundController.servePackage();
+                        _package.servePackage();
                       },
                     ),
                   ),
@@ -60,10 +60,10 @@ class _PackagePageState extends State<PackagePage> {
       ),
       body: SingleChildScrollView(
         child: Obx(
-          () => _refundController.listPackage.length > 0
+          () => _package.listPackage.length > 0
               ? Container(
                   child: ListView.separated(
-                    itemCount: _refundController.listPackage.length,
+                    itemCount: _package.listPackage.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     separatorBuilder: (BuildContext context, int index) {
@@ -75,9 +75,10 @@ class _PackagePageState extends State<PackagePage> {
                       );
                     },
                     itemBuilder: (BuildContext context, int index) {
-                      var _data = _refundController.listPackage[index];
+                      var _data = _package.listPackage[index];
                       return PackageCard(
                         data: _data,
+                        index: index,
                       );
                     },
                   ),

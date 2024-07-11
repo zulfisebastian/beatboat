@@ -25,8 +25,9 @@ class _ActivityByIdPageState extends State<ActivityByIdPage> {
 
   @override
   void dispose() {
-    print("KE TRIGGER GA");
-    Get.delete<ActivityByIdController>();
+    Get.delete<ActivityByIdController>(
+      tag: "ActivityByIdController",
+    );
     super.dispose();
   }
 

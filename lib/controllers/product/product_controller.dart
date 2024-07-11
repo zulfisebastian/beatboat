@@ -14,6 +14,7 @@ import '../base/base_controller.dart';
 
 class ProductController extends GetxController {
   final BaseController _base = Get.find(tag: "BaseController");
+  final scrollController = ScrollController();
   Rx<TextEditingController> search = TextEditingController().obs;
 
   final ProductRepo _productRepo = Get.put(ProductRepo());
@@ -25,6 +26,23 @@ class ProductController extends GetxController {
     super.onReady();
     _base.initConnectivity();
     initAllData();
+    scrollController.addListener(scrollControllerListener);
+  }
+
+  bool isLoading = false;
+  RxBool isLoadMoreData = false.obs;
+  RxInt page = 0.obs;
+  RxInt totalPage = 1.obs;
+
+  void scrollControllerListener() async {
+    if (scrollController.position.maxScrollExtent ==
+            scrollController.position.pixels &&
+        !isLoading &&
+        page.value < totalPage.value) {
+      isLoading = true;
+      isLoadMoreData.value = true;
+      getDataProduct(true);
+    }
   }
 
   initAllData() {
@@ -54,12 +72,29 @@ class ProductController extends GetxController {
   }
 
   RxList<ProductData> listProduct = <ProductData>[].obs;
-  getDataProduct() async {
-    var _resp = await _productRepo.getProduct();
+  getDataProduct([bool isMore = false]) async {
+    var body = {
+      "per_page": 10,
+      "page": page.value + 1,
+    };
 
-    if (_resp.data!.length > 0) {
-      listProduct.value = _resp.data!.where((e) => e.show! == 1).toList();
+    var _resp = await _productRepo.getProduct(body);
+
+    if (_resp.data!.data != null) {
+      if (isMore) {
+        listProduct.addAll(_resp.data!.data!.where((e) => e.show! == 1));
+      } else {
+        listProduct.value =
+            _resp.data!.data!.where((e) => e.show! == 1).toList();
+      }
+
+      page.value = _resp.data!.current_page!;
+      totalPage.value = _resp.data!.last_page!;
+      isLoadMoreData.value = false;
+      isLoading = false;
       listProduct.refresh();
+    } else {
+      print("OKE");
     }
     // if (_base.isConnected.value) {
     //   var _resp = await _productRepo.getProduct();
@@ -114,10 +149,11 @@ class ProductController extends GetxController {
   RxList<AddonData> listAddons = <AddonData>[].obs;
   renewListAddOn() async {
     var _resp = await AddonTable().getAllData();
+    listAddons.clear();
     if (_resp != null) {
       listAddons.value = _resp;
-      listAddons.refresh();
     }
+    listAddons.refresh();
   }
 
   addProductToCart(ProductData _product) async {
@@ -229,7 +265,7 @@ class ProductController extends GetxController {
         AddonTable().deleteAddon(_resp[0]);
       }
     }
-    renewListAddOn();
+    await renewListAddOn();
   }
 
   int getTotalCart() {

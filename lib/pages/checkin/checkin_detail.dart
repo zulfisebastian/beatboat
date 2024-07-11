@@ -170,7 +170,10 @@ class CheckinDetailPage extends StatelessWidget {
                             itemBuilder: (BuildContext context, int index) {
                               var _data = _checkinController
                                   .checkinData.value.packages![index];
-                              return PackageCard(data: _data);
+                              return PackageCard(
+                                data: _data,
+                                index: index,
+                              );
                             },
                           ),
                           SizedBox(

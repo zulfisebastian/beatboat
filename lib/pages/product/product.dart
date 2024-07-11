@@ -1,5 +1,4 @@
 import 'package:beatboat/utils/extensions.dart';
-import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/csearch.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +45,7 @@ class _ProductPageState extends State<ProductPage> {
       child: Scaffold(
         backgroundColor: _theme.backgroundApp.value,
         body: Stack(
+          alignment: Alignment.center,
           children: [
             Positioned.fill(
               child: Container(
@@ -56,6 +56,7 @@ class _ProductPageState extends State<ProductPage> {
                     _product.initAllData();
                   },
                   child: SingleChildScrollView(
+                    controller: _product.scrollController,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -206,15 +207,16 @@ class _ProductPageState extends State<ProductPage> {
                                                 child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(16),
-                                                  child: CCachedImage(
+                                                  child: Image.network(
+                                                    _data.image_url ??
+                                                        Endpoint.defaultFood,
                                                     width: (OtherExt().getWidth(
                                                                 context) -
                                                             CDimension.space48 -
                                                             4) /
                                                         2,
                                                     height: 180,
-                                                    url: _data.image_url ??
-                                                        Endpoint.defaultFood,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
                                               ),
@@ -440,6 +442,33 @@ class _ProductPageState extends State<ProductPage> {
                       )
                     : SizedBox(),
               ),
+            ),
+            Obx(
+              () => _product.isLoadMoreData.value
+                  ? Positioned(
+                      bottom: CDimension.space80,
+                      child: Material(
+                        elevation: CDimension.space20,
+                        borderRadius: BorderRadius.circular(
+                          CDimension.space24,
+                        ),
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.all(
+                              CDimension.space4,
+                            ),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: CircularProgressIndicator(
+                              color: _theme.accent.value,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Positioned(bottom: CDimension.space16, child: SizedBox()),
             ),
           ],
         ),

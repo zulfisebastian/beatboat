@@ -2,21 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../constants/dimension.dart';
 import '../../constants/endpoints.dart';
+import '../../controllers/package/package_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../models/package/package_model.dart';
 import '../../utils/extensions.dart';
 import '../components/ccached_image.dart';
+import '../components/customCounter.dart';
 import '../components/text/ctext.dart';
 
 class PackageCard extends StatelessWidget {
   final PackageData data;
+  final int index;
 
   PackageCard({
     Key? key,
     required this.data,
+    required this.index,
   }) : super(key: key);
 
   final ThemeController _theme = Get.find(tag: 'ThemeController');
+  final PackageController _package = Get.find(
+    tag: "PackageController",
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -90,17 +97,48 @@ class PackageCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.visible,
                 ),
+                SizedBox(
+                  height: CDimension.space16,
+                ),
+                Obx(
+                  () => CustomCounter(
+                    qty: _package.listQty[index],
+                    onDecrease: () {
+                      _package.decreaseQty(index);
+                    },
+                    onIncrease: () {
+                      _package.increaseQty(index);
+                    },
+                    decreaseBackground: _package.listQty[index] > 0
+                        ? _theme.accent.value
+                        : _theme.textSubtitle.value,
+                    increaseBackground: _package.listQty[index] <
+                            _package.listPackage[index].serve_qty!
+                        ? _theme.accent.value
+                        : _theme.textSubtitle.value,
+                    qtyColor: _theme.textTitle.value,
+                    sizeIcon: CDimension.space28,
+                    sizeQty: 14,
+                  ),
+                ),
               ],
             ),
           ),
           SizedBox(
             width: CDimension.space16,
           ),
-          CText(
-            StringExt.formatRupiah(data.sell_price! * data.serve_qty!),
-            color: _theme.textTitle.value,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              CText(
+                StringExt.thousandFormatter(data.sell_price!),
+                color: _theme.textTitle.value,
+                fontWeight: FontWeight.bold,
+              ),
+              CText(
+                " / item",
+                color: _theme.textSubtitle.value,
+              ),
+            ],
           ),
         ],
       ),
