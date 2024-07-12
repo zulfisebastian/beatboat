@@ -2,6 +2,7 @@ import 'package:beatboat/controllers/balance/balance_controller.dart';
 import 'package:beatboat/controllers/balance/top_up_controller.dart';
 import 'package:beatboat/pages/home/home.dart';
 import 'package:beatboat/pages/result/success.dart';
+import 'package:beatboat/widgets/card/nfc_card.dart';
 import 'package:beatboat/widgets/popups/confirmation.dart';
 import 'package:beatboat/widgets/sheets/sheet_topup_option.dart';
 import 'package:beatboat/widgets/sheets/sheet_voucher_topup.dart';
@@ -13,7 +14,6 @@ import '../../constants/size.dart';
 import '../../controllers/home/home_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../utils/extensions.dart';
-import '../../utils/helpers.dart';
 import '../../widgets/components/cdivider.dart';
 import '../../widgets/components/customAppBar.dart';
 import '../../widgets/components/customButton.dart';
@@ -36,7 +36,7 @@ class _TopUpPageState extends State<TopUpPage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
   final TopUpController _topUpController =
       Get.put(TopUpController(), tag: 'TopUpController');
-  final BalanceController _balanceController = Get.put(
+  final BalanceController _balance = Get.put(
     BalanceController(),
     tag: 'BalanceController',
   );
@@ -44,7 +44,7 @@ class _TopUpPageState extends State<TopUpPage> {
   @override
   void initState() {
     super.initState();
-    _balanceController.checkBalance(widget.nfcUid);
+    _balance.checkBalance(widget.nfcUid);
   }
 
   @override
@@ -116,7 +116,7 @@ class _TopUpPageState extends State<TopUpPage> {
                             SheetTopupOption(
                               onCash: () {
                                 _topUpController.topUpBalance(
-                                  _balanceController.balance.value,
+                                  _balance.balance.value,
                                   "CASH",
                                   () {
                                     Get.to(SuccessPage(
@@ -137,7 +137,7 @@ class _TopUpPageState extends State<TopUpPage> {
                               onEDC: () {
                                 _topUpController.getCamera(context, () {
                                   _topUpController.topUpBalance(
-                                    _balanceController.balance.value,
+                                    _balance.balance.value,
                                     "EDC",
                                     () {
                                       Get.to(SuccessPage(
@@ -173,76 +173,9 @@ class _TopUpPageState extends State<TopUpPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              color: _theme.backgroundAppOther.value,
-              padding: EdgeInsets.symmetric(
-                horizontal: CDimension.space16,
-                vertical: CDimension.space16,
-              ),
-              child: Obx(
-                () => Container(
-                  width: OtherExt().getWidth(context),
-                  height: 150,
-                  decoration: BoxDecoration(
-                    gradient: getLinearGradient(
-                      _balanceController.balance.value.type ?? "",
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      CDimension.space16,
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: CDimension.space24,
-                    vertical: CDimension.space16,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CText(
-                        "Balance",
-                        fontSize: 11,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        height: CDimension.space8,
-                      ),
-                      Obx(
-                        () => CText(
-                          StringExt.formatRupiah(
-                            _balanceController.balance.value.last_balance ?? 0,
-                          ),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Expanded(
-                        child: SizedBox(),
-                      ),
-                      Obx(
-                        () => CText(
-                          StringExt.hideMiddleCode(
-                            _balanceController.balance.value.wristband_code ??
-                                "",
-                          ),
-                          spacing: 4,
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(
-                        height: CDimension.space8,
-                      ),
-                      Obx(
-                        () => CText(
-                          "${_balanceController.balance.value.customer_name ?? ""} / ${_balanceController.balance.value.table_name ?? ""}",
-                          fontSize: 12,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            Obx(
+              () => NFCCard(
+                balance: _balance.balance.value,
               ),
             ),
             SizedBox(

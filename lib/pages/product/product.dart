@@ -34,7 +34,7 @@ class _ProductPageState extends State<ProductPage> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       if (widget.categoryId != null) {
-        _product.getProductByCategory(widget.categoryId!);
+        _product.choosedCategory(widget.categoryId!);
       }
     });
   }
@@ -116,8 +116,8 @@ class _ProductPageState extends State<ProductPage> {
                                           image_url: _data.image_url ??
                                               Endpoint.defaultFood,
                                           onClick: () {
-                                            _product.getProductByCategory(
-                                                _data.id!);
+                                            _product
+                                                .onChooseCategory(_data.id!);
                                           },
                                         ),
                                       );

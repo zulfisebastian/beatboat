@@ -8,8 +8,8 @@ LinearGradient getLinearGradient(String type) {
   if (type == "general") {
     return LinearGradient(
       colors: [
-        HexColor.fromHex("#2193b0"),
-        HexColor.fromHex("#6dd5ed"),
+        HexColor.fromHex("#a8a9ad"),
+        HexColor.fromHex("#cbcccd"),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -21,8 +21,8 @@ LinearGradient getLinearGradient(String type) {
   } else if (type == "vip") {
     return LinearGradient(
       colors: [
-        HexColor.fromHex("#2b5876"),
-        HexColor.fromHex("#4e4376"),
+        HexColor.fromHex("#E0AA3E"),
+        HexColor.fromHex("#F9F295"),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -47,8 +47,8 @@ LinearGradient getLinearGradient(String type) {
   } else {
     return LinearGradient(
       colors: [
-        HexColor.fromHex("#2193b0"),
-        HexColor.fromHex("#6dd5ed"),
+        HexColor.fromHex("#804a00"),
+        HexColor.fromHex("#b08d57"),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -57,6 +57,30 @@ LinearGradient getLinearGradient(String type) {
         0.9,
       ],
     );
+  }
+}
+
+Color getColorType(String type) {
+  if (type == "general") {
+    return HexColor.fromHex("#EFEFEF");
+  } else if (type == "vip") {
+    return HexColor.fromHex("#F9F295");
+  } else if (type == "v_vip") {
+    return HexColor.fromHex("#7d8189");
+  } else {
+    return HexColor.fromHex("#CD7F32");
+  }
+}
+
+String getNameFromType(String type) {
+  if (type == "general") {
+    return "GENERAL";
+  } else if (type == "vip") {
+    return "VIP";
+  } else if (type == "v_vip") {
+    return "VVIP";
+  } else {
+    return "OTHER";
   }
 }
 

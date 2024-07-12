@@ -133,79 +133,86 @@ class CheckinDetailPage extends StatelessWidget {
                     ),
                     CDivider(height: 10),
                     //Packages
-                    Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        vertical: CDimension.space16,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: CDimension.space16,
-                            ),
-                            child: CText(
-                              "Packages",
-                              color: _theme.textTitle.value,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(
-                            height: CDimension.space12,
-                          ),
-                          ListView.separated(
-                            itemCount: 1,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: CDimension.space12,
-                                ),
-                                child: CDivider(height: 1),
-                              );
-                            },
-                            itemBuilder: (BuildContext context, int index) {
-                              var _data = _checkinController
-                                  .checkinData.value.packages![index];
-                              final PackageController _ = Get.put(
-                                PackageController(),
-                                tag: "PackageController",
-                              );
-                              return PackageCard(
-                                data: _data,
-                                index: index,
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            height: CDimension.space12,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: CDimension.space16,
-                            ),
-                            child: CustomButtonBlue(
-                                "See All Packages (${_checkinController.checkinData.value.packages!.length})",
-                                width: OtherExt().getWidth(context),
-                                onPressed: () {
-                              Get.bottomSheet(
-                                SheetPackage(
-                                  data: _checkinController
-                                      .checkinData.value.packages!,
-                                ),
-                                isScrollControlled: true,
-                              );
-                            }),
-                          )
-                        ],
-                      ),
+                    Obx(
+                      () => _checkinController
+                                  .checkinData.value.packages!.length >
+                              0
+                          ? Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.symmetric(
+                                vertical: CDimension.space16,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: CDimension.space16,
+                                    ),
+                                    child: CText(
+                                      "Packages",
+                                      color: _theme.textTitle.value,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: CDimension.space12,
+                                  ),
+                                  ListView.separated(
+                                    itemCount: 1,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: CDimension.space12,
+                                        ),
+                                        child: CDivider(height: 1),
+                                      );
+                                    },
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      var _data = _checkinController
+                                          .checkinData.value.packages![index];
+                                      final PackageController _ = Get.put(
+                                        PackageController(),
+                                        tag: "PackageController",
+                                      );
+                                      return PackageCard(
+                                        data: _data,
+                                        index: index,
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: CDimension.space12,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: CDimension.space16,
+                                    ),
+                                    child: CustomButtonBlue(
+                                        "See All Packages (${_checkinController.checkinData.value.packages!.length})",
+                                        width: OtherExt().getWidth(context),
+                                        onPressed: () {
+                                      Get.bottomSheet(
+                                        SheetPackage(
+                                          data: _checkinController
+                                              .checkinData.value.packages!,
+                                        ),
+                                        isScrollControlled: true,
+                                      );
+                                    }),
+                                  ),
+                                  CDivider(height: 10),
+                                ],
+                              ),
+                            )
+                          : SizedBox(),
                     ),
                     //Category
-                    CDivider(height: 10),
                     ListView.separated(
                       itemCount: _checkinController.getListCategory().length,
                       shrinkWrap: true,

@@ -97,6 +97,9 @@ class ProductController extends GetxController {
       "search": search.value.text,
     };
 
+    if (choosedCategory.value != "All")
+      body["category_id"] = choosedCategory.value;
+
     var _resp = await _productRepo.getProduct(body);
 
     if (_resp.data!.data != null) {
@@ -112,44 +115,16 @@ class ProductController extends GetxController {
       isLoadMoreData.value = false;
       isLoading = false;
       listProduct.refresh();
-    } else {
-      print("OKE");
-    }
-    // if (_base.isConnected.value) {
-    //   var _resp = await _productRepo.getProduct();
-
-    //   if (_resp.data!.length > 0) {
-    //     listProduct.value = _resp.data!.where((e) => e.show! == 1).toList();
-    //     listProduct.refresh();
-    //   }
-    // } else {
-    //   var _resp = await ProductTable().getAllProduct();
-
-    //   if (_resp != null) {
-    //     listProduct.value = _resp.where((e) => e.show! == 1).toList();
-    //     listProduct.refresh();
-    //   }
-    // }
-    checkIsCategoryChecked();
-  }
-
-  checkIsCategoryChecked() {
-    if (choosedCategory.value != "All") {
-      getProductByCategory(choosedCategory.value);
     }
   }
 
   onChooseCategory(String category) {
     choosedCategory.value = category;
     choosedCategory.refresh();
-  }
 
-  RxList<ProductData> listProductCategory = <ProductData>[].obs;
-  getProductByCategory(String category) {
-    onChooseCategory(category);
-    listProductCategory.value =
-        listProduct.where((e) => e.category_id == category).toList();
-    listProductCategory.refresh();
+    page.value = 0;
+    totalPage.value = 1;
+    getDataProduct(false);
   }
 
   List<ProductData> getProductAll(String category) {
