@@ -43,7 +43,7 @@ class _RefundDetailPageState extends State<RefundDetailPage> {
       backgroundColor: _theme.backgroundAppOther.value,
       appBar: CustomAppBar(
         context: context,
-        title: "Transaction Refund",
+        title: "Refund",
       ),
       bottomSheet: Material(
         elevation: 20,

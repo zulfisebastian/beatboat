@@ -133,10 +133,11 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CText(
-                        "Balance",
-                        color: _theme.accent.value,
+                        "BALANCE",
+                        color: _theme.textTitle.value,
                         fontSize: CDimension.space20,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w800,
+                        spacing: 1.4,
                       ),
                       SizedBox(
                         height: CDimension.space16,
@@ -217,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                     vertical: CDimension.space24,
                   ),
                   decoration: BoxDecoration(
-                    color: _theme.backgroundCard.value,
+                    color: _theme.blue.value,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,10 +231,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CText(
-                              "Store",
-                              color: _theme.textTitle.value,
+                              "STORE",
+                              color: _theme.white.value,
                               fontSize: CDimension.space20,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w800,
+                              spacing: 1.4,
                             ),
                             GestureDetector(
                               onTap: () {
@@ -244,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   CText(
                                     "View All",
-                                    color: _theme.textTitle.value,
+                                    color: _theme.white.value,
                                     fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -254,7 +256,7 @@ class _HomePageState extends State<HomePage> {
                                   Icon(
                                     Icons.arrow_forward_ios_rounded,
                                     size: 12,
-                                    color: _theme.textSubtitle.value,
+                                    color: _theme.white.value,
                                   ),
                                 ],
                               ),
@@ -304,9 +306,10 @@ class _HomePageState extends State<HomePage> {
                                         height: CDimension.space8,
                                       ),
                                       CText(
-                                        _data.name!.capitalizeFirst,
-                                        color: _theme.textTitle.value,
-                                        fontSize: 14,
+                                        _data.name!.toUpperCase(),
+                                        color: _theme.white.value,
+                                        fontWeight: FontWeight.bold,
+                                        spacing: 1.5,
                                         maxLines: 2,
                                         overflow: TextOverflow.visible,
                                       ),
@@ -336,9 +339,10 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           CText(
                             "Activity",
-                            color: _theme.accent.value,
+                            color: _theme.textTitle.value,
                             fontSize: CDimension.space20,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w800,
+                            spacing: 1.4,
                           ),
                           GestureDetector(
                             onTap: () {

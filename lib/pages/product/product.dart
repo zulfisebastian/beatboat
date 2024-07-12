@@ -375,9 +375,11 @@ class _ProductPageState extends State<ProductPage> {
                       width: CDimension.space4,
                     ),
                     CText(
-                      "Product",
+                      "PRODUCT",
                       color: _theme.textTitle.value,
-                      fontSize: 16,
+                      fontSize: CDimension.space20,
+                      fontWeight: FontWeight.w800,
+                      spacing: 1.4,
                     ),
                   ],
                 ),

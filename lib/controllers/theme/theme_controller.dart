@@ -32,13 +32,17 @@ class ThemeController extends GetxController {
   Rx<Color> drawerProfile = Color(0XFF2b577c).obs;
   Rx<Color> card = Color(0XFF4a50c9).obs;
   Rx<Color> line = Color(0XFFE0E5ED).obs;
-  Rx<Color> accent = Color(0XFF0082c9).obs;
+  Rx<Color> accent = Color(0XFF333395).obs;
   Rx<Color> link = Color(0XFF0082c9).obs;
   Rx<Color> error = Color(0XFFC82820).obs;
   Rx<Color> success = Color(0XFF76c46b).obs;
   Rx<Color> disabled = Color(0XFF999999).obs;
 
   //Text
+  Rx<Color> pink = Color(0XFFF88DE5).obs;
+  Rx<Color> white = Color(0XFFFFFFFF).obs;
+  Rx<Color> tosqa = Color(0XFF04D0CF).obs;
+  Rx<Color> blue = Color(0XFF333395).obs;
   Rx<Color> textTitle = Color(0XFF212121).obs;
   Rx<Color> textSubtitle = Color(0XFF808A82).obs;
   Rx<Color> textHint = Color(0XFFA0AAB8).obs;
@@ -101,7 +105,7 @@ class ThemeController extends GetxController {
 
       backgroundApp.value = Color(0XFFFFFFFF);
       line.value = Color(0XFFE0E5ED);
-      accent.value = Color(0XFF53A7EF);
+      accent.value = Color(0XFF333395);
       disabled.value = Color(0XFF999999);
 
       textTitle.value = Color(0XFF212121);
@@ -136,7 +140,7 @@ class ThemeController extends GetxController {
 
       backgroundApp.value = Color(0XFF212121);
       line.value = Color(0XFFCCCCCC);
-      accent.value = Color(0XFF54CC58);
+      accent.value = Color(0XFF333395);
       disabled.value = Color(0XFF999999);
 
       textTitle.value = Color(0XFFFFFFFFF);

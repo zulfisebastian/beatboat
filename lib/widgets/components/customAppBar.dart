@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../constants/dimension.dart';
 import '../../controllers/theme/theme_controller.dart';
 import 'text/ctext.dart';
 
@@ -43,10 +44,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ],
             titleSpacing: 0,
             title: CText(
-              title,
+              title.toUpperCase(),
               color: _theme.textTitle.value,
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
+              fontSize: CDimension.space20,
+              fontWeight: FontWeight.w800,
+              spacing: 1.4,
             ),
             leading: leading ??
                 InkWell(

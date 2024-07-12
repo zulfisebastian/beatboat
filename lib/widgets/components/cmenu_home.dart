@@ -39,7 +39,7 @@ class CMenuHome extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             width: 0.5,
-            color: _theme.line.value,
+            color: _theme.accent.value,
           ),
           borderRadius: BorderRadius.circular(
             CDimension.space16,
@@ -61,6 +61,7 @@ class CMenuHome extends StatelessWidget {
               child: SvgPicture.asset(
                 "assets/icons/ic_menu_$icon.svg",
                 width: CDimension.space20,
+                color: _theme.accent.value,
               ),
             ),
             SizedBox(

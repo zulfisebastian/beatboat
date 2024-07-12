@@ -29,7 +29,7 @@ class _RefundPageState extends State<RefundPage> {
       backgroundColor: _theme.backgroundApp.value,
       appBar: CustomAppBar(
         context: context,
-        title: "Transaction Refund",
+        title: "Refund",
       ),
       body: SingleChildScrollView(
         child: Obx(
