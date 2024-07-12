@@ -231,6 +231,12 @@ class _ProductPageState extends State<ProductPage> {
                                                             );
                                                           } else {
                                                             _product
+                                                                .choosedProduct
+                                                                .value = _data;
+                                                            _product
+                                                                .choosedProduct
+                                                                .refresh();
+                                                            _product
                                                                 .addProductToCart(
                                                                     _data);
                                                           }

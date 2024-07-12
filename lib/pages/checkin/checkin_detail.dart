@@ -596,9 +596,9 @@ class CheckinDetailPage extends StatelessWidget {
                         disabled: _checkinController.checkPairDisable(index),
                         onPressed: () {
                           _checkinController.activeIndex.value = index;
+                          _checkinController.activeIndex.refresh();
                           _checkinController.bookingCode.value =
                               _data.booking_code!;
-                          _checkinController.activeIndex.refresh();
                           Get.bottomSheet(
                             SheetNFC(
                               type: NFCModeType.CheckIn,

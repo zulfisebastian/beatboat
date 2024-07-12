@@ -39,4 +39,5 @@ class Endpoint {
   static const String checkin = "/check-in/validate";
   static const String voucher = "/voucher/check";
   static const String refund = "/refund";
+  static const String amount = "/list-top-up";
 }

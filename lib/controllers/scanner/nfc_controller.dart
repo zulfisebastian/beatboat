@@ -151,6 +151,7 @@ class NFCController extends GetxController {
     NFCTag tag = await FlutterNfcKit.poll();
     try {
       await FlutterNfcKit.setIosAlertMessage("Working on it...");
+
       if (tag.standard == "ISO 14443-4 (Type B)") {
         String result1 = await FlutterNfcKit.transceive("00B0950000");
         String result2 =
@@ -175,11 +176,15 @@ class NFCController extends GetxController {
           RegExp(r".{2}").allMatches(tag.id).map((e) => e.group(0)).join(":");
 
       Get.dialog(Loading());
+      print("as $_mapUUID");
       final CheckinController _checkinController =
           Get.find(tag: "CheckinController");
 
+      print("ANJAY $_mapUUID");
       var _data = _checkinController
           .listPairedUID[_checkinController.activeIndex.value];
+
+      print("ANJUY $_mapUUID");
       var body = {
         "device_serial_number": _data.device_serial_number,
         "booking_code": _data.booking_code,

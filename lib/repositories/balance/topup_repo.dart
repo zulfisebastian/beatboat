@@ -1,5 +1,6 @@
 import '../../../models/base/base_result.dart';
 import '../../constants/endpoints.dart';
+import '../../models/balance/amount_model.dart';
 import '../../models/balance/topup_model.dart';
 import '../../models/voucher/voucher_model.dart';
 import '../base/base_repo.dart';
@@ -30,6 +31,19 @@ class TopUpRepo extends BaseRepo {
         return _resp;
       default:
         return VoucherResponse(message: response.errorMessage);
+    }
+  }
+
+  Future<AmountResponse> getListAmount() async {
+    BaseResult response = await get(
+      Endpoint.amount,
+    );
+    switch (response.status) {
+      case ResponseStatus.Success:
+        var _resp = AmountResponse.fromJson(response.data);
+        return _resp;
+      default:
+        return AmountResponse(message: response.errorMessage);
     }
   }
 }

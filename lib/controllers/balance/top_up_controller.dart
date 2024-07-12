@@ -27,15 +27,20 @@ class TopUpController extends GetxController {
     initAmount();
   }
 
-  initAmount() {
-    amountList.addAll(
-      [
-        100000,
-        200000,
+  initAmount() async {
+    var _resp = await _topUpRepo.getListAmount();
+
+    if (_resp.data != null) {
+      amountList.value = _resp.data!;
+    } else {
+      amountList.value = [
         500000,
         1000000,
-      ],
-    );
+        1500000,
+        2000000,
+      ];
+    }
+    amountList.refresh();
   }
 
   changeAmount(_amount) {
