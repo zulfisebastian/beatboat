@@ -1,40 +1,40 @@
 import 'package:beatboat/constants/dimension.dart';
 import 'package:beatboat/constants/endpoints.dart';
-import 'package:beatboat/models/product/cart_model.dart';
-import 'package:beatboat/models/product/product_model.dart';
 import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/customCounter.dart';
 import 'package:beatboat/widgets/components/customInputArea.dart';
+import 'package:beatboat/widgets/sheets/sheet_another_package.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/theme/theme_controller.dart';
-import '../../controllers/product/product_controller.dart';
+import '../../controllers/package/package_controller.dart';
+import '../../models/package/package_model.dart';
+import '../../models/product/cart_package_model.dart';
 import '../../utils/extensions.dart';
 import '../components/customButton.dart';
 import '../components/text/ctext.dart';
-import 'sheet_another.dart';
 
-class SheetProduct extends StatefulWidget {
-  final CartData data;
+class SheetProductPackage extends StatefulWidget {
+  final CartPackageData data;
 
-  SheetProduct({
+  SheetProductPackage({
     Key? key,
     required this.data,
   }) : super(key: key);
 
   @override
-  State<SheetProduct> createState() => _SheetProductState();
+  State<SheetProductPackage> createState() => _SheetProductPackageState();
 }
 
-class _SheetProductState extends State<SheetProduct> {
+class _SheetProductPackageState extends State<SheetProductPackage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
-  final ProductController _product = Get.find(tag: 'ProductController');
+  final PackageController _package = Get.find(tag: 'PackageController');
 
   @override
   void dispose() {
     super.dispose();
-    _product.noteCtrl.value.text = "";
+    _package.noteCtrl.value.text = "";
   }
 
   @override
@@ -122,7 +122,7 @@ class _SheetProductState extends State<SheetProduct> {
                       ),
                       //Add Ons
                       SizedBox(
-                        child: _product
+                        child: _package
                                     .getProductByProductId(widget.data)
                                     .addons!
                                     .items!
@@ -145,7 +145,7 @@ class _SheetProductState extends State<SheetProduct> {
                                               CrossAxisAlignment.end,
                                           children: [
                                             CText(
-                                              "Addon",
+                                              widget.data.addon_title,
                                               color: _theme.textTitle.value,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
@@ -164,7 +164,7 @@ class _SheetProductState extends State<SheetProduct> {
                                           height: CDimension.space12,
                                         ),
                                         ListView.separated(
-                                          itemCount: _product
+                                          itemCount: _package
                                               .getProductByProductId(
                                                   widget.data)
                                               .addons!
@@ -180,7 +180,7 @@ class _SheetProductState extends State<SheetProduct> {
                                           },
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            var _data = _product
+                                            var _data = _package
                                                 .getProductByProductId(
                                                     widget.data)
                                                 .addons!
@@ -188,7 +188,7 @@ class _SheetProductState extends State<SheetProduct> {
                                             return AddonCard(
                                                 data: _data,
                                                 theme: _theme,
-                                                product: _product,
+                                                product: _package,
                                                 widget: widget);
                                           },
                                         ),
@@ -219,7 +219,7 @@ class _SheetProductState extends State<SheetProduct> {
                               height: CDimension.space12,
                             ),
                             CustomInputArea(
-                              textEditingController: _product.noteCtrl.value,
+                              textEditingController: _package.noteCtrl.value,
                               hintText: "Your Notes",
                               errorMessage: "",
                               maxInput: 100,
@@ -237,33 +237,29 @@ class _SheetProductState extends State<SheetProduct> {
                           vertical: CDimension.space16,
                         ),
                         child: CustomCounter(
-                          qty: _product.listCart
+                          qty: _package.listCart
                               .firstWhere((e) => e.id == widget.data.id)
                               .qty!,
                           onDecrease: () {
-                            _product.decreaseCart(widget.data);
+                            _package.decreaseCart(widget.data);
                             setState(() {});
                           },
                           onIncrease: () {
                             if (widget.data.stock! -
-                                    _product.listCart
+                                    _package.listCart
                                         .firstWhere(
                                             (e) => e.id == widget.data.id)
                                         .qty! !=
                                 0) {
-                              _product.increaseCart(widget.data);
+                              _package.increaseCart(widget.data);
                               setState(() {});
                             }
                           },
                           decreaseBackground: _theme.accent.value,
-                          increaseBackground: widget.data.stock! -
-                                      _product.listCart
-                                          .firstWhere(
-                                              (e) => e.id == widget.data.id)
-                                          .qty! !=
-                                  0
-                              ? _theme.accent.value
-                              : _theme.textSubtitle.value,
+                          increaseBackground:
+                              !_package.checkQtyIsEqual(widget.data.product_id!)
+                                  ? _theme.accent.value
+                                  : _theme.textSubtitle.value,
                           qtyColor: _theme.textTitle.value,
                         ),
                       ),
@@ -287,13 +283,13 @@ class _SheetProductState extends State<SheetProduct> {
                   "Update Cart",
                   width: OtherExt().getWidth(context) - 32,
                   onPressed: () {
-                    _product.editNote(
-                        widget.data, _product.noteCtrl.value.text);
-                    _product.noteCtrl.value.text = "";
-                    _product.noteCtrl.refresh();
+                    _package.editNote(
+                        widget.data, _package.noteCtrl.value.text);
+                    _package.noteCtrl.value.text = "";
+                    _package.noteCtrl.refresh();
                     Get.back();
                     Get.bottomSheet(
-                      SheetAnother(),
+                      SheetAnotherPackage(),
                       isScrollControlled: true,
                     );
                   },
@@ -310,19 +306,19 @@ class _SheetProductState extends State<SheetProduct> {
 class AddonCard extends StatelessWidget {
   const AddonCard({
     Key? key,
-    required ProductAddonDetailData data,
+    required PackageAddonDetailData data,
     required ThemeController theme,
-    required ProductController product,
+    required PackageController product,
     required this.widget,
   })  : _data = data,
         _theme = theme,
-        _product = product,
+        _package = product,
         super(key: key);
 
-  final ProductAddonDetailData _data;
+  final PackageAddonDetailData _data;
   final ThemeController _theme;
-  final ProductController _product;
-  final SheetProduct widget;
+  final PackageController _package;
+  final SheetProductPackage widget;
 
   @override
   Widget build(BuildContext context) {
@@ -356,13 +352,13 @@ class AddonCard extends StatelessWidget {
           ),
           Obx(
             () => CustomCounter(
-              qty: _product.getAddonQty(_data.addon_id!, widget.data.id!),
+              qty: _package.getAddonQty(_data.addon_id!, widget.data.id!),
               sizeQty: 14,
               onDecrease: () {
-                if (_product.getAddonQtyLength(
+                if (_package.getAddonQtyLength(
                         _data.addon_id!, widget.data.id!) >
                     0) {
-                  _product.decreaseAddons(
+                  _package.decreaseAddons(
                     _data,
                     widget.data,
                   );
@@ -370,19 +366,19 @@ class AddonCard extends StatelessWidget {
               },
               onIncrease: () {
                 if (widget.data.min_selection! -
-                        _product.getAddonLength(
+                        _package.getAddonLength(
                             _data.addon_id!, widget.data.id!) !=
                     0) {
-                  _product.increaseAddons(_data, widget.data);
+                  _package.increaseAddons(_data, widget.data);
                 }
               },
               decreaseBackground:
-                  _product.getAddonQtyLength(_data.addon_id!, widget.data.id!) >
+                  _package.getAddonQtyLength(_data.addon_id!, widget.data.id!) >
                           0
                       ? _theme.accent.value
                       : _theme.textSubtitle.value,
               increaseBackground: widget.data.min_selection! -
-                          _product.getAddonLength(
+                          _package.getAddonLength(
                               _data.addon_id!, widget.data.id!) !=
                       0
                   ? _theme.accent.value

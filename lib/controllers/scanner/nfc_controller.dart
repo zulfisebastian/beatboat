@@ -180,11 +180,9 @@ class NFCController extends GetxController {
       final CheckinController _checkinController =
           Get.find(tag: "CheckinController");
 
-      print("ANJAY $_mapUUID");
       var _data = _checkinController
           .listPairedUID[_checkinController.activeIndex.value];
 
-      print("ANJUY $_mapUUID");
       var body = {
         "device_serial_number": _data.device_serial_number,
         "booking_code": _data.booking_code,

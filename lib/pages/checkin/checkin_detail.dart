@@ -595,8 +595,7 @@ class CheckinDetailPage extends StatelessWidget {
                 height: CDimension.space20,
               ),
               Obx(
-                () => _checkinController.listPairedUID[index].nfc_uid == "" &&
-                        _checkinController.listPairedUID.length > index
+                () => _checkinController.listPairedUID[index].nfc_uid == ""
                     ? CustomButtonBorderBlack(
                         "Pair NFC",
                         width: OtherExt().getWidth(context),

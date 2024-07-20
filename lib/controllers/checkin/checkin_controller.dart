@@ -165,8 +165,7 @@ class CheckinController extends GetxController {
           listDateCtrl.add(
             TextEditingController(
               text: _others.dob != null
-                  ? DateExt.reformat(
-                      _others.dob!, "yyyy-MM-dd", "EEE, dd MMM yyyy")
+                  ? DateExt.reformat(_others.dob!, "yyyy-MM-dd", "yyyy-MM-dd")
                   : "",
             ),
           );

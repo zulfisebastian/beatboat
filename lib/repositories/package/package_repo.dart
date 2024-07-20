@@ -1,3 +1,5 @@
+import 'package:beatboat/models/base/base_response.dart';
+
 import '../../../models/base/base_result.dart';
 import '../../constants/endpoints.dart';
 import '../../models/package/package_model.dart';
@@ -18,17 +20,17 @@ class PackageRepo extends BaseRepo {
     }
   }
 
-  Future<AddTransactionResponse> addPackage(body, nfcUID) async {
+  Future<BaseResponse> addPackage(body, nfcUID) async {
     BaseResult response = await post(
       Endpoint.package.replaceAll("{nfc}", nfcUID),
       body: body,
     );
     switch (response.status) {
       case ResponseStatus.Success:
-        var _resp = AddTransactionResponse.fromJson(response.data);
+        var _resp = BaseResponse.fromJson(response.data);
         return _resp;
       default:
-        return AddTransactionResponse(message: response.errorMessage);
+        return BaseResponse(message: response.errorMessage);
     }
   }
 }
