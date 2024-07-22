@@ -8,7 +8,6 @@ import '../../controllers/theme/theme_controller.dart';
 import '../../models/package/package_model.dart';
 import '../../utils/extensions.dart';
 import '../components/ccached_image.dart';
-import '../components/customCounter.dart';
 import '../components/text/ctext.dart';
 
 class PackageCard extends StatelessWidget {

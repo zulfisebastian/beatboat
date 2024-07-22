@@ -1,9 +1,7 @@
 import 'package:beatboat/models/base/base_response.dart';
-
 import '../../../models/base/base_result.dart';
 import '../../constants/endpoints.dart';
 import '../../models/package/package_model.dart';
-import '../../models/transaction/add_transaction_model.dart';
 import '../base/base_repo.dart';
 
 class PackageRepo extends BaseRepo {

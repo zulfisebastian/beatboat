@@ -169,82 +169,78 @@ class _ProductPageState extends State<ProductPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: ColorFiltered(
-                                          colorFilter: ColorFilter.mode(
-                                            _data.stock! > 0
-                                                ? Colors.transparent
-                                                : Colors.grey,
-                                            BlendMode.saturation,
-                                          ),
-                                          child: Stack(
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    width: 1,
-                                                    color: _theme.line.value,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  child: Image.network(
-                                                    _data.image_url ??
-                                                        Endpoint.defaultFood,
-                                                    width: (OtherExt().getWidth(
-                                                                context) -
-                                                            CDimension.space48 -
-                                                            4) /
-                                                        2,
-                                                    height: 180,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                bottom: 8,
-                                                right: 8,
-                                                child: _data.stock! > 0
-                                                    ? GestureDetector(
-                                                        onTap: () {
-                                                          if (_product.listCart
-                                                                  .where((e) =>
-                                                                      e.product_id ==
-                                                                      _data.id)
-                                                                  .length >
-                                                              0) {
-                                                            _product
-                                                                .choosedProduct
-                                                                .value = _data;
-                                                            _product
-                                                                .choosedProduct
-                                                                .refresh();
+                                      GestureDetector(
+                                        onTap: () {
+                                          if (_data.stock! > 0) {
+                                            if (_product.listCart
+                                                    .where((e) =>
+                                                        e.product_id ==
+                                                        _data.id)
+                                                    .length >
+                                                0) {
+                                              _product.choosedProduct.value =
+                                                  _data;
+                                              _product.choosedProduct.refresh();
 
-                                                            Get.bottomSheet(
-                                                              SheetAnother(),
-                                                              isScrollControlled:
-                                                                  true,
-                                                            );
-                                                          } else {
-                                                            _product
-                                                                .choosedProduct
-                                                                .value = _data;
-                                                            _product
-                                                                .choosedProduct
-                                                                .refresh();
-                                                            _product
-                                                                .addProductToCart(
-                                                                    _data);
-                                                          }
-                                                        },
-                                                        behavior:
-                                                            HitTestBehavior
-                                                                .opaque,
-                                                        child: Obx(
+                                              Get.bottomSheet(
+                                                SheetAnother(),
+                                                isScrollControlled: true,
+                                              );
+                                            } else {
+                                              _product.choosedProduct.value =
+                                                  _data;
+                                              _product.choosedProduct.refresh();
+                                              _product.addProductToCart(_data);
+                                            }
+                                          }
+                                        },
+                                        behavior: HitTestBehavior.opaque,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                              _data.stock! > 0
+                                                  ? Colors.transparent
+                                                  : Colors.grey,
+                                              BlendMode.saturation,
+                                            ),
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 1,
+                                                      color: _theme.line.value,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16),
+                                                    child: Image.network(
+                                                      _data.image_url ??
+                                                          Endpoint.defaultFood,
+                                                      width: (OtherExt()
+                                                                  .getWidth(
+                                                                      context) -
+                                                              CDimension
+                                                                  .space48 -
+                                                              4) /
+                                                          2,
+                                                      height: 180,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  bottom: 8,
+                                                  right: 8,
+                                                  child: _data.stock! > 0
+                                                      ? Obx(
                                                           () => Container(
                                                             width: CDimension
                                                                 .space32,
@@ -280,11 +276,11 @@ class _ProductPageState extends State<ProductPage> {
                                                                     ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      )
-                                                    : SizedBox(),
-                                              ),
-                                            ],
+                                                        )
+                                                      : SizedBox(),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),

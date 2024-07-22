@@ -10,7 +10,6 @@ import '../../controllers/package/package_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../utils/extensions.dart';
 import '../../widgets/components/customAppBar.dart';
-import '../../widgets/components/customButton.dart';
 
 class PackagePage extends StatefulWidget {
   const PackagePage({Key? key}) : super(key: key);

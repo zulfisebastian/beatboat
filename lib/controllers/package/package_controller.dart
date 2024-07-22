@@ -7,7 +7,6 @@ import '../../models/balance/balance_model.dart';
 import '../../models/package/package_model.dart';
 import '../../models/product/addon_model.dart';
 import '../../models/product/cart_package_model.dart';
-import '../../models/transaction/add_transaction_model.dart';
 import '../../pages/home/home.dart';
 import '../../pages/result/success.dart';
 import '../../repositories/package/package_repo.dart';
@@ -117,7 +116,7 @@ class PackageController extends GetxController {
             styles: const PosStyles(align: PosAlign.left, underline: false),
           ),
           PosColumn(
-            text: "N/A",
+            text: "PACKAGES",
             width: 9,
             styles: const PosStyles(align: PosAlign.left, underline: false),
           ),

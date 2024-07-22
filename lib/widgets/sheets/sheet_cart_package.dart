@@ -5,7 +5,6 @@ import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/customButton.dart';
 import '../../../controllers/theme/theme_controller.dart';
 import '../../controllers/package/package_controller.dart';
-import '../../pages/transaction/order.dart';
 import '../components/draggable_bottom_sheet.dart';
 import '../components/text/ctext.dart';
 import 'package:flutter/material.dart';
