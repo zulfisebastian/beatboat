@@ -236,35 +236,29 @@ class _SheetProductState extends State<SheetProduct> {
                           horizontal: CDimension.space16,
                           vertical: CDimension.space16,
                         ),
-                        child: CustomCounter(
-                          qty: _product.listCart
-                              .firstWhere((e) => e.id == widget.data.id)
-                              .qty!,
-                          onDecrease: () {
-                            _product.decreaseCart(widget.data);
-                            setState(() {});
-                          },
-                          onIncrease: () {
-                            if (widget.data.stock! -
-                                    _product.listCart
-                                        .firstWhere(
-                                            (e) => e.id == widget.data.id)
-                                        .qty! !=
-                                0) {
-                              _product.increaseCart(widget.data);
+                        child: Obx(
+                          () => CustomCounter(
+                            qty: _product.listCart.value
+                                .firstWhere((e) => e.id == widget.data.id)
+                                .qty!,
+                            onDecrease: () {
+                              _product.decreaseCart(widget.data);
                               setState(() {});
-                            }
-                          },
-                          decreaseBackground: _theme.accent.value,
-                          increaseBackground: widget.data.stock! -
-                                      _product.listCart
-                                          .firstWhere(
-                                              (e) => e.id == widget.data.id)
-                                          .qty! !=
-                                  0
-                              ? _theme.accent.value
-                              : _theme.textSubtitle.value,
-                          qtyColor: _theme.textTitle.value,
+                            },
+                            onIncrease: () {
+                              if (!_product
+                                  .checkQtyIsEqual(widget.data.product_id!)) {
+                                _product.increaseCart(widget.data);
+                                setState(() {});
+                              }
+                            },
+                            decreaseBackground: _theme.accent.value,
+                            increaseBackground: !_product
+                                    .checkQtyIsEqual(widget.data.product_id!)
+                                ? _theme.accent.value
+                                : _theme.textSubtitle.value,
+                            qtyColor: _theme.textTitle.value,
+                          ),
                         ),
                       ),
                       SizedBox(

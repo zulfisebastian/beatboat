@@ -213,6 +213,19 @@ class ProductController extends GetxController {
     }
   }
 
+  bool checkQtyIsEqual(String id) {
+    ProductData _product = listProduct.where((e) => e.id == id).first;
+
+    var totalCurrentQty = 0;
+    for (var _data in listCart) {
+      if (_data.product_id == id) {
+        totalCurrentQty += _data.qty!;
+      }
+    }
+
+    return _product.stock == totalCurrentQty;
+  }
+
   increaseAddons(ProductAddonDetailData _data, CartData _cart) async {
     var _resp = await CartTable().getCartById(_cart);
 

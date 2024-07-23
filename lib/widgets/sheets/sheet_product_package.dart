@@ -245,12 +245,8 @@ class _SheetProductPackageState extends State<SheetProductPackage> {
                             setState(() {});
                           },
                           onIncrease: () {
-                            if (widget.data.stock! -
-                                    _package.listCart
-                                        .firstWhere(
-                                            (e) => e.id == widget.data.id)
-                                        .qty! !=
-                                0) {
+                            if (!_package
+                                .checkQtyIsEqual(widget.data.product_id!)) {
                               _package.increaseCart(widget.data);
                               setState(() {});
                             }
