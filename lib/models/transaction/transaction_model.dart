@@ -46,6 +46,7 @@ class TransactionData {
   int? input_payment;
   int? changes;
   String? date;
+  String? created_at;
   String? voucher_code;
   String? note;
   String? type;
@@ -68,6 +69,7 @@ class TransactionData {
     this.input_payment,
     this.changes,
     this.date,
+    this.created_at,
     this.voucher_code,
     this.note,
     this.type,
@@ -91,6 +93,7 @@ class TransactionData {
     input_payment = json['input_payment'];
     changes = json['changes'];
     date = json['date'];
+    created_at = json['created_at'];
     voucher_code = json['voucher_code'];
     note = json['note'];
     type = json['type'];
@@ -125,6 +128,7 @@ class TransactionData {
     data['input_payment'] = this.input_payment;
     data['changes'] = this.changes;
     data['date'] = this.date;
+    data['created_at'] = this.created_at;
     data['voucher_code'] = this.voucher_code;
     data['note'] = this.note;
     data['type'] = this.type;

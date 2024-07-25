@@ -39,7 +39,14 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   void initState() {
     super.initState();
-    _balanceController.checkBalance(widget.nfcUid);
+    checkBalance();
+  }
+
+  checkBalance() async {
+    await _balanceController.checkBalance(widget.nfcUid);
+    _transactionController.voucher.value.text =
+        _balanceController.balance.value.voucher_code!;
+    _transactionController.checkVoucher();
   }
 
   @override

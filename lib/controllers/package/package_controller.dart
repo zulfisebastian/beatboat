@@ -136,46 +136,46 @@ class PackageController extends GetxController {
         //Item
         bytes += generator.feed(1);
         for (var _cart in listCart) {
-          if (_printer.value == _cart.order_serve) {
-            bytes += generator.row(
-              [
-                PosColumn(
-                  text: _cart.name ?? "-",
-                  width: 8,
-                  styles: PosStyles(
-                    align: PosAlign.left,
-                    height: PosTextSize.size2,
-                    width: PosTextSize.size2,
-                  ),
+          // if (_printer.value == _cart.order_serve) {
+          bytes += generator.row(
+            [
+              PosColumn(
+                text: _cart.name ?? "-",
+                width: 8,
+                styles: PosStyles(
+                  align: PosAlign.left,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2,
                 ),
-                PosColumn(
-                  text: "x${_cart.qty.toString()}",
-                  width: 4,
-                  styles: PosStyles(
-                    align: PosAlign.right,
-                    height: PosTextSize.size2,
-                    width: PosTextSize.size2,
-                  ),
+              ),
+              PosColumn(
+                text: "x${_cart.qty.toString()}",
+                width: 4,
+                styles: PosStyles(
+                  align: PosAlign.right,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2,
                 ),
-              ],
+              ),
+            ],
+          );
+          if (listAddons.indexWhere((e) => e.cart_id == _cart.id) > -1) {
+            bytes += generator.text(
+              'AddOn: ${listAddons.where((e) => e.cart_id == _cart.id && e.product_id == _cart.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
             );
-            if (listAddons.indexWhere((e) => e.cart_id == _cart.id) > -1) {
-              bytes += generator.text(
-                'AddOn: ${listAddons.where((e) => e.cart_id == _cart.id && e.product_id == _cart.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
-                styles: PosStyles(
-                  align: PosAlign.left,
-                ),
-              );
-            }
-            if (_cart.note != null) {
-              bytes += generator.text(
-                'Note: ${_cart.note!}',
-                styles: PosStyles(
-                  align: PosAlign.left,
-                ),
-              );
-            }
           }
+          if (_cart.note != null) {
+            bytes += generator.text(
+              'Note: ${_cart.note!}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
+            );
+          }
+          // }
         }
         bytes += generator.feed(1);
         bytes += generator.text(

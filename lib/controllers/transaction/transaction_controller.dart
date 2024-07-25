@@ -91,11 +91,9 @@ class TransactionController extends GetxController {
     Get.back();
 
     if (_resp.data != null) {
-      Get.back();
       voucherData.value = _resp.data!;
       voucherData.refresh();
     } else {
-      Get.back();
       Get.bottomSheet(
         SheetFailed(errorMessage: _resp.message!),
       );
@@ -652,14 +650,6 @@ class TransactionController extends GetxController {
     ]);
     await SunmiPrinter.resetBold();
     await SunmiPrinter.lineWrap(1);
-    // await SunmiPrinter.printText(
-    //   'Items that have been purchased',
-    //   style: SunmiStyle(
-    //     fontSize: SunmiFontSize.MD,
-    //     bold: false,
-    //     align: SunmiPrintAlign.CENTER,
-    //   ),
-    // );
     await SunmiPrinter.printText(
       'cannot be returned',
       style: SunmiStyle(
@@ -683,222 +673,131 @@ class TransactionController extends GetxController {
     await SunmiPrinter.exitTransactionPrint(true);
   }
 
-  printBill(AddTransactionData _data) async {
-    await _base.getProfile();
-    await SunmiPrinter.initPrinter();
-    await SunmiPrinter.bindingPrinter();
-
-    await SunmiPrinter.startTransactionPrint(true);
-    await SunmiPrinter.bold();
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Order No: ",
-        width: 10,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: _data.order_no.toString(),
-        width: 10,
-        align: SunmiPrintAlign.LEFT,
-      ),
-    ]);
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Customer: ",
-        width: 10,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: "Zulfi",
-        width: 10,
-        align: SunmiPrintAlign.LEFT,
-      ),
-    ]);
-    //Item
-    await SunmiPrinter.line();
-    await SunmiPrinter.lineWrap(1);
-    await SunmiPrinter.setFontSize(SunmiFontSize.LG);
-    for (var _data in listCart) {
-      await SunmiPrinter.printRow(cols: [
-        ColumnMaker(
-          text: _data.name ?? "-",
-          width: 15,
-          align: SunmiPrintAlign.LEFT,
-        ),
-        ColumnMaker(
-          text: "x${_data.qty!.toString()}",
-          width: 4,
-          align: SunmiPrintAlign.RIGHT,
-        ),
-      ]);
-    }
-    await SunmiPrinter.resetBold();
-    await SunmiPrinter.resetFontSize();
-    await SunmiPrinter.line();
-    await SunmiPrinter.lineWrap(1);
-    await SunmiPrinter.printText(
-      'No: ${_data.trx_number}',
-      style: SunmiStyle(
-        fontSize: SunmiFontSize.MD,
-        bold: false,
-        align: SunmiPrintAlign.LEFT,
-      ),
-    );
-    await SunmiPrinter.printText(
-      'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
-      style: SunmiStyle(
-        fontSize: SunmiFontSize.MD,
-        bold: false,
-        align: SunmiPrintAlign.LEFT,
-      ),
-    );
-    await SunmiPrinter.printText(
-      'Cashier: ${_base.dataProfile.value.full_name}',
-      style: SunmiStyle(
-        fontSize: SunmiFontSize.MD,
-        bold: false,
-        align: SunmiPrintAlign.LEFT,
-      ),
-    );
-    await SunmiPrinter.printText(
-      'Table Name: ${_data.table_name}',
-      style: SunmiStyle(
-        fontSize: SunmiFontSize.MD,
-        bold: false,
-        align: SunmiPrintAlign.LEFT,
-      ),
-    );
-    await SunmiPrinter.lineWrap(4);
-    await SunmiPrinter.cut();
-    await SunmiPrinter.submitTransactionPrint();
-    await SunmiPrinter.exitTransactionPrint(true);
-  }
-
   printBillThermal(AddTransactionData _data) async {
     await _base.getProfile();
     for (var _printer in _base.printerThermal) {
-      if (listCart.indexWhere((e) => e.order_serve == _printer.value) > -1) {
-        final printer = PrinterNetworkManager(_printer.ip!);
+      // if (listCart.indexWhere((e) => e.order_serve == _printer.value) > -1) {
+      final printer = PrinterNetworkManager(_printer.ip!);
 
-        PosPrintResult connect = await printer.connect();
+      PosPrintResult connect = await printer.connect();
 
+      CToast.showWithoutCOntext(
+        "Connecting to ${_printer.ip!}",
+        Colors.black,
+        Colors.white,
+      );
+      if (connect == PosPrintResult.success) {
+        final profile = await CapabilityProfile.load();
+        final generator = Generator(PaperSize.mm80, profile);
+        List<int> bytes = [];
+        bytes += generator.feed(1);
+        bytes += generator.row([
+          PosColumn(
+            text: "Order No: ",
+            width: 3,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+          PosColumn(
+            text: _data.order_no.toString(),
+            width: 9,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+        ]);
+        bytes += generator.row([
+          PosColumn(
+            text: "Customer: ",
+            width: 3,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+          PosColumn(
+            text: _data.customer_name ?? "-",
+            width: 9,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+        ]);
+        //Item
+        bytes += generator.feed(1);
+        for (var _data in listCart) {
+          // if (_printer.value == _data.order_serve) {
+          bytes += generator.row(
+            [
+              PosColumn(
+                text: _data.name ?? "-",
+                width: 8,
+                styles: PosStyles(
+                  align: PosAlign.left,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2,
+                ),
+              ),
+              PosColumn(
+                text: "x${_data.qty!.toString()}",
+                width: 4,
+                styles: PosStyles(
+                  align: PosAlign.right,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2,
+                ),
+              ),
+            ],
+          );
+          if (listAddons.indexWhere((e) => e.cart_id == _data.id) > -1) {
+            bytes += generator.text(
+              'AddOn: ${listAddons.where((e) => e.cart_id == _data.id && e.product_id == _data.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
+            );
+          }
+          if (_data.note != null) {
+            bytes += generator.text(
+              'Note: ${_data.note!}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
+            );
+          }
+          // }
+        }
+        bytes += generator.feed(1);
+        bytes += generator.text(
+          'No: ${_data.trx_number}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.text(
+          'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.text(
+          'Cashier: ${_base.dataProfile.value.full_name}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.text(
+          'Table Name: ${_data.table_name}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.feed(1);
+        bytes += generator.cut();
+        PosPrintResult printing = await printer.printTicket(bytes);
+
+        print(printing.msg);
+        await printer.disconnect();
+      } else {
         CToast.showWithoutCOntext(
-          "Connecting to ${_printer.ip!}",
-          Colors.black,
+          connect.msg,
+          Colors.red,
           Colors.white,
         );
-        if (connect == PosPrintResult.success) {
-          final profile = await CapabilityProfile.load();
-          final generator = Generator(PaperSize.mm80, profile);
-          List<int> bytes = [];
-          bytes += generator.feed(1);
-          bytes += generator.row([
-            PosColumn(
-              text: "Order No: ",
-              width: 3,
-              styles: const PosStyles(align: PosAlign.left, underline: false),
-            ),
-            PosColumn(
-              text: _data.order_no.toString(),
-              width: 9,
-              styles: const PosStyles(align: PosAlign.left, underline: false),
-            ),
-          ]);
-          bytes += generator.row([
-            PosColumn(
-              text: "Customer: ",
-              width: 3,
-              styles: const PosStyles(align: PosAlign.left, underline: false),
-            ),
-            PosColumn(
-              text: _data.customer_name ?? "-",
-              width: 9,
-              styles: const PosStyles(align: PosAlign.left, underline: false),
-            ),
-          ]);
-          //Item
-          bytes += generator.feed(1);
-          for (var _data in listCart) {
-            if (_printer.value == _data.order_serve) {
-              bytes += generator.row(
-                [
-                  PosColumn(
-                    text: _data.name ?? "-",
-                    width: 8,
-                    styles: PosStyles(
-                      align: PosAlign.left,
-                      height: PosTextSize.size2,
-                      width: PosTextSize.size2,
-                    ),
-                  ),
-                  PosColumn(
-                    text: "x${_data.qty!.toString()}",
-                    width: 4,
-                    styles: PosStyles(
-                      align: PosAlign.right,
-                      height: PosTextSize.size2,
-                      width: PosTextSize.size2,
-                    ),
-                  ),
-                ],
-              );
-              if (listAddons.indexWhere((e) => e.cart_id == _data.id) > -1) {
-                bytes += generator.text(
-                  'AddOn: ${listAddons.where((e) => e.cart_id == _data.id && e.product_id == _data.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
-                  styles: PosStyles(
-                    align: PosAlign.left,
-                  ),
-                );
-              }
-              if (_data.note != null) {
-                bytes += generator.text(
-                  'Note: ${_data.note!}',
-                  styles: PosStyles(
-                    align: PosAlign.left,
-                  ),
-                );
-              }
-            }
-          }
-          bytes += generator.feed(1);
-          bytes += generator.text(
-            'No: ${_data.trx_number}',
-            styles: PosStyles(
-              align: PosAlign.left,
-            ),
-          );
-          bytes += generator.text(
-            'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
-            styles: PosStyles(
-              align: PosAlign.left,
-            ),
-          );
-          bytes += generator.text(
-            'Cashier: ${_base.dataProfile.value.full_name}',
-            styles: PosStyles(
-              align: PosAlign.left,
-            ),
-          );
-          bytes += generator.text(
-            'Table Name: ${_data.table_name}',
-            styles: PosStyles(
-              align: PosAlign.left,
-            ),
-          );
-          bytes += generator.feed(1);
-          bytes += generator.cut();
-          PosPrintResult printing = await printer.printTicket(bytes);
-
-          print(printing.msg);
-          await printer.disconnect();
-        } else {
-          CToast.showWithoutCOntext(
-            connect.msg,
-            Colors.red,
-            Colors.white,
-          );
-        }
       }
+      // }
     }
   }
 

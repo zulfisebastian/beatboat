@@ -34,6 +34,7 @@ class BalanceData {
   String? description;
   String? position;
   String? table_name;
+  String? voucher_code;
   int? last_balance;
 
   BalanceData({
@@ -45,6 +46,7 @@ class BalanceData {
     this.last_balance,
     this.position,
     this.table_name,
+    this.voucher_code,
   });
 
   BalanceData.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class BalanceData {
     last_balance = json['last_balance'];
     position = json['position'];
     table_name = json['table_name'];
+    voucher_code = json['voucher_code'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,6 +71,7 @@ class BalanceData {
     data['last_balance'] = this.last_balance;
     data['position'] = this.position;
     data['table_name'] = this.table_name;
+    data['voucher_code'] = this.voucher_code;
     return data;
   }
 }

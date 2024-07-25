@@ -66,8 +66,9 @@ class SheetVoucher extends StatelessWidget {
                   "Claim Voucher",
                   width: OtherExt().getWidth(context),
                   disabled: _transactionController.voucher.value.text == "",
-                  onPressed: () {
-                    _transactionController.checkVoucher();
+                  onPressed: () async {
+                    await _transactionController.checkVoucher();
+                    Get.back();
                   },
                 ),
               ),

@@ -6,6 +6,7 @@ import 'package:beatboat/models/transaction/transaction_model.dart';
 import 'package:beatboat/models/voucher/voucher_model.dart';
 import '../../../models/base/base_result.dart';
 import '../../constants/endpoints.dart';
+import '../../models/transaction/transaction_detail_model.dart';
 import '../base/base_repo.dart';
 
 class TransactionRepo extends BaseRepo {
@@ -99,6 +100,20 @@ class TransactionRepo extends BaseRepo {
         return _resp;
       default:
         return ReasonResponse(message: response.errorMessage);
+    }
+  }
+
+  Future<TransactionDetailResponse> getDetailTransaction(dynamic id) async {
+    BaseResult response = await get(
+      Endpoint.transactionDetail.replaceAll("{id}", id),
+    );
+
+    switch (response.status) {
+      case ResponseStatus.Success:
+        var _resp = TransactionDetailResponse.fromJson(response.data);
+        return _resp;
+      default:
+        return TransactionDetailResponse(message: response.errorMessage);
     }
   }
 }

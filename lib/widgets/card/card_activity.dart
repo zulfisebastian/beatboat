@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../constants/dimension.dart';
 import '../../controllers/theme/theme_controller.dart';
+import '../../pages/transaction/transactionDetail.dart';
 import '../../utils/extensions.dart';
 import '../components/text/ctext.dart';
 
@@ -63,112 +64,121 @@ class CardActivity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: OtherExt().getWidth(context),
-      padding: EdgeInsets.symmetric(
-        vertical: CDimension.space12,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          CDimension.space12,
+    return GestureDetector(
+      onTap: () {
+        if (data.activity!.toLowerCase() == "sales") {
+          Get.to(TransactionDetailPage(
+            transId: data.number!,
+          ));
+        }
+      },
+      child: Container(
+        width: OtherExt().getWidth(context),
+        padding: EdgeInsets.symmetric(
+          vertical: CDimension.space12,
         ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: EdgeInsets.all(
-              CDimension.space12,
-            ),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: _theme.accent.value,
-            ),
-            child: SvgPicture.asset(
-              "assets/icons/${getIconActivity()}.svg",
-              color: Colors.white,
-            ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            CDimension.space12,
           ),
-          SizedBox(
-            width: CDimension.space16,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CText(
-                  data.number ?? "-",
-                  color: _theme.textSubtitle.value,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-                SizedBox(
-                  height: CDimension.space8,
-                ),
-                CText(
-                  getTypeActivity(),
-                  color: _theme.textTitle.value,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  overflow: TextOverflow.visible,
-                  lineHeight: 1.4,
-                ),
-                SizedBox(
-                  height: CDimension.space8,
-                ),
-                CText(
-                  DateExt.reformatToLocal(
-                    data.last_update!,
-                    "yyyy-MM-DDTHH:mm:ss",
-                    "EEEE, d MMM yyyy",
-                  ),
-                  color: _theme.textSubtitle.value,
-                  fontSize: 12,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            width: CDimension.space16,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              CText(
-                StringExt.thousandFormatter(data.amount!),
-                color: data.amount!.toString().contains("-")
-                    ? _theme.error.value
-                    : _theme.accent.value,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(
+                CDimension.space12,
               ),
-              SizedBox(
-                height: CDimension.space8,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _theme.accent.value,
               ),
-              Row(
+              child: SvgPicture.asset(
+                "assets/icons/${getIconActivity()}.svg",
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(
+              width: CDimension.space16,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.timer_outlined,
+                  CText(
+                    data.number ?? "-",
                     color: _theme.textSubtitle.value,
-                    size: 16,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                   SizedBox(
-                    width: CDimension.space4,
+                    height: CDimension.space8,
+                  ),
+                  CText(
+                    getTypeActivity(),
+                    color: _theme.textTitle.value,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    overflow: TextOverflow.visible,
+                    lineHeight: 1.4,
+                  ),
+                  SizedBox(
+                    height: CDimension.space8,
                   ),
                   CText(
                     DateExt.reformatToLocal(
                       data.last_update!,
                       "yyyy-MM-DDTHH:mm:ss",
-                      "HH:mm",
+                      "EEEE, d MMM yyyy",
                     ),
                     color: _theme.textSubtitle.value,
                     fontSize: 12,
                   ),
                 ],
               ),
-            ],
-          ),
-        ],
+            ),
+            SizedBox(
+              width: CDimension.space16,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                CText(
+                  StringExt.thousandFormatter(data.amount!),
+                  color: data.amount!.toString().contains("-")
+                      ? _theme.error.value
+                      : _theme.accent.value,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+                SizedBox(
+                  height: CDimension.space8,
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.timer_outlined,
+                      color: _theme.textSubtitle.value,
+                      size: 16,
+                    ),
+                    SizedBox(
+                      width: CDimension.space4,
+                    ),
+                    CText(
+                      DateExt.reformatToLocal(
+                        data.last_update!,
+                        "yyyy-MM-DDTHH:mm:ss",
+                        "HH:mm",
+                      ),
+                      color: _theme.textSubtitle.value,
+                      fontSize: 12,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -35,6 +35,7 @@ class Endpoint {
 
   //transaction
   static const String transaction = "/transactions";
+  static const String transactionDetail = "/transactions/{id}";
   static const String transactionRefund = "/refund/{nfc}";
   static const String checkin = "/check-in/validate";
   static const String voucher = "/voucher/check";
