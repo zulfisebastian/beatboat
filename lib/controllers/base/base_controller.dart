@@ -359,9 +359,9 @@ class BaseController extends GetxController {
           ),
         );
       }
-      if (_data.note != null) {
+      if (_item.note != null) {
         await SunmiPrinter.printText(
-          'Note: ${_data.note!}',
+          'Note: ${_item.note!}',
           style: SunmiStyle(
             fontSize: SunmiFontSize.MD,
             bold: false,

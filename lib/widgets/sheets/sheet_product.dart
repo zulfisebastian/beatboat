@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:beatboat/constants/dimension.dart';
 import 'package:beatboat/constants/endpoints.dart';
 import 'package:beatboat/models/product/cart_model.dart';
