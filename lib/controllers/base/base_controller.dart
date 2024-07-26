@@ -335,8 +335,8 @@ class BaseController extends GetxController {
     //Item
     await SunmiPrinter.line();
     await SunmiPrinter.lineWrap(1);
-    await SunmiPrinter.setFontSize(SunmiFontSize.LG);
     for (var _item in _data.details!) {
+      await SunmiPrinter.setFontSize(SunmiFontSize.LG);
       await SunmiPrinter.printRow(cols: [
         ColumnMaker(
           text: _item.product!.name ?? "-",
@@ -368,6 +368,7 @@ class BaseController extends GetxController {
             align: SunmiPrintAlign.LEFT,
           ),
         );
+        await SunmiPrinter.lineWrap(1);
       }
     }
     await SunmiPrinter.resetBold();
