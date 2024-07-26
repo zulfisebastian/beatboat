@@ -334,9 +334,9 @@ class TransactionDetailController extends GetxController {
               ),
             );
           }
-          if (_data.note != null) {
+          if (_item.note != null) {
             bytes += generator.text(
-              'Note: ${_data.note!}',
+              'Note: ${_item.note!}',
               styles: PosStyles(
                 align: PosAlign.left,
               ),
