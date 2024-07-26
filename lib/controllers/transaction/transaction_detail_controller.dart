@@ -152,7 +152,8 @@ class TransactionDetailController extends GetxController {
           align: SunmiPrintAlign.LEFT,
         ),
         ColumnMaker(
-          text: StringExt.formatRupiah(_data.total_amount),
+          text: StringExt.formatRupiah(
+              _data.total_amount! + _data.discount_amount!),
           width: 16,
           align: SunmiPrintAlign.RIGHT,
         ),
@@ -176,7 +177,7 @@ class TransactionDetailController extends GetxController {
           align: SunmiPrintAlign.LEFT,
         ),
         ColumnMaker(
-          text: StringExt.formatRupiah(_data.subtotal),
+          text: StringExt.formatRupiah(_data.total_amount),
           width: 16,
           align: SunmiPrintAlign.RIGHT,
         ),
@@ -189,7 +190,7 @@ class TransactionDetailController extends GetxController {
           align: SunmiPrintAlign.LEFT,
         ),
         ColumnMaker(
-          text: StringExt.formatRupiah(_data.subtotal),
+          text: StringExt.formatRupiah(_data.total_amount),
           width: 16,
           align: SunmiPrintAlign.RIGHT,
         ),
@@ -228,7 +229,7 @@ class TransactionDetailController extends GetxController {
         align: SunmiPrintAlign.LEFT,
       ),
       ColumnMaker(
-        text: StringExt.formatRupiah(_data.total_amount),
+        text: StringExt.formatRupiah(_data.subtotal),
         width: 16,
         align: SunmiPrintAlign.RIGHT,
       ),
