@@ -349,6 +349,26 @@ class BaseController extends GetxController {
           align: SunmiPrintAlign.RIGHT,
         ),
       ]);
+      if (_item.addons!.length > 0) {
+        await SunmiPrinter.printText(
+          'AddOn: ${_item.addons!.map((e) => "x${e.qty} ${e.addons!.capitalizeFirst}").join(", ")}',
+          style: SunmiStyle(
+            fontSize: SunmiFontSize.MD,
+            bold: false,
+            align: SunmiPrintAlign.LEFT,
+          ),
+        );
+      }
+      if (_data.note != null) {
+        await SunmiPrinter.printText(
+          'Note: ${_data.note!}',
+          style: SunmiStyle(
+            fontSize: SunmiFontSize.MD,
+            bold: false,
+            align: SunmiPrintAlign.LEFT,
+          ),
+        );
+      }
     }
     await SunmiPrinter.resetBold();
     await SunmiPrinter.resetFontSize();

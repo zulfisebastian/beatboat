@@ -511,22 +511,22 @@ class TransactionController extends GetxController {
     );
     await SunmiPrinter.line();
     //Item
-    for (var _data in listCart) {
+    for (var _item in listCart) {
       await SunmiPrinter.printRow(cols: [
         ColumnMaker(
-          text: _data.name ?? "-",
+          text: _item.name ?? "-",
           width: 22,
           align: SunmiPrintAlign.LEFT,
         ),
         ColumnMaker(
-          text: _data.unit ?? "UNIT",
+          text: _item.unit ?? "UNIT",
           width: 8,
           align: SunmiPrintAlign.RIGHT,
         ),
       ]);
       await SunmiPrinter.printRow(cols: [
         ColumnMaker(
-          text: "${StringExt.thousandFormatter(_data.sell_price)}",
+          text: "${StringExt.thousandFormatter(_item.sell_price)}",
           width: 10,
           align: SunmiPrintAlign.LEFT,
         ),
@@ -536,7 +536,7 @@ class TransactionController extends GetxController {
           align: SunmiPrintAlign.LEFT,
         ),
         ColumnMaker(
-          text: _data.qty!.toString(),
+          text: _item.qty!.toString(),
           width: 2,
           align: SunmiPrintAlign.LEFT,
         ),
@@ -547,12 +547,32 @@ class TransactionController extends GetxController {
         ),
         ColumnMaker(
           text: "${StringExt.formatRupiah(
-            _data.sell_price! * _data.qty!,
+            _item.sell_price! * _item.qty!,
           )}",
           width: 14,
           align: SunmiPrintAlign.RIGHT,
         ),
       ]);
+      if (listAddons.indexWhere((e) => e.cart_id == _item.id) > -1) {
+        await SunmiPrinter.printText(
+          'AddOn: ${listAddons.where((e) => e.cart_id == _item.id && e.product_id == _item.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
+          style: SunmiStyle(
+            fontSize: SunmiFontSize.MD,
+            bold: false,
+            align: SunmiPrintAlign.LEFT,
+          ),
+        );
+      }
+      if (_item.note != null) {
+        await SunmiPrinter.printText(
+          'Note: ${_item.note!}',
+          style: SunmiStyle(
+            fontSize: SunmiFontSize.MD,
+            bold: false,
+            align: SunmiPrintAlign.LEFT,
+          ),
+        );
+      }
     }
     await SunmiPrinter.line();
     if (calculateDiscount() > 0) {

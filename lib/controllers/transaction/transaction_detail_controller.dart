@@ -121,6 +121,27 @@ class TransactionDetailController extends GetxController {
           align: SunmiPrintAlign.RIGHT,
         ),
       ]);
+
+      if (_item.addons!.length > 0) {
+        await SunmiPrinter.printText(
+          'AddOn: ${_item.addons!.map((e) => "x${e.qty} ${e.addons!.capitalizeFirst}").join(", ")}',
+          style: SunmiStyle(
+            fontSize: SunmiFontSize.MD,
+            bold: false,
+            align: SunmiPrintAlign.LEFT,
+          ),
+        );
+      }
+      if (_data.note != null) {
+        await SunmiPrinter.printText(
+          'Note: ${_data.note!}',
+          style: SunmiStyle(
+            fontSize: SunmiFontSize.MD,
+            bold: false,
+            align: SunmiPrintAlign.LEFT,
+          ),
+        );
+      }
     }
     await SunmiPrinter.line();
     if (_data.discount_amount! > 0) {
@@ -305,23 +326,22 @@ class TransactionDetailController extends GetxController {
               ),
             ],
           );
-          // if (listAddons.indexWhere((e) => e.cart_id == _item.id) > -1) {
-          //   bytes += generator.text(
-          //     'AddOn: ${listAddons.where((e) => e.cart_id == _data.id && e.product_id == _data.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
-          //     styles: PosStyles(
-          //       align: PosAlign.left,
-          //     ),
-          //   );
-          // }
-          // if (_data.note != null) {
-          //   bytes += generator.text(
-          //     'Note: ${_data.note!}',
-          //     styles: PosStyles(
-          //       align: PosAlign.left,
-          //     ),
-          //   );
-          // }
-          // }
+          if (_item.addons!.length > 0) {
+            bytes += generator.text(
+              'AddOn: ${_item.addons!.map((e) => "x${e.qty} ${e.addons!.capitalizeFirst}").join(", ")}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
+            );
+          }
+          if (_data.note != null) {
+            bytes += generator.text(
+              'Note: ${_data.note!}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
+            );
+          }
         }
         bytes += generator.feed(1);
         bytes += generator.text(

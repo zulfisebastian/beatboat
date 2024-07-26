@@ -155,6 +155,7 @@ class DetailTransactionData {
   String? note;
   String? status;
   ProductData? product;
+  List<AddonsTransactionData>? addons;
 
   DetailTransactionData({
     this.id,
@@ -166,6 +167,7 @@ class DetailTransactionData {
     this.note,
     this.status,
     this.product,
+    this.addons,
   });
 
   DetailTransactionData.fromJson(Map<String, dynamic> json) {
@@ -180,6 +182,12 @@ class DetailTransactionData {
     product = json['product'] != null
         ? new ProductData.fromJson(json['product'])
         : null;
+    if (json['addons'] != null) {
+      addons = <AddonsTransactionData>[];
+      json['addons'].forEach((v) {
+        addons?.add(new AddonsTransactionData.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -194,6 +202,9 @@ class DetailTransactionData {
     data['status'] = this.status;
     if (this.product != null) {
       data['product'] = this.product?.toJson();
+    }
+    if (this.addons != null) {
+      data['addons'] = this.addons?.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -217,6 +228,28 @@ class RefundTransactionData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['code'] = this.code;
+    return data;
+  }
+}
+
+class AddonsTransactionData {
+  int? qty;
+  String? addons;
+
+  AddonsTransactionData({
+    this.qty,
+    this.addons,
+  });
+
+  AddonsTransactionData.fromJson(Map<String, dynamic> json) {
+    qty = json['qty'];
+    addons = json['addons'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['qty'] = this.qty;
+    data['addons'] = this.addons;
     return data;
   }
 }
