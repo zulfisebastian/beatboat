@@ -154,7 +154,7 @@ class _SheetProductPackageState extends State<SheetProductPackage> {
                                               width: CDimension.space8,
                                             ),
                                             CText(
-                                              "Max ${widget.data.min_selection ?? 0} item",
+                                              "Max ${widget.data.min_selection ?? 0} counter",
                                               color: _theme.textSubtitle.value,
                                               fontSize: 14,
                                             ),
@@ -333,7 +333,7 @@ class AddonCard extends StatelessWidget {
                 color: _theme.textTitle.value,
               ),
               SizedBox(
-                height: CDimension.space4,
+                height: CDimension.space6,
               ),
               CText(
                 _data.price != null
@@ -341,7 +341,7 @@ class AddonCard extends StatelessWidget {
                         ? "Free"
                         : StringExt.formatRupiah(_data.price!)
                     : "Free",
-                fontSize: 14,
+                fontSize: 16,
                 color: _theme.accent.value,
               ),
             ],
@@ -361,10 +361,7 @@ class AddonCard extends StatelessWidget {
                 }
               },
               onIncrease: () {
-                if (widget.data.min_selection! -
-                        _package.getAddonLength(
-                            _data.addon_id!, widget.data.id!) !=
-                    0) {
+                if (_package.checkIfCanIncrease(_data, widget.data)) {
                   _package.increaseAddons(_data, widget.data);
                 }
               },
@@ -373,12 +370,10 @@ class AddonCard extends StatelessWidget {
                           0
                       ? _theme.accent.value
                       : _theme.textSubtitle.value,
-              increaseBackground: widget.data.min_selection! -
-                          _package.getAddonLength(
-                              _data.addon_id!, widget.data.id!) !=
-                      0
-                  ? _theme.accent.value
-                  : _theme.textSubtitle.value,
+              increaseBackground:
+                  _package.checkIfCanIncrease(_data, widget.data)
+                      ? _theme.accent.value
+                      : _theme.textSubtitle.value,
               qtyColor: _theme.textTitle.value,
               sizeIcon: CDimension.space32,
             ),

@@ -175,12 +175,14 @@ class ProductAddonDetailData {
   String? product_id;
   String? name;
   int? price;
+  int? counter;
 
   ProductAddonDetailData({
     this.addon_id,
     this.product_id,
     this.name,
     this.price,
+    this.counter,
   });
 
   ProductAddonDetailData.fromJson(Map<String, dynamic> json) {
@@ -188,6 +190,7 @@ class ProductAddonDetailData {
     product_id = json['product_id'];
     name = json['name'];
     price = json['price'];
+    counter = json['counter'];
   }
 
   Map<String, dynamic> toJson() {
@@ -196,6 +199,7 @@ class ProductAddonDetailData {
     data['product_id'] = this.product_id;
     data['name'] = this.name;
     data['price'] = this.price;
+    data['counter'] = this.counter;
     return data;
   }
 }

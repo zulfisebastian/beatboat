@@ -163,12 +163,14 @@ class PackageAddonDetailData {
   String? product_id;
   String? name;
   int? price;
+  int? counter;
 
   PackageAddonDetailData({
     this.addon_id,
     this.product_id,
     this.name,
     this.price,
+    this.counter,
   });
 
   PackageAddonDetailData.fromJson(Map<String, dynamic> json) {
@@ -176,6 +178,7 @@ class PackageAddonDetailData {
     product_id = json['product_id'];
     name = json['name'];
     price = json['price'];
+    counter = json['counter'];
   }
 
   Map<String, dynamic> toJson() {
@@ -184,6 +187,7 @@ class PackageAddonDetailData {
     data['product_id'] = this.product_id;
     data['name'] = this.name;
     data['price'] = this.price;
+    data['counter'] = this.counter;
     return data;
   }
 }

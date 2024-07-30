@@ -452,6 +452,10 @@ class TransactionController extends GetxController {
   }
 
   printStruck(AddTransactionData _data, String type) async {
+    final BalanceController _balanceController = Get.find(
+      tag: 'BalanceController',
+    );
+
     await _base.getProfile();
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.bindingPrinter();
@@ -509,6 +513,16 @@ class TransactionController extends GetxController {
         align: SunmiPrintAlign.LEFT,
       ),
     );
+    if (type != "Split Bill") {
+      await SunmiPrinter.printText(
+        'Last Balance: ${_balanceController.balance.value.last_balance}',
+        style: SunmiStyle(
+          fontSize: SunmiFontSize.MD,
+          bold: false,
+          align: SunmiPrintAlign.LEFT,
+        ),
+      );
+    }
     await SunmiPrinter.line();
     //Item
     for (var _item in listCart) {

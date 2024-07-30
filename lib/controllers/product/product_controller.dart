@@ -252,6 +252,7 @@ class ProductController extends GetxController {
           _addon.name = _data.name;
           _addon.price = _data.price;
           _addon.qty = 1;
+          _addon.counter = _data.counter;
           AddonTable().addAddon(_addon);
         }
       }
@@ -342,7 +343,7 @@ class ProductController extends GetxController {
     if (data.length > 0) {
       var total = 0;
       for (var _data in data) {
-        total += _data.qty!;
+        total += (_data.qty! * _data.counter!);
       }
       return total;
     } else {
@@ -363,6 +364,20 @@ class ProductController extends GetxController {
         .where((e) => e.addon_id == _addon_id && e.cart_id == cart_id)
         .toList()
         .length;
+  }
+
+  checkIfCanIncrease(ProductAddonDetailData _addon, CartData _cart) {
+    var remainderQty =
+        _cart.min_selection! - getAddonLength(_addon.addon_id!, _cart.id!);
+    if (remainderQty != 0) {
+      if (_addon.counter! <= remainderQty) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   }
 
   Rx<ProductData> choosedProduct = ProductData().obs;

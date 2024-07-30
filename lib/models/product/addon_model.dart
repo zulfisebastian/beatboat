@@ -6,6 +6,7 @@ class AddonData {
   String? name;
   int? price;
   int? qty;
+  int? counter;
 
   AddonData({
     this.id,
@@ -15,6 +16,7 @@ class AddonData {
     this.name,
     this.price,
     this.qty,
+    this.counter,
   });
 
   AddonData.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class AddonData {
     name = json['name'];
     price = json['price'];
     qty = json['qty'];
+    counter = json['counter'];
   }
 
   Map<String, dynamic> toJson() {
@@ -36,6 +39,7 @@ class AddonData {
     data['name'] = this.name;
     data['price'] = this.price;
     data['qty'] = this.qty;
+    data['counter'] = this.counter;
     return data;
   }
 }

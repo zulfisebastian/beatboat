@@ -16,6 +16,7 @@ class AddonTable {
       "name" STRING NOT NULL,
       "price" INTEGER NOT NULL,
       "qty" INTEGER NOT NULL,
+      "counter" INTEGER NOT NULL,
       PRIMARY KEY("id")
     );""");
   }

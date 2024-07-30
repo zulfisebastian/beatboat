@@ -156,7 +156,7 @@ class _SheetProductState extends State<SheetProduct> {
                                               width: CDimension.space8,
                                             ),
                                             CText(
-                                              "Max ${widget.data.min_selection ?? 0} item",
+                                              "Max ${widget.data.min_selection ?? 0} counter",
                                               color: _theme.textSubtitle.value,
                                               fontSize: 14,
                                             ),
@@ -337,16 +337,28 @@ class AddonCard extends StatelessWidget {
                 color: _theme.textTitle.value,
               ),
               SizedBox(
-                height: CDimension.space4,
+                height: CDimension.space6,
               ),
-              CText(
-                _data.price != null
-                    ? _data.price == 0
-                        ? "Free"
-                        : StringExt.formatRupiah(_data.price!)
-                    : "Free",
-                fontSize: 14,
-                color: _theme.accent.value,
+              Row(
+                children: [
+                  CText(
+                    _data.price != null
+                        ? _data.price == 0
+                            ? "Free"
+                            : StringExt.formatRupiah(_data.price!)
+                        : "Free",
+                    fontSize: 16,
+                    color: _theme.accent.value,
+                  ),
+                  // SizedBox(
+                  //   width: CDimension.space4,
+                  // ),
+                  // CText(
+                  //   "-  counter @${_data.counter}",
+                  //   fontSize: 14,
+                  //   color: _theme.textTitle.value,
+                  // ),
+                ],
               ),
             ],
           ),
@@ -365,10 +377,7 @@ class AddonCard extends StatelessWidget {
                 }
               },
               onIncrease: () {
-                if (widget.data.min_selection! -
-                        _product.getAddonLength(
-                            _data.addon_id!, widget.data.id!) !=
-                    0) {
+                if (_product.checkIfCanIncrease(_data, widget.data)) {
                   _product.increaseAddons(_data, widget.data);
                 }
               },
@@ -377,12 +386,10 @@ class AddonCard extends StatelessWidget {
                           0
                       ? _theme.accent.value
                       : _theme.textSubtitle.value,
-              increaseBackground: widget.data.min_selection! -
-                          _product.getAddonLength(
-                              _data.addon_id!, widget.data.id!) !=
-                      0
-                  ? _theme.accent.value
-                  : _theme.textSubtitle.value,
+              increaseBackground:
+                  _product.checkIfCanIncrease(_data, widget.data)
+                      ? _theme.accent.value
+                      : _theme.textSubtitle.value,
               qtyColor: _theme.textTitle.value,
               sizeIcon: CDimension.space32,
             ),
