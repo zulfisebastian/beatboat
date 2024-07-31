@@ -71,7 +71,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                       repeat: false,
                     ),
                     CText(
-                      "Transaksi Berhasil",
+                      "Transaction Success",
                       fontSize: 24,
                       color: Colors.white,
                     ),
@@ -264,7 +264,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                   ),
                   Expanded(
                     child: CustomButtonBlue(
-                      "Print Kitchen",
+                      "Print Bar",
                       onPressed: () {
                         _trans.printBillThermal(_trans.transactionData.value);
                       },

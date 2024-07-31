@@ -343,7 +343,7 @@ class TransactionController extends GetxController {
             ),
             Expanded(
               child: CustomButtonBlue(
-                "Receipt Waiter",
+                "Receipt Bar",
                 onPressed: () async {
                   await printBillThermal(_resp.data!);
                 },
@@ -428,7 +428,7 @@ class TransactionController extends GetxController {
             ),
             Expanded(
               child: CustomButtonBlue(
-                "Receipt Waiter",
+                "Receipt Bar",
                 onPressed: () async {
                   await printBillThermal(_resp.data!);
                 },
