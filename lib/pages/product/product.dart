@@ -32,10 +32,12 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+      await _product.initAllData();
       if (widget.categoryId != null) {
         _product.choosedCategory(widget.categoryId!);
       }
+      _product.getDataProduct();
     });
   }
 

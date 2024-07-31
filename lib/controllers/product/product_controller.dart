@@ -27,7 +27,6 @@ class ProductController extends GetxController {
   void onReady() {
     super.onReady();
     _base.initConnectivity();
-    initAllData();
     scrollController.addListener(scrollControllerListener);
   }
 
@@ -43,6 +42,7 @@ class ProductController extends GetxController {
         page.value < totalPage.value) {
       isLoading = true;
       isLoadMoreData.value = true;
+      print("SCROLL TRIGGERED");
       getDataProduct(true);
     }
   }
@@ -53,6 +53,7 @@ class ProductController extends GetxController {
     _debounce = Timer(const Duration(milliseconds: 500), () {
       page.value = 0;
       totalPage.value = 1;
+      print("SEARCH TRIGGERED");
       getDataProduct(false);
     });
   }
@@ -65,7 +66,6 @@ class ProductController extends GetxController {
 
   initAllData() {
     getDataCategory();
-    getDataProduct();
     renewListCart();
     renewListAddOn();
   }
@@ -124,11 +124,8 @@ class ProductController extends GetxController {
 
     page.value = 0;
     totalPage.value = 1;
+    print("CATEGORY CHANGE TRIGGERED");
     getDataProduct(false);
-  }
-
-  List<ProductData> getProductAll(String category) {
-    return listProduct;
   }
 
   RxList<CartData> listCart = <CartData>[].obs;
