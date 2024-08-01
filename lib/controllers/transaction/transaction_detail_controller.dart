@@ -10,6 +10,7 @@ import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
 import 'package:flutter_esc_pos_network/flutter_esc_pos_network.dart';
 import '../../utils/extensions.dart';
 import '../../widgets/components/ctoast.dart';
+import '../balance/balance_controller.dart';
 import '../base/base_controller.dart';
 
 class TransactionDetailController extends GetxController {
@@ -28,7 +29,13 @@ class TransactionDetailController extends GetxController {
   }
 
   printStruck(TransactionData _data) async {
+    final BalanceController _balanceController = Get.find(
+      tag: 'BalanceController',
+    );
+
     await _base.getProfile();
+    await _balanceController
+        .checkBalance(_balanceController.balance.value.nfc_uid!);
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.bindingPrinter();
 
@@ -77,6 +84,24 @@ class TransactionDetailController extends GetxController {
         align: SunmiPrintAlign.LEFT,
       ),
     );
+    await SunmiPrinter.printText(
+      'Bill Type: ${_data.payment_method}',
+      style: SunmiStyle(
+        fontSize: SunmiFontSize.MD,
+        bold: false,
+        align: SunmiPrintAlign.LEFT,
+      ),
+    );
+    if (_data.payment_method == "STANDALONE") {
+      await SunmiPrinter.printText(
+        'Last Balance: ${StringExt.thousandFormatter(_balanceController.balance.value.last_balance)}',
+        style: SunmiStyle(
+          fontSize: SunmiFontSize.MD,
+          bold: false,
+          align: SunmiPrintAlign.LEFT,
+        ),
+      );
+    }
     await SunmiPrinter.line();
     //Item
     for (var _item in _data.details!) {

@@ -517,7 +517,7 @@ class TransactionController extends GetxController {
     );
     if (type != "Split Bill") {
       await SunmiPrinter.printText(
-        'Last Balance: ${_balanceController.balance.value.last_balance}',
+        'Last Balance: ${StringExt.thousandFormatter(_balanceController.balance.value.last_balance)}',
         style: SunmiStyle(
           fontSize: SunmiFontSize.MD,
           bold: false,
