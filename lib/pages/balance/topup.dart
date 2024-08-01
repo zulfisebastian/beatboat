@@ -59,7 +59,7 @@ class _TopUpPageState extends State<TopUpPage> {
       backgroundColor: _theme.backgroundApp.value,
       appBar: CustomAppBar(
         context: context,
-        title: "Top Up",
+        title: "TOP UP",
       ),
       bottomSheet: Material(
         elevation: 20,

@@ -107,6 +107,7 @@ class TransactionDetailCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                SizedBox(height: CDimension.space12),
                 CDivider(height: 1),
                 SizedBox(height: CDimension.space4),
                 Container(

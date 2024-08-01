@@ -457,6 +457,8 @@ class TransactionController extends GetxController {
     );
 
     await _base.getProfile();
+    await _balanceController
+        .checkBalance(_balanceController.balance.value.nfc_uid!);
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.bindingPrinter();
 
@@ -752,46 +754,46 @@ class TransactionController extends GetxController {
         //Item
         bytes += generator.feed(1);
         for (var _data in listCart) {
-          // if (_printer.value == _data.order_serve) {
-          bytes += generator.row(
-            [
-              PosColumn(
-                text: _data.name ?? "-",
-                width: 8,
+          if (_printer.value == _data.order_serve) {
+            bytes += generator.row(
+              [
+                PosColumn(
+                  text: _data.name ?? "-",
+                  width: 8,
+                  styles: PosStyles(
+                    align: PosAlign.left,
+                    height: PosTextSize.size2,
+                    width: PosTextSize.size2,
+                  ),
+                ),
+                PosColumn(
+                  text: "x${_data.qty!.toString()}",
+                  width: 4,
+                  styles: PosStyles(
+                    align: PosAlign.right,
+                    height: PosTextSize.size2,
+                    width: PosTextSize.size2,
+                  ),
+                ),
+              ],
+            );
+            if (listAddons.indexWhere((e) => e.cart_id == _data.id) > -1) {
+              bytes += generator.text(
+                'AddOn: ${listAddons.where((e) => e.cart_id == _data.id && e.product_id == _data.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
                 styles: PosStyles(
                   align: PosAlign.left,
-                  height: PosTextSize.size2,
-                  width: PosTextSize.size2,
                 ),
-              ),
-              PosColumn(
-                text: "x${_data.qty!.toString()}",
-                width: 4,
+              );
+            }
+            if (_data.note != null) {
+              bytes += generator.text(
+                'Note: ${_data.note!}',
                 styles: PosStyles(
-                  align: PosAlign.right,
-                  height: PosTextSize.size2,
-                  width: PosTextSize.size2,
+                  align: PosAlign.left,
                 ),
-              ),
-            ],
-          );
-          if (listAddons.indexWhere((e) => e.cart_id == _data.id) > -1) {
-            bytes += generator.text(
-              'AddOn: ${listAddons.where((e) => e.cart_id == _data.id && e.product_id == _data.product_id).map((e) => "x${e.qty} ${e.name!.capitalizeFirst}").join(", ")}',
-              styles: PosStyles(
-                align: PosAlign.left,
-              ),
-            );
+              );
+            }
           }
-          if (_data.note != null) {
-            bytes += generator.text(
-              'Note: ${_data.note!}',
-              styles: PosStyles(
-                align: PosAlign.left,
-              ),
-            );
-          }
-          // }
         }
         bytes += generator.feed(1);
         bytes += generator.text(

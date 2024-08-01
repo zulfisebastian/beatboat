@@ -1,4 +1,5 @@
 import 'package:beatboat/models/activity/activity_model.dart';
+import 'package:beatboat/pages/activity/activity_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -69,6 +70,10 @@ class CardActivity extends StatelessWidget {
         if (data.activity!.toLowerCase() == "sales") {
           Get.to(TransactionDetailPage(
             transId: data.number!,
+          ));
+        } else if (data.activity!.toLowerCase() == "top_up") {
+          Get.to(ActivityDetailPage(
+            id: data.number!,
           ));
         }
       },

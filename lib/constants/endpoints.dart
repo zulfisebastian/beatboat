@@ -14,6 +14,7 @@ class Endpoint {
 
   //activity
   static const String activity = "/activities";
+  static const String activityDetail = "/activities/{id}";
 
   //activity
   static const String package = "/packages/{nfc}";
