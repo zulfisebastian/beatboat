@@ -204,7 +204,10 @@ class _RefundDetailPageState extends State<RefundDetailPage> {
                                           ),
                                           CText(
                                             StringExt.formatRupiah(
-                                              _detail.product!.sell_price,
+                                              _detail.discounted_unit_price! > 0
+                                                  ? _detail
+                                                      .discounted_unit_price!
+                                                  : _detail.unit_price!,
                                             ),
                                             color: _theme.accent.value,
                                           ),

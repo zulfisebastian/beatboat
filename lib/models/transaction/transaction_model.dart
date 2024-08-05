@@ -38,6 +38,7 @@ class TransactionData {
   String? number;
   String? payment_method;
   String? customer_name;
+  String? nfc_uid;
   int? total_amount;
   int? tax;
   int? service_tax;
@@ -61,6 +62,7 @@ class TransactionData {
     this.number,
     this.payment_method,
     this.customer_name,
+    this.nfc_uid,
     this.tax,
     this.total_amount,
     this.service_tax,
@@ -85,6 +87,7 @@ class TransactionData {
     number = json['number'];
     payment_method = json['payment_method'];
     customer_name = json['customer_name'];
+    nfc_uid = json['nfc_uid'];
     tax = json['tax'];
     total_amount = json['total_amount'];
     service_tax = json['service_tax'];
@@ -120,6 +123,7 @@ class TransactionData {
     data['number'] = this.number;
     data['payment_method'] = this.payment_method;
     data['customer_name'] = this.customer_name;
+    data['nfc_uid'] = this.nfc_uid;
     data['tax'] = this.tax;
     data['total_amount'] = this.total_amount;
     data['service_tax'] = this.service_tax;
@@ -151,6 +155,7 @@ class DetailTransactionData {
   String? product_id;
   int? qty;
   int? unit_price;
+  int? discounted_unit_price;
   int? total_price;
   String? note;
   String? status;
@@ -162,6 +167,7 @@ class DetailTransactionData {
     this.transaction_id,
     this.product_id,
     this.unit_price,
+    this.discounted_unit_price,
     this.total_price,
     this.qty,
     this.note,
@@ -175,6 +181,7 @@ class DetailTransactionData {
     transaction_id = json['transaction_id'];
     product_id = json['product_id'];
     unit_price = json['unit_price'];
+    discounted_unit_price = json['discounted_unit_price'];
     total_price = json['total_price'];
     qty = json['qty'];
     note = json['note'];
@@ -196,6 +203,7 @@ class DetailTransactionData {
     data['transaction_id'] = this.transaction_id;
     data['product_id'] = this.product_id;
     data['unit_price'] = this.unit_price;
+    data['discounted_unit_price'] = this.discounted_unit_price;
     data['total_price'] = this.total_price;
     data['qty'] = this.qty;
     data['note'] = this.note;

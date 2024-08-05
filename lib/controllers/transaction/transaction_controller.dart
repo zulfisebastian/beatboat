@@ -515,16 +515,6 @@ class TransactionController extends GetxController {
         align: SunmiPrintAlign.LEFT,
       ),
     );
-    if (type != "Split Bill") {
-      await SunmiPrinter.printText(
-        'Last Balance: ${StringExt.thousandFormatter(_balanceController.balance.value.last_balance)}',
-        style: SunmiStyle(
-          fontSize: SunmiFontSize.MD,
-          bold: false,
-          align: SunmiPrintAlign.LEFT,
-        ),
-      );
-    }
     await SunmiPrinter.line();
     //Item
     for (var _item in listCart) {
@@ -684,6 +674,21 @@ class TransactionController extends GetxController {
         align: SunmiPrintAlign.RIGHT,
       ),
     ]);
+    if (type != "Split Bill") {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Last Balance",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
+        ),
+        ColumnMaker(
+          text: StringExt.thousandFormatter(
+              _balanceController.balance.value.last_balance),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
+        ),
+      ]);
+    }
     await SunmiPrinter.resetBold();
     await SunmiPrinter.lineWrap(1);
     await SunmiPrinter.printText(

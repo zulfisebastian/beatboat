@@ -29,13 +29,13 @@ class TransactionDetailController extends GetxController {
   }
 
   printStruck(TransactionData _data) async {
-    final BalanceController _balanceController = Get.find(
-      tag: 'BalanceController',
+    final BalanceController _balanceController = Get.put(
+      BalanceController(),
+      tag: "BalanceController",
     );
 
     await _base.getProfile();
-    await _balanceController
-        .checkBalance(_balanceController.balance.value.nfc_uid!);
+    await _balanceController.checkBalance(_data.nfc_uid!);
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.bindingPrinter();
 
@@ -92,16 +92,6 @@ class TransactionDetailController extends GetxController {
         align: SunmiPrintAlign.LEFT,
       ),
     );
-    if (_data.payment_method == "STANDALONE") {
-      await SunmiPrinter.printText(
-        'Last Balance: ${StringExt.thousandFormatter(_balanceController.balance.value.last_balance)}',
-        style: SunmiStyle(
-          fontSize: SunmiFontSize.MD,
-          bold: false,
-          align: SunmiPrintAlign.LEFT,
-        ),
-      );
-    }
     await SunmiPrinter.line();
     //Item
     for (var _item in _data.details!) {
@@ -259,6 +249,21 @@ class TransactionDetailController extends GetxController {
         align: SunmiPrintAlign.RIGHT,
       ),
     ]);
+    if (_data.payment_method == "STANDALONE") {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Last Balance",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
+        ),
+        ColumnMaker(
+          text: StringExt.thousandFormatter(
+              _balanceController.balance.value.last_balance),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
+        ),
+      ]);
+    }
     await SunmiPrinter.resetBold();
     await SunmiPrinter.lineWrap(1);
     await SunmiPrinter.printText(
