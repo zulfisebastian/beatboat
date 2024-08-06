@@ -197,8 +197,8 @@ class RefundController extends GetxController {
   }
 
   printStruck() async {
-    final BalanceController _balanceController = Get.find(
-      tag: 'BalanceController',
+    final BalanceController _balanceController = Get.put(
+      BalanceController(),
     );
 
     await _base.getProfile();
@@ -269,7 +269,7 @@ class RefundController extends GetxController {
           : _item.unit_price!;
       await SunmiPrinter.printRow(cols: [
         ColumnMaker(
-          text: _item.product!.name ?? "-",
+          text: "[REFUND] ${_item.product!.name ?? "-"}",
           width: 22,
           align: SunmiPrintAlign.LEFT,
         ),
@@ -464,7 +464,7 @@ class RefundController extends GetxController {
           bytes += generator.row(
             [
               PosColumn(
-                text: _data.product!.name ?? "-",
+                text: "[REFUND] ${_data.product!.name ?? "-"}",
                 width: 8,
                 styles: PosStyles(
                   align: PosAlign.left,
