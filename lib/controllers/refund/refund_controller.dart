@@ -202,8 +202,7 @@ class RefundController extends GetxController {
     );
 
     await _base.getProfile();
-    await _balanceController
-        .checkBalance(_balanceController.balance.value.nfc_uid!);
+    await _balanceController.checkBalance(choosedTransaction.value.nfc_uid!);
     await SunmiPrinter.initPrinter();
     await SunmiPrinter.bindingPrinter();
 
