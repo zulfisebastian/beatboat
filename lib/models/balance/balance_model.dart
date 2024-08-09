@@ -35,7 +35,10 @@ class BalanceData {
   String? position;
   String? table_name;
   String? voucher_code;
+  int? total_credit;
+  int? refundable_top_up;
   int? last_balance;
+  int? total_last_balance;
 
   BalanceData({
     this.wristband_code,
@@ -43,10 +46,13 @@ class BalanceData {
     this.customer_name,
     this.type,
     this.description,
-    this.last_balance,
     this.position,
     this.table_name,
     this.voucher_code,
+    this.total_credit,
+    this.refundable_top_up,
+    this.last_balance,
+    this.total_last_balance,
   });
 
   BalanceData.fromJson(Map<String, dynamic> json) {
@@ -55,10 +61,13 @@ class BalanceData {
     customer_name = json['customer_name'];
     type = json['type'];
     description = json['description'];
-    last_balance = json['last_balance'];
     position = json['position'];
     table_name = json['table_name'];
     voucher_code = json['voucher_code'];
+    last_balance = json['last_balance'];
+    total_last_balance = json['total_last_balance'];
+    total_credit = json['total_credit'];
+    refundable_top_up = json['refundable_top_up'];
   }
 
   Map<String, dynamic> toJson() {
@@ -72,6 +81,9 @@ class BalanceData {
     data['position'] = this.position;
     data['table_name'] = this.table_name;
     data['voucher_code'] = this.voucher_code;
+    data['total_credit'] = this.total_credit;
+    data['refundable_top_up'] = this.refundable_top_up;
+    data['total_last_balance'] = this.total_last_balance;
     return data;
   }
 }

@@ -50,6 +50,7 @@ class _ActivityByIdPageState extends State<ActivityByIdPage> {
                   Obx(
                     () => NFCCard(
                       balance: _activity.balance.value,
+                      showBalance: true,
                     ),
                   ),
                   SizedBox(

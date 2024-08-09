@@ -176,6 +176,7 @@ class _TopUpPageState extends State<TopUpPage> {
             Obx(
               () => NFCCard(
                 balance: _balance.balance.value,
+                showBalance: false,
               ),
             ),
             SizedBox(

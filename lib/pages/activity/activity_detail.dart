@@ -178,6 +178,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
               Obx(
                 () => NFCCard(
                   balance: _activity.balance.value,
+                  showBalance: false,
                 ),
               ),
               SizedBox(

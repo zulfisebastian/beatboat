@@ -9,10 +9,12 @@ import 'package:get/get.dart';
 
 class NFCCard extends StatelessWidget {
   final BalanceData balance;
+  final bool showBalance;
 
   NFCCard({
     Key? key,
     required this.balance,
+    required this.showBalance,
   }) : super(key: key);
 
   final ThemeController _theme = Get.find(tag: 'ThemeController');
@@ -27,7 +29,7 @@ class NFCCard extends StatelessWidget {
       ),
       child: Container(
         width: OtherExt().getWidth(context),
-        height: 150,
+        height: showBalance ? 210 : 150,
         decoration: BoxDecoration(
           gradient: getLinearGradient("vip"),
           borderRadius: BorderRadius.circular(
@@ -83,6 +85,35 @@ class NFCCard extends StatelessWidget {
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
+            ),
+            SizedBox(
+              child: showBalance
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: CDimension.space12,
+                        ),
+                        CText(
+                          "Total Credit : ${StringExt.formatRupiah(
+                            balance.total_credit ?? 0,
+                          )}",
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: CDimension.space8,
+                        ),
+                        CText(
+                          "Refundable Top Up : ${StringExt.formatRupiah(
+                            balance.refundable_top_up ?? 0,
+                          )}",
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
             ),
             Expanded(
               child: SizedBox(),
