@@ -6,12 +6,14 @@ import 'package:beatboat/models/product/category_model.dart';
 import 'package:beatboat/repositories/product/product_repo.dart';
 import 'package:beatboat/services/databases/transaction/addon_table.dart';
 import 'package:beatboat/services/databases/transaction/cart_table.dart';
+import 'package:beatboat/widgets/pages/loading.dart';
 import 'package:beatboat/widgets/sheets/sheet_failed.dart';
 import 'package:beatboat/widgets/sheets/sheet_product.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/product/product_model.dart';
 import '../../services/databases/product/category_table.dart';
+import '../../widgets/components/ctoast.dart';
 import '../base/base_controller.dart';
 
 class ProductController extends GetxController {
@@ -124,7 +126,6 @@ class ProductController extends GetxController {
 
     page.value = 0;
     totalPage.value = 1;
-    print("CATEGORY CHANGE TRIGGERED");
     getDataProduct(false);
   }
 
@@ -378,4 +379,40 @@ class ProductController extends GetxController {
   }
 
   Rx<ProductData> choosedProduct = ProductData().obs;
+
+  Rx<TextEditingController> stock = TextEditingController().obs;
+  RxBool fromStockNull = false.obs;
+  adjustStock() async {
+    Get.dialog(
+      Loading(),
+    );
+    var body = {
+      "sku": choosedProduct.value.sku,
+      "stock": stock.value.text,
+    };
+
+    var _resp = await _productRepo.postAdjustStock(body);
+    Get.back();
+
+    if (_resp.code != null) {
+      stock.value.text = "";
+      page.value = 0;
+      totalPage.value = 1;
+      getDataProduct(false);
+      if (fromStockNull.value) {
+        fromStockNull.value = false;
+        choosedProduct.value = ProductData();
+        Get.back();
+      } else {
+        Get.back();
+        Get.back();
+      }
+    } else {
+      CToast.showWithoutCOntext(
+        "Stock Adjust Failed",
+        Colors.red,
+        Colors.white,
+      );
+    }
+  }
 }

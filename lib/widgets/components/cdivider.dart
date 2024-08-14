@@ -5,10 +5,12 @@ import '../../utils/extensions.dart';
 
 class CDivider extends StatelessWidget {
   final double height;
+  final Color? color;
 
   CDivider({
     Key? key,
     required this.height,
+    this.color,
   }) : super(key: key);
 
   final ThemeController _theme = Get.find(tag: 'ThemeController');
@@ -18,7 +20,7 @@ class CDivider extends StatelessWidget {
     return Container(
       width: OtherExt().getWidth(context),
       height: height,
-      color: _theme.line.value,
+      color: color ?? _theme.line.value,
     );
   }
 }

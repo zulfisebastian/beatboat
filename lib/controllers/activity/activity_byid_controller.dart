@@ -4,8 +4,13 @@ import 'package:beatboat/repositories/activity/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../pages/result/success.dart';
+import '../../repositories/balance/balance_repo.dart';
+import '../../widgets/sheets/sheet_failed.dart';
+
 class ActivityByIdController extends GetxController {
   final ActivityRepo _activityRepo = Get.put(ActivityRepo());
+  final BalanceRepo _repoBalance = Get.put(BalanceRepo());
 
   final scrollController = ScrollController();
 
@@ -54,6 +59,69 @@ class ActivityByIdController extends GetxController {
       isLoadMoreData.value = false;
       isLoading = false;
       listActivity.refresh();
+    }
+  }
+
+  checkBalance() async {
+    String udid = Get.find(tag: "udid");
+
+    var body = {
+      "device_serial_number": udid,
+      "nfc_uid": balance.value.nfc_uid,
+    };
+
+    var _resp = await _repoBalance.checkBalance(body);
+
+    if (_resp.data != null) {
+      balance.value = _resp.data!;
+      balance.refresh();
+    } else {
+      Get.bottomSheet(
+        SheetFailed(
+          errorMessage: _resp.message!,
+        ),
+        isScrollControlled: true,
+      );
+    }
+  }
+
+  Rx<TextEditingController> amount = TextEditingController().obs;
+  refundTransaction() async {
+    String udid = Get.find(tag: "udid");
+
+    var body = {
+      "device_serial_number": udid,
+      "refund_nominal": amount.value.text.replaceAll(".", ""),
+    };
+
+    var _resp = await _activityRepo.postRefundTopUp(
+      balance.value.nfc_uid,
+      body,
+    );
+
+    if (_resp.code != null) {
+      checkBalance();
+      page.value = 0;
+      totalPage.value = 1;
+      getDataActivity(false);
+      Get.to(
+        SuccessPage(
+          title: "Your Refund Success",
+          subtitle: "Thank you, and please wait until you get the email",
+          action: "Done Refund!",
+          onFinish: () {
+            Get.back();
+            Get.back();
+          },
+        ),
+      );
+    } else {
+      Get.back();
+      Get.bottomSheet(
+        SheetFailed(
+          errorMessage: _resp.message!,
+        ),
+      );
     }
   }
 }

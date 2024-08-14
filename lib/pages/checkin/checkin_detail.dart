@@ -5,6 +5,7 @@ import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/card/package_card.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/customButton.dart';
+import 'package:beatboat/widgets/sheets/sheet_agreement.dart';
 import 'package:beatboat/widgets/sheets/sheet_checkin_detail.dart';
 import 'package:beatboat/widgets/sheets/sheet_package.dart';
 import 'package:flutter/material.dart';
@@ -63,29 +64,6 @@ class CheckinDetailPage extends StatelessWidget {
             context: context,
             title: "Check-In Detail",
           ),
-          // bottomSheet: Material(
-          //   elevation: 20,
-          //   child: Container(
-          //     width: OtherExt().getWidth(context),
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //     ),
-          //     padding: EdgeInsets.symmetric(
-          //       horizontal: CDimension.space16,
-          //       vertical: CDimension.space12,
-          //     ),
-          //     child: Obx(
-          //       () => CustomButtonBlue(
-          //         "Done Pairing",
-          //         width: OtherExt().getWidth(context),
-          //         disabled: _checkinController.disabledForm.value,
-          //         onPressed: () {
-          //           onFinish();
-          //         },
-          //       ),
-          //     ),
-          //   ),
-          // ),
           body: RefreshIndicator(
             onRefresh: () async {
               _checkinController.onRefresh();
@@ -321,7 +299,10 @@ class CheckinDetailPage extends StatelessWidget {
                                       physics: NeverScrollableScrollPhysics(),
                                       separatorBuilder:
                                           (BuildContext context, int index) {
-                                        return CDivider(height: 1);
+                                        return CDivider(
+                                          height: 1,
+                                          color: _theme.accent.value,
+                                        );
                                       },
                                       itemBuilder: (BuildContext context,
                                           int _indexData) {
@@ -385,6 +366,7 @@ class CheckinDetailPage extends StatelessWidget {
       ),
       child: ExpansionTile(
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        tilePadding: EdgeInsets.zero,
         title: CText(
           _data.booking_type != "others"
               ? _data.resource_tag == "GA"
@@ -601,14 +583,22 @@ class CheckinDetailPage extends StatelessWidget {
                         width: OtherExt().getWidth(context),
                         disabled: _checkinController.checkPairDisable(index),
                         onPressed: () {
-                          _checkinController.activeIndex.value = index;
-                          _checkinController.activeIndex.refresh();
-                          _checkinController.bookingCode.value =
-                              _data.booking_code!;
                           Get.bottomSheet(
-                            SheetNFC(
-                              type: NFCModeType.CheckIn,
+                            SheetAgreement(
+                              onAgree: () {
+                                Get.back();
+                                _checkinController.activeIndex.value = index;
+                                _checkinController.activeIndex.refresh();
+                                _checkinController.bookingCode.value =
+                                    _data.booking_code!;
+                                Get.bottomSheet(
+                                  SheetNFC(
+                                    type: NFCModeType.CheckIn,
+                                  ),
+                                );
+                              },
                             ),
+                            isScrollControlled: true,
                           );
                         },
                       )

@@ -4,6 +4,7 @@ import '../../../models/base/base_result.dart';
 import '../../constants/endpoints.dart';
 import '../../models/activity/activity_model.dart';
 import '../../models/balance/topup_model.dart';
+import '../../models/base/base_response.dart';
 import '../../services/databases/activity/activity_table.dart';
 import '../base/base_repo.dart';
 
@@ -48,6 +49,21 @@ class ActivityRepo extends BaseRepo {
         return _resp;
       default:
         return TopupResponse(message: response.errorMessage);
+    }
+  }
+
+  Future<BaseResponse> postRefundTopUp(dynamic id, dynamic body) async {
+    BaseResult response = await post(
+      Endpoint.refundTopUp.replaceAll("{id}", id),
+      body: body,
+    );
+
+    switch (response.status) {
+      case ResponseStatus.Success:
+        var _resp = BaseResponse.fromJson(response.data);
+        return _resp;
+      default:
+        return BaseResponse(message: response.errorMessage);
     }
   }
 }

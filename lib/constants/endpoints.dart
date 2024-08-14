@@ -23,6 +23,7 @@ class Endpoint {
   static const String category = "/categories";
   static const String product = "/products/all";
   static const String productByCategory = "/products/{id}";
+  static const String adjustProduct = "/products";
 
   //balance
   static const String balance = "/wristband/check-balance";
@@ -41,5 +42,6 @@ class Endpoint {
   static const String checkin = "/check-in/validate";
   static const String voucher = "/voucher/check";
   static const String refund = "/refund";
+  static const String refundTopUp = "/refund-top-up/{id}";
   static const String amount = "/list-top-up";
 }

@@ -1,5 +1,8 @@
 import 'package:beatboat/utils/extensions.dart';
+import 'package:beatboat/widgets/components/text/ctext.dart';
+import 'package:beatboat/widgets/sheets/sheet_refund_topup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../constants/dimension.dart';
 import '../../controllers/activity/activity_byid_controller.dart';
@@ -37,6 +40,36 @@ class _ActivityByIdPageState extends State<ActivityByIdPage> {
       appBar: CustomAppBar(
         context: context,
         title: "Activity",
+        action: GestureDetector(
+          onTap: () {
+            Get.bottomSheet(
+              SheetRefundTopup(),
+              isScrollControlled: true,
+            );
+          },
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: CDimension.space12,
+            ),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  "assets/icons/ic_menu_refund.svg",
+                  width: CDimension.space20,
+                  color: _theme.textTitle.value,
+                ),
+                SizedBox(
+                  width: CDimension.space8,
+                ),
+                CText(
+                  "Refund",
+                  color: _theme.textTitle.value,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       body: Stack(
         alignment: Alignment.center,

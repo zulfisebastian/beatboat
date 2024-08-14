@@ -10,6 +10,7 @@ import '../../controllers/product/product_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../../widgets/card/category_circle_card.dart';
 import '../../widgets/components/text/ctext.dart';
+import '../../widgets/sheets/sheet_adjust_stock.dart';
 import '../../widgets/sheets/sheet_another.dart';
 import '../../widgets/sheets/sheet_cart.dart';
 
@@ -161,7 +162,7 @@ class _ProductPageState extends State<ProductPage> {
                           ),
                           child: Obx(
                             () => Wrap(
-                              spacing: CDimension.space16,
+                              spacing: CDimension.space6,
                               runSpacing: CDimension.space16,
                               children: _product.listProduct.map((_data) {
                                 return Container(
@@ -194,6 +195,15 @@ class _ProductPageState extends State<ProductPage> {
                                               _product.choosedProduct.refresh();
                                               _product.addProductToCart(_data);
                                             }
+                                          } else {
+                                            _product.choosedProduct.value =
+                                                _data;
+                                            _product.choosedProduct.refresh();
+                                            _product.fromStockNull.value = true;
+                                            Get.bottomSheet(
+                                              SheetAdjustStock(),
+                                              isScrollControlled: true,
+                                            );
                                           }
                                         },
                                         behavior: HitTestBehavior.opaque,
@@ -229,11 +239,9 @@ class _ProductPageState extends State<ProductPage> {
                                                       width: (OtherExt()
                                                                   .getWidth(
                                                                       context) -
-                                                              CDimension
-                                                                  .space48 -
-                                                              4) /
-                                                          2,
-                                                      height: 180,
+                                                              50) /
+                                                          3,
+                                                      height: 120,
                                                       fit: BoxFit.cover,
                                                     ),
                                                   ),
@@ -291,8 +299,8 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       SizedBox(
                                         width: (OtherExt().getWidth(context) -
-                                                48) /
-                                            2,
+                                                50) /
+                                            3,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,

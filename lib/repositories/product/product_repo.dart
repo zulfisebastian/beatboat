@@ -47,4 +47,18 @@ class ProductRepo extends BaseRepo {
         return ProductResponse(message: response.errorMessage);
     }
   }
+
+  Future<ProductResponse> postAdjustStock(body) async {
+    BaseResult response = await post(
+      Endpoint.adjustProduct,
+      body: body,
+    );
+    switch (response.status) {
+      case ResponseStatus.Success:
+        var _resp = ProductResponse.fromJson(response.data);
+        return _resp;
+      default:
+        return ProductResponse(message: response.errorMessage);
+    }
+  }
 }

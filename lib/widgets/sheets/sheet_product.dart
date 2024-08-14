@@ -8,6 +8,7 @@ import 'package:beatboat/widgets/components/ccached_image.dart';
 import 'package:beatboat/widgets/components/cdivider.dart';
 import 'package:beatboat/widgets/components/customCounter.dart';
 import 'package:beatboat/widgets/components/customInputArea.dart';
+import 'package:beatboat/widgets/sheets/sheet_adjust_stock.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../controllers/theme/theme_controller.dart';
@@ -60,18 +61,72 @@ class _SheetProductState extends State<SheetProduct> {
                   child: Column(
                     children: [
                       Container(
+                        width: OtherExt().getWidth(context),
+                        height: 240,
                         decoration: BoxDecoration(
                           border: Border.all(
                             width: 1,
                             color: _theme.line.value,
                           ),
                         ),
-                        child: CCachedImage(
-                          width: OtherExt().getWidth(context),
-                          height: 240,
-                          url: widget.data.image_url ?? Endpoint.defaultFood,
-                          rounded: 0,
-                          alignment: Alignment.topCenter,
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: CCachedImage(
+                                width: OtherExt().getWidth(context),
+                                height: 240,
+                                url: widget.data.image_url ??
+                                    Endpoint.defaultFood,
+                                rounded: 0,
+                                alignment: Alignment.topCenter,
+                              ),
+                            ),
+                            Positioned(
+                              top: 12,
+                              right: 16,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.bottomSheet(
+                                    SheetAdjustStock(),
+                                    isScrollControlled: true,
+                                  );
+                                },
+                                behavior: HitTestBehavior.opaque,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: CDimension.space12,
+                                    vertical: CDimension.space8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(
+                                      CDimension.space16,
+                                    ),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: _theme.line.value,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.mode_edit_rounded,
+                                        size: 16,
+                                      ),
+                                      SizedBox(
+                                        width: CDimension.space4,
+                                      ),
+                                      CText(
+                                        "Adjust Stock",
+                                        color: _theme.textTitle.value,
+                                        fontSize: 12,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(
