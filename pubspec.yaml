@@ -52,6 +52,8 @@ dependencies:
   sunmi_printer_plus: ^2.1.2
   flutter_esc_pos_network: ^1.0.3
   webview_flutter: ^4.4.2
+  #Sign
+  signature: ^5.3.2
 
 dev_dependencies:
   flutter_test:

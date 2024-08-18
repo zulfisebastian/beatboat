@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:beatboat/models/checkin/checkin_model.dart';
 import 'package:beatboat/pages/checkin/checkin_detail.dart';
 import 'package:beatboat/pages/home/home.dart';
@@ -7,12 +10,17 @@ import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/sheets/sheet_failed.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:signature/signature.dart';
+import '../../constants/enums.dart';
 import '../../models/balance/balance_model.dart';
 import '../../models/transaction/onboard_model.dart';
+import '../../services/init_depedencies.dart';
 import '../../widgets/pages/loading.dart';
 import '../../widgets/popups/wristband_registered.dart';
+import '../../widgets/sheets/sheet_nfc.dart';
 
 class CheckinController extends GetxController {
   final scrollController = ScrollController();
@@ -87,6 +95,14 @@ class CheckinController extends GetxController {
     changeGender(0, listGenderCtrl[0].text);
   }
 
+  //StepFive
+  final SignatureController signatureController = SignatureController(
+    penStrokeWidth: 3,
+    penColor: Colors.black,
+    exportBackgroundColor: Colors.white,
+  );
+  Rx<XFile> dataSignature = XFile("").obs;
+  RxBool isSignatureFilled = false.obs;
   checkInEvent(context, id) async {
     String udid = Get.find(tag: "udid");
 
@@ -334,5 +350,22 @@ class CheckinController extends GetxController {
     return listPairedUID
         .where((e) => e.max_onboard! == 0 && e.booking_code == _booking_code)
         .toList();
+  }
+
+  submitSign() async {
+    var img = await signatureController.toPngBytes();
+    final _path = await InitDepedencies().createFolder("signature");
+    //check is File Exist
+    var finalPath = _path + "/signature_${Random().nextInt(1000000)}.jpg";
+    // if (await File(finalPath).exists()) {
+    //   await File(finalPath).delete();
+    // }
+    File file = await File(finalPath).writeAsBytes(img!);
+    dataSignature.value = XFile(file.path);
+    Get.bottomSheet(
+      SheetNFC(
+        type: NFCModeType.CheckIn,
+      ),
+    );
   }
 }

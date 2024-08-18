@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import '../../../controllers/theme/theme_controller.dart';
 import '../../utils/extensions.dart';
 import '../components/customButton.dart';
-import '../components/draggable_bottom_sheet.dart';
 import '../components/text/ctext.dart';
 
 class SheetAgreement extends StatefulWidget {

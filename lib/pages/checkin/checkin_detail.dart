@@ -8,6 +8,7 @@ import 'package:beatboat/widgets/components/customButton.dart';
 import 'package:beatboat/widgets/sheets/sheet_agreement.dart';
 import 'package:beatboat/widgets/sheets/sheet_checkin_detail.dart';
 import 'package:beatboat/widgets/sheets/sheet_package.dart';
+import 'package:beatboat/widgets/sheets/sheet_sign.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cupertino_date_picker_fork/flutter_cupertino_date_picker_fork.dart';
 import 'package:get/get.dart';
@@ -592,9 +593,8 @@ class CheckinDetailPage extends StatelessWidget {
                                 _checkinController.bookingCode.value =
                                     _data.booking_code!;
                                 Get.bottomSheet(
-                                  SheetNFC(
-                                    type: NFCModeType.CheckIn,
-                                  ),
+                                  SheetSign(),
+                                  isScrollControlled: true,
                                 );
                               },
                             ),

@@ -6,14 +6,21 @@ import 'package:beatboat/controllers/package/package_controller.dart';
 import 'package:beatboat/controllers/refund/refund_controller.dart';
 import 'package:beatboat/pages/activity/activity_byid.dart';
 import 'package:beatboat/pages/home/home.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:beatboat/pages/balance/topup.dart';
 import 'package:beatboat/pages/balance/transfer.dart';
 import 'package:beatboat/pages/package/package.dart';
 import 'package:beatboat/pages/refund/refund.dart';
 import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/popups/update_balance.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ndef/ndef.dart' as ndef;
 import '../../models/balance/balance_model.dart';
 import '../../pages/transaction/transaction.dart';
@@ -183,16 +190,26 @@ class NFCController extends GetxController {
       var _data = _checkinController
           .listPairedUID[_checkinController.activeIndex.value];
 
-      var body = {
-        "device_serial_number": _data.device_serial_number,
-        "booking_code": _data.booking_code,
-        "type": _data.booking_type,
-        "nfc_uid": _mapUUID,
-        "customer_name": _data.customer_name,
-        "nationality": _data.nationality,
-        "dob": _data.dob,
-        "gender": _data.gender!.toLowerCase(),
-      };
+      String fileName =
+          _checkinController.dataSignature.value.path.split('/').last;
+
+      var body = FormData.fromMap(
+        {
+          "device_serial_number": _data.device_serial_number,
+          "booking_code": _data.booking_code,
+          "type": _data.booking_type,
+          "nfc_uid": _mapUUID,
+          "customer_name": _data.customer_name,
+          "nationality": _data.nationality,
+          "dob": _data.dob,
+          "gender": _data.gender!.toLowerCase(),
+          'signature': await MultipartFile.fromFile(
+            _checkinController.dataSignature.value.path,
+            filename: fileName,
+            contentType: MediaType('image', 'png'),
+          ),
+        },
+      );
 
       var _resp = await _repoBalance.onboard(body);
       Get.back();
@@ -200,6 +217,7 @@ class NFCController extends GetxController {
       if (_resp.code != null) {
         if (_resp.code == "SCC-ONBOARD-001") {
           _checkinController.updatePairedUID(_mapUUID);
+          _checkinController.dataSignature.value = XFile("");
           Get.back();
           Get.bottomSheet(
             SheetSuccess(
