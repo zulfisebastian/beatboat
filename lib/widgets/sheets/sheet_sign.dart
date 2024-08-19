@@ -35,9 +35,9 @@ class _SheetSignState extends State<SheetSign> {
     return DraggableScrollableSheet(
       expand: false,
       snap: true,
-      initialChildSize: 0.65,
-      minChildSize: 0.65,
-      maxChildSize: 0.66,
+      initialChildSize: 0.75,
+      minChildSize: 0.75,
+      maxChildSize: 0.76,
       builder: (context, scrollController) {
         return Container(
           decoration: BoxDecoration(

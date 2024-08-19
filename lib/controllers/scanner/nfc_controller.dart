@@ -219,6 +219,7 @@ class NFCController extends GetxController {
           _checkinController.updatePairedUID(_mapUUID);
           _checkinController.dataSignature.value = XFile("");
           Get.back();
+          Get.back();
           Get.bottomSheet(
             SheetSuccess(
               message: "Wristband paired successfully",
