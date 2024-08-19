@@ -101,7 +101,7 @@ class _SheetSignState extends State<SheetSign> {
                     children: [
                       Expanded(
                         child: CustomButtonBorderBlack(
-                          "Ambil Ulang",
+                          "Retake",
                           onPressed: () {
                             _controller.signatureController.clear();
                             _controller.isSignatureFilled.value = false;
@@ -115,7 +115,7 @@ class _SheetSignState extends State<SheetSign> {
                       Expanded(
                         child: Obx(
                           () => CustomButtonBlue(
-                            "Simpan",
+                            "Submit",
                             disabled: !_controller.isSignatureFilled.value,
                             onPressed: () {
                               _controller.submitSign();
