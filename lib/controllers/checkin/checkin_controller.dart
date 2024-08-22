@@ -164,7 +164,7 @@ class CheckinController extends GetxController {
             nfc_uid: _data.wristband_nfc_uid ?? "",
             customer_name: listNameCtrl[index].text,
             nationality: listNationalityCtrl[index].text,
-            dob: listDateCtrl[index].text,
+            dob: listDate[index].toString(),
             gender: listGenderCtrl[index].text,
             min_spending: _data.min_spending,
             max_onboard: _data.max_onboard,

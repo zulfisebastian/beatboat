@@ -193,23 +193,39 @@ class NFCController extends GetxController {
       String fileName =
           _checkinController.dataSignature.value.path.split('/').last;
 
-      var body = FormData.fromMap(
-        {
-          "device_serial_number": _data.device_serial_number,
-          "booking_code": _data.booking_code,
-          "type": _data.booking_type,
-          "nfc_uid": _mapUUID,
-          "customer_name": _data.customer_name,
-          "nationality": _data.nationality,
-          "dob": _data.dob,
-          "gender": _data.gender!.toLowerCase(),
-          'signature': await MultipartFile.fromFile(
-            _checkinController.dataSignature.value.path,
-            filename: fileName,
-            contentType: MediaType('image', 'png'),
-          ),
-        },
-      );
+      var body;
+      if (_checkinController.checkinData.value.collect_signature!) {
+        body = FormData.fromMap(
+          {
+            "device_serial_number": _data.device_serial_number,
+            "booking_code": _data.booking_code,
+            "type": _data.booking_type,
+            "nfc_uid": _mapUUID,
+            "customer_name": _data.customer_name,
+            "nationality": _data.nationality,
+            "dob": _data.dob,
+            "gender": _data.gender!.toLowerCase(),
+            "signature": await MultipartFile.fromFile(
+              _checkinController.dataSignature.value.path,
+              filename: fileName,
+              contentType: MediaType('image', 'png'),
+            ),
+          },
+        );
+      } else {
+        body = FormData.fromMap(
+          {
+            "device_serial_number": _data.device_serial_number,
+            "booking_code": _data.booking_code,
+            "type": _data.booking_type,
+            "nfc_uid": _mapUUID,
+            "customer_name": _data.customer_name,
+            "nationality": _data.nationality,
+            "dob": _data.dob,
+            "gender": _data.gender!.toLowerCase(),
+          },
+        );
+      }
 
       var _resp = await _repoBalance.onboard(body);
       Get.back();
@@ -218,7 +234,9 @@ class NFCController extends GetxController {
         if (_resp.code == "SCC-ONBOARD-001") {
           _checkinController.updatePairedUID(_mapUUID);
           _checkinController.dataSignature.value = XFile("");
-          Get.back();
+          if (_checkinController.checkinData.value.collect_signature!) {
+            Get.back();
+          }
           Get.back();
           Get.bottomSheet(
             SheetSuccess(

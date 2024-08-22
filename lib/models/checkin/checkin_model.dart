@@ -29,6 +29,7 @@ class CheckinResponse {
 }
 
 class CheckinData {
+  bool? collect_signature;
   String? master_booking_code;
   String? booker_name;
   String? booker_phone;
@@ -44,6 +45,7 @@ class CheckinData {
   List<DetailCheckinData>? details;
 
   CheckinData({
+    this.collect_signature,
     this.master_booking_code,
     this.booker_name,
     this.booker_phone,
@@ -60,6 +62,7 @@ class CheckinData {
   });
 
   CheckinData.fromJson(Map<String, dynamic> json) {
+    collect_signature = json['collect_signature'];
     master_booking_code = json['master_booking_code'];
     booker_name = json['booker_name'];
     booker_phone = json['booker_phone'];
@@ -90,6 +93,7 @@ class CheckinData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['collect_signature'] = this.collect_signature;
     data['master_booking_code'] = this.master_booking_code;
     data['booker_name'] = this.booker_name;
     data['booker_phone'] = this.booker_phone;

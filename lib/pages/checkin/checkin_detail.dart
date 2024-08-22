@@ -368,13 +368,34 @@ class CheckinDetailPage extends StatelessWidget {
       child: ExpansionTile(
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         tilePadding: EdgeInsets.zero,
-        title: CText(
-          _data.booking_type != "others"
-              ? _data.resource_tag == "GA"
-                  ? "${_data.name} ${indexNo + 1}"
-                  : _data.name
-              : "Data Onboard ${indexNo}",
-          color: _theme.accent.value,
+        title: Row(
+          children: [
+            CText(
+              _data.booking_type != "others"
+                  ? _data.resource_tag == "GA"
+                      ? "${_data.name} ${indexNo + 1}"
+                      : _data.name
+                  : "Data Onboard ${indexNo}",
+              color: _theme.accent.value,
+            ),
+            SizedBox(
+              child: Obx(
+                () => _checkinController.listPairedUID[index].nfc_uid == ""
+                    ? SizedBox()
+                    : Row(
+                        children: [
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Icon(
+                            Icons.check_circle_outline,
+                            color: _theme.success.value,
+                          ),
+                        ],
+                      ),
+              ),
+            )
+          ],
         ),
         childrenPadding: EdgeInsets.only(
           bottom: 10,
@@ -584,6 +605,7 @@ class CheckinDetailPage extends StatelessWidget {
                         width: OtherExt().getWidth(context),
                         disabled: _checkinController.checkPairDisable(index),
                         onPressed: () {
+                          // print(_data.dob);
                           Get.bottomSheet(
                             SheetAgreement(
                               onAgree: () {
@@ -592,10 +614,19 @@ class CheckinDetailPage extends StatelessWidget {
                                 _checkinController.activeIndex.refresh();
                                 _checkinController.bookingCode.value =
                                     _data.booking_code!;
-                                Get.bottomSheet(
-                                  SheetSign(),
-                                  isScrollControlled: true,
-                                );
+                                if (_checkinController
+                                    .checkinData.value.collect_signature!) {
+                                  Get.bottomSheet(
+                                    SheetSign(),
+                                    isScrollControlled: true,
+                                  );
+                                } else {
+                                  Get.bottomSheet(
+                                    SheetNFC(
+                                      type: NFCModeType.CheckIn,
+                                    ),
+                                  );
+                                }
                               },
                             ),
                             isScrollControlled: true,
