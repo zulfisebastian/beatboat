@@ -133,9 +133,9 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CText(
-                        "BALANCE",
+                        "HOME",
                         color: _theme.textTitle.value,
-                        fontSize: CDimension.space20,
+                        fontSize: CDimension.space16,
                         fontWeight: FontWeight.w800,
                         spacing: 1.4,
                       ),
@@ -231,9 +231,9 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CText(
-                              "STORE",
+                              "MENUS",
                               color: _theme.white.value,
-                              fontSize: CDimension.space20,
+                              fontSize: CDimension.space16,
                               fontWeight: FontWeight.w800,
                               spacing: 1.4,
                             ),
@@ -265,14 +265,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(
-                        height: CDimension.space24,
+                        height: CDimension.space20,
                       ),
                       SizedBox(
-                        height: 150,
+                        height: 120,
                         child: Obx(
                           () => ListView.separated(
                             padding: EdgeInsets.symmetric(
-                              horizontal: CDimension.space16,
+                              horizontal: CDimension.space12,
                             ),
                             itemCount: _homeController.listCategory.length,
                             separatorBuilder:
@@ -293,12 +293,12 @@ class _HomePageState extends State<HomePage> {
                                   );
                                 },
                                 child: Container(
-                                  width: 120,
+                                  width: 80,
                                   child: Column(
                                     children: [
                                       CCachedImage(
-                                        width: 120,
-                                        height: 120,
+                                        width: 80,
+                                        height: 80,
                                         url: _data.image_url ??
                                             Endpoint.defaultFood,
                                       ),
@@ -308,7 +308,8 @@ class _HomePageState extends State<HomePage> {
                                       CText(
                                         _data.name!.toUpperCase(),
                                         color: _theme.white.value,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 11,
                                         spacing: 1.5,
                                         maxLines: 2,
                                         overflow: TextOverflow.visible,

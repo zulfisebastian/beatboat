@@ -57,6 +57,10 @@ class CardActivity extends StatelessWidget {
         return "Transfer Out To ${data.customer_name!.capitalizeFirst}";
       } else if (data.activity!.toLowerCase() == "refund") {
         return "Refund - ${data.customer_name!.capitalizeFirst}";
+      } else if (data.activity!.toLowerCase() == "refund_top_up") {
+        return "Refund Top Up - ${data.customer_name!.capitalizeFirst}";
+      } else if (data.activity!.toLowerCase() == "initial_balance") {
+        return "Free Credit - ${data.customer_name!.capitalizeFirst}";
       } else {
         return "Other";
       }

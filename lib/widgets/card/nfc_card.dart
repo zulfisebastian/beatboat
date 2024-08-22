@@ -19,6 +19,8 @@ class NFCCard extends StatelessWidget {
 
   final ThemeController _theme = Get.find(tag: 'ThemeController');
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +33,7 @@ class NFCCard extends StatelessWidget {
         width: OtherExt().getWidth(context),
         height: showBalance ? 210 : 150,
         decoration: BoxDecoration(
-          gradient: getLinearGradient("vip"),
+          gradient: getLinearGradient(balance.table_name ?? ""),
           borderRadius: BorderRadius.circular(
             CDimension.space16,
           ),
@@ -50,7 +52,7 @@ class NFCCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
                       width: 1,
-                      color: getColorType("vip"),
+                      color: getColorType(balance.table_name ?? ""),
                     ),
                   ),
                   padding: EdgeInsets.symmetric(
@@ -58,9 +60,9 @@ class NFCCard extends StatelessWidget {
                     vertical: CDimension.space6,
                   ),
                   child: CText(
-                    getNameFromType("vip"),
+                    getNameFromType(balance.table_name ?? ""),
                     color: getColorType(
-                      "vip",
+                      balance.table_name ?? "",
                     ),
                     fontWeight: FontWeight.bold,
                   ),

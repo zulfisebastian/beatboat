@@ -61,24 +61,25 @@ LinearGradient getLinearGradient(String type) {
 }
 
 Color getColorType(String type) {
-  if (type == "general") {
+  if (type == "general" || type.toLowerCase() == "ga") {
     return HexColor.fromHex("#EFEFEF");
-  } else if (type == "vip") {
+  } else if (type == "vip"|| type.toLowerCase().contains("vip")) {
     return HexColor.fromHex("#F9F295");
-  } else if (type == "v_vip") {
+  } else if (type == "v_vip"|| type.toLowerCase().contains("sky deck")) {
     return HexColor.fromHex("#7d8189");
   } else {
-    return HexColor.fromHex("#CD7F32");
+    return HexColor.fromHex("#F9F295");
+    // return HexColor.fromHex("#F9F295");ex("#CD7F32");
   }
 }
 
 String getNameFromType(String type) {
-  if (type == "general") {
+  if (type == "general" || type.toLowerCase() == "ga") {
     return "GENERAL";
-  } else if (type == "vip") {
+  } else if (type == "vip" || type.toLowerCase().contains("vip")) {
     return "VIP";
-  } else if (type == "v_vip") {
-    return "VVIP";
+  } else if (type == "v_vip" || type.toLowerCase().contains("sky deck")) {
+    return "Sky Deck";
   } else {
     return "OTHER";
   }

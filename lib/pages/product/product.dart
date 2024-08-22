@@ -308,7 +308,7 @@ class _ProductPageState extends State<ProductPage> {
                                             CText(
                                               _data.name!.capitalizeFirst,
                                               color: _theme.textTitle.value,
-                                              fontSize: 16,
+                                              fontSize: 12,
                                               decoration: _data.stock! > 0
                                                   ? TextDecoration.none
                                                   : TextDecoration.lineThrough,
@@ -323,7 +323,7 @@ class _ProductPageState extends State<ProductPage> {
                                                   _data.sell_price),
                                               color: _theme.textTitle.value,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 14,
+                                              fontSize: 13,
                                               decoration: _data.stock! > 0
                                                   ? TextDecoration.none
                                                   : TextDecoration.lineThrough,
@@ -381,7 +381,7 @@ class _ProductPageState extends State<ProductPage> {
                       width: CDimension.space4,
                     ),
                     CText(
-                      "PRODUCT",
+                      "MENU",
                       color: _theme.textTitle.value,
                       fontSize: CDimension.space20,
                       fontWeight: FontWeight.w800,

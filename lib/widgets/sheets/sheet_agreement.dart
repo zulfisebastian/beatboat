@@ -94,7 +94,7 @@ Page resource error:
           );
         },
       )
-      ..loadRequest(Uri.parse("https://beatboat.com/terms-and-conditions/"));
+      ..loadRequest(Uri.parse("https://beatboat.com/light-terms-and-conditions/"));
 
     // #docregion platform_features
     if (controller.platform is AndroidWebViewController) {
