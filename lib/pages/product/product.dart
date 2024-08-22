@@ -305,15 +305,19 @@ class _ProductPageState extends State<ProductPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            CText(
-                                              _data.name!.capitalizeFirst,
-                                              color: _theme.textTitle.value,
-                                              fontSize: 12,
-                                              decoration: _data.stock! > 0
-                                                  ? TextDecoration.none
-                                                  : TextDecoration.lineThrough,
-                                              overflow: TextOverflow.visible,
-                                              lineHeight: 1.4,
+                                            SizedBox(
+                                              height: 40,
+                                              child: CText(
+                                                _data.name!.capitalizeFirst,
+                                                color: _theme.textTitle.value,
+                                                fontSize: 12,
+                                                decoration: _data.stock! > 0
+                                                    ? TextDecoration.none
+                                                    : TextDecoration
+                                                        .lineThrough,
+                                                overflow: TextOverflow.visible,
+                                                lineHeight: 1.4,
+                                              ),
                                             ),
                                             SizedBox(
                                               height: CDimension.space12,
@@ -394,57 +398,58 @@ class _ProductPageState extends State<ProductPage> {
             Positioned(
               bottom: 0,
               child: Obx(
-                () => _product.listCart.length > 0
-                    ? GestureDetector(
-                        onTap: () {
-                          Get.bottomSheet(
-                            SheetCart(),
-                            isScrollControlled: true,
-                          );
-                          // Get.to(OrderPage());
-                        },
-                        child: Container(
-                          width:
-                              OtherExt().getWidth(context) - CDimension.space32,
-                          height: 56,
-                          margin: EdgeInsets.only(
-                            left: CDimension.space16,
-                            right: CDimension.space16,
-                            bottom: CDimension.space16,
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: CDimension.space24,
-                            vertical: CDimension.space12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _theme.accent.value,
-                            borderRadius: BorderRadius.circular(
-                              CDimension.space48,
+                () => AnimatedContainer(
+                  duration: Duration(milliseconds: 200),
+                  height: _product.showBottomBar.value ? 60 : 0,
+                  child: _product.listCart.length > 0
+                      ? GestureDetector(
+                          onTap: () {
+                            Get.bottomSheet(
+                              SheetCart(),
+                              isScrollControlled: true,
+                            );
+                          },
+                          child: Container(
+                            width: OtherExt().getWidth(context) -
+                                CDimension.space20,
+                            height: 56,
+                            margin: EdgeInsets.only(
+                              bottom: CDimension.space8,
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: CDimension.space24,
+                              vertical: CDimension.space12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _theme.accent.value,
+                              borderRadius: BorderRadius.circular(
+                                CDimension.space48,
+                              ),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CText(
+                                  "${_product.listCart.length} item",
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                                CText(
+                                  StringExt.formatRupiah(
+                                    _product.getTotalCart(),
+                                  ),
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CText(
-                                "${_product.listCart.length} item",
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                              CText(
-                                StringExt.formatRupiah(
-                                  _product.getTotalCart(),
-                                ),
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : SizedBox(),
+                        )
+                      : SizedBox(),
+                ),
               ),
             ),
             Obx(

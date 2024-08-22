@@ -10,7 +10,9 @@ import 'package:beatboat/widgets/pages/loading.dart';
 import 'package:beatboat/widgets/sheets/sheet_failed.dart';
 import 'package:beatboat/widgets/sheets/sheet_product.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import '../../models/product/product_model.dart';
 import '../../services/databases/product/category_table.dart';
 import '../../widgets/components/ctoast.dart';
@@ -37,6 +39,8 @@ class ProductController extends GetxController {
   RxInt page = 0.obs;
   RxInt totalPage = 1.obs;
 
+  RxBool showBottomBar = true.obs;
+
   void scrollControllerListener() async {
     if (scrollController.position.maxScrollExtent ==
             scrollController.position.pixels &&
@@ -46,6 +50,18 @@ class ProductController extends GetxController {
       isLoadMoreData.value = true;
       print("SCROLL TRIGGERED");
       getDataProduct(true);
+    }
+    if (scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      if (showBottomBar.value != false) {
+        showBottomBar.value = false;
+        showBottomBar.refresh();
+      }
+    } else {
+      if (showBottomBar.value != true) {
+        showBottomBar.value = true;
+        showBottomBar.refresh();
+      }
     }
   }
 
