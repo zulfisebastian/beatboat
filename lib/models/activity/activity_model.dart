@@ -49,6 +49,7 @@ class ActivityData {
   int? amount;
   String? last_update;
   String? pic;
+  String? note;
 
   ActivityData({
     this.activity,
@@ -59,6 +60,7 @@ class ActivityData {
     this.amount,
     this.last_update,
     this.pic,
+    this.note,
   });
 
   ActivityData.fromJson(Map<String, dynamic> json) {
@@ -70,6 +72,7 @@ class ActivityData {
     amount = json['amount'];
     last_update = json['last_update'];
     pic = json['pic'];
+    note = json['note'];
   }
 
   Map<String, dynamic> toJson() {
@@ -82,6 +85,7 @@ class ActivityData {
     data['amount'] = this.amount;
     data['last_update'] = this.last_update;
     data['pic'] = this.pic;
+    data['note'] = this.note;
     return data;
   }
 }
