@@ -15,6 +15,7 @@ class ActivityTable {
       "amount" INTEGER NOT NULL,
       "last_update" STRING NOT NULL,
       "pic" STRING NOT NULL,
+      "note" STRING,
       PRIMARY KEY("number")
     );""");
   }
