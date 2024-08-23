@@ -292,145 +292,145 @@ class TransactionDetailController extends GetxController {
   printBillThermal(TransactionData _data) async {
     await _base.getProfile();
     for (var _printer in _base.printerThermal) {
-      int retries = 3;
-      while (retries > 0) {
-        try {
-          // if (listCart.indexWhere((e) => e.order_serve == _printer.value) > -1) {
-          final printer = PrinterNetworkManager(_printer.ip!);
+      // int retries = 3;
+      // while (retries > 0) {
+      //   try {
+      // if (listCart.indexWhere((e) => e.order_serve == _printer.value) > -1) {
+      final printer = PrinterNetworkManager(_printer.ip!);
 
-          PosPrintResult connect = await printer.connect();
+      PosPrintResult connect = await printer.connect();
 
-          CToast.showWithoutCOntext(
-            "Connecting to ${_printer.ip!}",
-            Colors.black,
-            Colors.white,
+      CToast.showWithoutCOntext(
+        "Connecting to ${_printer.ip!}",
+        Colors.black,
+        Colors.white,
+      );
+      if (connect == PosPrintResult.success) {
+        final profile = await CapabilityProfile.load();
+        final generator = Generator(PaperSize.mm80, profile);
+        List<int> bytes = [];
+        bytes += generator.feed(1);
+        bytes += generator.row([
+          PosColumn(
+            text: "Order No: ",
+            width: 3,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+          PosColumn(
+            text: _data.order_no.toString(),
+            width: 9,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+        ]);
+        bytes += generator.row([
+          PosColumn(
+            text: "Customer: ",
+            width: 3,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+          PosColumn(
+            text: _data.customer_name ?? "-",
+            width: 9,
+            styles: const PosStyles(align: PosAlign.left, underline: false),
+          ),
+        ]);
+        //Item
+        bytes += generator.feed(1);
+        for (var _item in _data.details!) {
+          // if (_printer.value == _item.order_serve) {
+          bytes += generator.row(
+            [
+              PosColumn(
+                text: _item.product!.name ?? "-",
+                width: 8,
+                styles: PosStyles(
+                  align: PosAlign.left,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2,
+                ),
+              ),
+              PosColumn(
+                text: "x${_item.qty!.toString()}",
+                width: 4,
+                styles: PosStyles(
+                  align: PosAlign.right,
+                  height: PosTextSize.size2,
+                  width: PosTextSize.size2,
+                ),
+              ),
+            ],
           );
-          if (connect == PosPrintResult.success) {
-            final profile = await CapabilityProfile.load();
-            final generator = Generator(PaperSize.mm80, profile);
-            List<int> bytes = [];
-            bytes += generator.feed(1);
-            bytes += generator.row([
-              PosColumn(
-                text: "Order No: ",
-                width: 3,
-                styles: const PosStyles(align: PosAlign.left, underline: false),
-              ),
-              PosColumn(
-                text: _data.order_no.toString(),
-                width: 9,
-                styles: const PosStyles(align: PosAlign.left, underline: false),
-              ),
-            ]);
-            bytes += generator.row([
-              PosColumn(
-                text: "Customer: ",
-                width: 3,
-                styles: const PosStyles(align: PosAlign.left, underline: false),
-              ),
-              PosColumn(
-                text: _data.customer_name ?? "-",
-                width: 9,
-                styles: const PosStyles(align: PosAlign.left, underline: false),
-              ),
-            ]);
-            //Item
-            bytes += generator.feed(1);
-            for (var _item in _data.details!) {
-              // if (_printer.value == _item.order_serve) {
-              bytes += generator.row(
-                [
-                  PosColumn(
-                    text: _item.product!.name ?? "-",
-                    width: 8,
-                    styles: PosStyles(
-                      align: PosAlign.left,
-                      height: PosTextSize.size2,
-                      width: PosTextSize.size2,
-                    ),
-                  ),
-                  PosColumn(
-                    text: "x${_item.qty!.toString()}",
-                    width: 4,
-                    styles: PosStyles(
-                      align: PosAlign.right,
-                      height: PosTextSize.size2,
-                      width: PosTextSize.size2,
-                    ),
-                  ),
-                ],
-              );
-              if (_item.addons!.length > 0) {
-                bytes += generator.text(
-                  'AddOn: ${_item.addons!.map((e) => "x${e.qty} ${e.addons!.capitalizeFirst}").join(", ")}',
-                  styles: PosStyles(
-                    align: PosAlign.left,
-                  ),
-                );
-              }
-              if (_item.note != null) {
-                bytes += generator.text(
-                  'Note: ${_item.note!}',
-                  styles: PosStyles(
-                    align: PosAlign.left,
-                  ),
-                );
-              }
-            }
-            bytes += generator.feed(1);
+          if (_item.addons!.length > 0) {
             bytes += generator.text(
-              'No: ${_data.number}',
+              'AddOn: ${_item.addons!.map((e) => "x${e.qty} ${e.addons!.capitalizeFirst}").join(", ")}',
               styles: PosStyles(
                 align: PosAlign.left,
               ),
-            );
-            bytes += generator.text(
-              'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
-              styles: PosStyles(
-                align: PosAlign.left,
-              ),
-            );
-            bytes += generator.text(
-              'Cashier: ${_base.dataProfile.value.full_name}',
-              styles: PosStyles(
-                align: PosAlign.left,
-              ),
-            );
-            bytes += generator.text(
-              'Table Name: ${_data.table_name}',
-              styles: PosStyles(
-                align: PosAlign.left,
-              ),
-            );
-            bytes += generator.feed(1);
-            bytes += generator.cut();
-            PosPrintResult printing = await printer.printTicket(bytes);
-
-            print(printing.msg);
-            await printer.disconnect();
-          } else {
-            CToast.showWithoutCOntext(
-              connect.msg,
-              Colors.red,
-              Colors.white,
             );
           }
-          // }
-        } catch (e) {
-          retries--;
-          if (retries == 0) {
-            CToast.showWithoutCOntext(
-              "Failed to send print job: $e",
-              Colors.red,
-              Colors.white,
+          if (_item.note != null) {
+            bytes += generator.text(
+              'Note: ${_item.note!}',
+              styles: PosStyles(
+                align: PosAlign.left,
+              ),
             );
-            // Handle the final failure
-            print("Failed to send print job: $e");
-          } else {
-            await Future.delayed(Duration(seconds: 2)); // Backoff delay
           }
         }
+        bytes += generator.feed(1);
+        bytes += generator.text(
+          'No: ${_data.number}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.text(
+          'Trx Date: ${DateExt.reformat(DateTime.now().toString(), "yyyy-MM-dd HH:mm", "dd MMM yyyy (HH:mm)")}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.text(
+          'Cashier: ${_base.dataProfile.value.full_name}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.text(
+          'Table Name: ${_data.table_name}',
+          styles: PosStyles(
+            align: PosAlign.left,
+          ),
+        );
+        bytes += generator.feed(1);
+        bytes += generator.cut();
+        PosPrintResult printing = await printer.printTicket(bytes);
+
+        print(printing.msg);
+        await printer.disconnect();
+      } else {
+        CToast.showWithoutCOntext(
+          connect.msg,
+          Colors.red,
+          Colors.white,
+        );
       }
+      // }
+      //   } catch (e) {
+      //     retries--;
+      //     if (retries == 0) {
+      //       CToast.showWithoutCOntext(
+      //         "Failed to send print job: $e",
+      //         Colors.red,
+      //         Colors.white,
+      //       );
+      //       // Handle the final failure
+      //       print("Failed to send print job: $e");
+      //     } else {
+      //       await Future.delayed(Duration(seconds: 2)); // Backoff delay
+      //     }
+      //   }
+      // }
     }
   }
 }

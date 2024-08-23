@@ -48,7 +48,6 @@ class ProductController extends GetxController {
         page.value < totalPage.value) {
       isLoading = true;
       isLoadMoreData.value = true;
-      print("SCROLL TRIGGERED");
       getDataProduct(true);
     }
     if (scrollController.position.userScrollDirection ==
