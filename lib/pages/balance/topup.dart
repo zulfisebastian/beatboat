@@ -104,7 +104,7 @@ class _TopUpPageState extends State<TopUpPage> {
                   disabled: _topUpController.amount.value.text == "" ||
                       int.parse(_topUpController.amount.value.text
                               .replaceAll(".", "")) <
-                          100000,
+                          50000,
                   width: OtherExt().getWidth(context),
                   onPressed: () {
                     Get.dialog(
@@ -209,7 +209,7 @@ class _TopUpPageState extends State<TopUpPage> {
                     height: CDimension.space8,
                   ),
                   CText(
-                    "Minimum amount 100.000",
+                    "Minimum amount 50.000",
                     fontSize: CFontSize.font14,
                     color: _theme.textSubtitle.value,
                   ),

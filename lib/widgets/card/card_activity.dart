@@ -61,6 +61,8 @@ class CardActivity extends StatelessWidget {
         return "Refund Top Up - ${data.customer_name!.capitalizeFirst}";
       } else if (data.activity!.toLowerCase() == "initial_balance") {
         return "Free Credit - ${data.customer_name!.capitalizeFirst}";
+      } else if (data.activity!.toLowerCase() == "promoter_fee") {
+        return "Promoter Fee";
       } else if (data.activity!.toLowerCase() == "package") {
         return data.note;
       } else {
