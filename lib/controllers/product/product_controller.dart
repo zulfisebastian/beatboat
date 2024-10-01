@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:beatboat/models/product/addon_model.dart';
 import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/category_model.dart';
@@ -61,22 +63,22 @@ class ProductController extends GetxController {
     }
   }
 
-  // Timer? _debounce;
-  // onSearchChanged(String query) {
-  //   if (_debounce?.isActive ?? false) _debounce?.cancel();
-  //   _debounce = Timer(const Duration(milliseconds: 500), () {
-  //     page.value = 0;
-  //     totalPage.value = 1;
-  //     print("SEARCH TRIGGERED");
-  //     getDataProduct(false);
-  //   });
-  // }
+  Timer? _debounce;
+  onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      page.value = 0;
+      totalPage.value = 1;
+      print("SEARCH TRIGGERED");
+      getDataProduct(false);
+    });
+  }
 
-  // @override
-  // void dispose() {
-  //   _debounce?.cancel();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
 
   initAllData() {
     getDataCategory();
@@ -130,6 +132,15 @@ class ProductController extends GetxController {
       isLoading = false;
       listProduct.refresh();
     }
+  }
+
+  onChooseCategory(String category) {
+    choosedCategory.value = category;
+    choosedCategory.refresh();
+
+    page.value = 0;
+    totalPage.value = 1;
+    getDataProduct(false);
   }
 
   onSubmitFilter(String category) {

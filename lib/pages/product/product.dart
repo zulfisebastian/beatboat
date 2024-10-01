@@ -7,6 +7,9 @@ import '../../constants/dimension.dart';
 import '../../constants/endpoints.dart';
 import '../../controllers/product/product_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
+import '../../widgets/card/category_circle_card.dart';
+import '../../widgets/components/cdivider.dart';
+import '../../widgets/components/csearch.dart';
 import '../../widgets/components/text/ctext.dart';
 import '../../widgets/sheets/sheet_adjust_stock.dart';
 import '../../widgets/sheets/sheet_another.dart';
@@ -51,7 +54,7 @@ class _ProductPageState extends State<ProductPage> {
             Positioned.fill(
               child: Container(
                 height: OtherExt().getHeight(context) - 90,
-                margin: EdgeInsets.only(top: 56),
+                margin: EdgeInsets.only(top: 72),
                 child: RefreshIndicator(
                   onRefresh: () async {
                     _product.initAllData();
@@ -62,7 +65,97 @@ class _ProductPageState extends State<ProductPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          height: CDimension.space32,
+                          height: CDimension.space16,
+                        ),
+                        Container(
+                          width: OtherExt().getWidth(context),
+                          height: 88,
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: CDimension.space16,
+                            ),
+                            children: [
+                              Obx(
+                                () => CategoryCircleCard(
+                                  size: 54,
+                                  border: 8,
+                                  title: "All",
+                                  image_url: Endpoint.defaultFood,
+                                  active:
+                                      "All" == _product.choosedCategory.value,
+                                  onClick: () {
+                                    _product.onChooseCategory("All");
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: CDimension.space16,
+                              ),
+                              SizedBox(
+                                height: 54,
+                                child: Obx(
+                                  () => ListView.separated(
+                                    itemCount: _product.listCategory.length,
+                                    separatorBuilder:
+                                        (BuildContext context, int index) {
+                                      return SizedBox(
+                                        width: CDimension.space16,
+                                      );
+                                    },
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      var _data = _product.listCategory[index];
+                                      return Obx(
+                                        () => CategoryCircleCard(
+                                          size: 54,
+                                          border: 8,
+                                          title: _data.name ?? "",
+                                          active: _data.id ==
+                                              _product.choosedCategory.value,
+                                          image_url: _data.image_url ??
+                                              Endpoint.defaultFood,
+                                          onClick: () {
+                                            _product
+                                                .onChooseCategory(_data.id!);
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: CDimension.space16,
+                        ),
+                        CDivider(
+                          height: CDimension.space8,
+                        ),
+                        SizedBox(
+                          height: CDimension.space16,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: CDimension.space16,
+                          ),
+                          child: CSearch(
+                            textEditingController: _product.search.value,
+                            hintText: "Search Product By Name",
+                            errorMessage: "Not Found",
+                            onChanged: (v) {
+                              _product.onSearchChanged(v);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: CDimension.space16,
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(
