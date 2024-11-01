@@ -2,6 +2,7 @@ import 'package:beatboat/constants/enums.dart';
 import 'package:beatboat/controllers/activity/activity_byid_controller.dart';
 import 'package:beatboat/controllers/balance/transfer_controller.dart';
 import 'package:beatboat/controllers/checkin/checkin_controller.dart';
+import 'package:beatboat/controllers/home/home_controller.dart';
 import 'package:beatboat/controllers/package/package_controller.dart';
 import 'package:beatboat/controllers/refund/refund_controller.dart';
 import 'package:beatboat/pages/activity/activity_byid.dart';
@@ -135,6 +136,13 @@ class NFCController extends GetxController {
           _activityController.balance.value = balance.value;
           _activityController.getDataActivity();
           Get.to(ActivityByIdPage());
+        } else if (type == NFCModeType.UpdateResource) {
+          Get.back();
+          final HomeController _homeController = Get.find(
+            tag: "HomeController",
+          );
+          _homeController.balance.value = balance.value;
+          await _homeController.getDataResource();
         } else {
           //
         }

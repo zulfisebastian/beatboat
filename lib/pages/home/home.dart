@@ -192,6 +192,13 @@ class _HomePageState extends State<HomePage> {
                                           isScrollControlled: true,
                                         );
                                         return;
+                                      case "upgrade":
+                                        Get.bottomSheet(
+                                          SheetNFC(
+                                            type: NFCModeType.UpdateResource,
+                                          ),
+                                        );
+                                        return;
                                       case "bartender":
                                         Get.to(BartenderPage());
                                         return;

@@ -33,6 +33,7 @@ class BalanceData {
   String? type;
   String? description;
   String? position;
+  String? resource_tag;
   String? table_name;
   String? voucher_code;
   int? total_credit;
@@ -47,6 +48,7 @@ class BalanceData {
     this.type,
     this.description,
     this.position,
+    this.resource_tag,
     this.table_name,
     this.voucher_code,
     this.total_credit,
@@ -62,6 +64,7 @@ class BalanceData {
     type = json['type'];
     description = json['description'];
     position = json['position'];
+    resource_tag = json['resource_tag'];
     table_name = json['table_name'];
     voucher_code = json['voucher_code'];
     last_balance = json['last_balance'];
@@ -80,6 +83,7 @@ class BalanceData {
     data['last_balance'] = this.last_balance;
     data['position'] = this.position;
     data['table_name'] = this.table_name;
+    data['resource_tag'] = this.resource_tag;
     data['voucher_code'] = this.voucher_code;
     data['total_credit'] = this.total_credit;
     data['refundable_top_up'] = this.refundable_top_up;

@@ -3,10 +3,16 @@ import 'package:beatboat/models/product/category_model.dart';
 import 'package:beatboat/models/product/product_model.dart';
 import 'package:beatboat/repositories/activity/activity_repo.dart';
 import 'package:beatboat/repositories/product/product_repo.dart';
+import 'package:beatboat/repositories/resource/resource_repo.dart';
+import 'package:beatboat/widgets/sheets/sheet_resource_update.dart';
 import 'package:get/get.dart';
 import '../../models/auth/menu_model.dart';
+import '../../models/balance/balance_model.dart';
+import '../../models/resource/resource_model.dart';
 import '../../services/databases/product/category_table.dart';
 import '../../services/databases/profile/menu_table.dart';
+import '../../widgets/sheets/sheet_failed.dart';
+import '../../widgets/sheets/sheet_success.dart';
 import '../base/base_controller.dart';
 
 class HomeController extends GetxController {
@@ -15,6 +21,7 @@ class HomeController extends GetxController {
 
   final ProductRepo _productRepo = Get.put(ProductRepo());
   final ActivityRepo _activityRepo = Get.put(ActivityRepo());
+  final ResourceRepo _resourceRepo = Get.put(ResourceRepo());
 
   @override
   void onReady() {
@@ -89,6 +96,58 @@ class HomeController extends GetxController {
     if (_resp.data!.length > 0) {
       listActivity.value = _resp.data!;
       listActivity.refresh();
+    }
+  }
+
+  RxList<ResourceData> listResource = <ResourceData>[].obs;
+  Rx<ResourceData> choosedResource = ResourceData().obs;
+  Rx<BalanceData> balance = BalanceData().obs;
+
+  getDataResource() async {
+    var _resp = await _resourceRepo.getResource();
+
+    if (_resp.data!.length > 0) {
+      listResource.value = _resp.data!;
+      listResource.refresh();
+      Get.bottomSheet(
+        SheetResourceUpdate(),
+        isScrollControlled: true,
+      );
+    }
+  }
+
+  updateDataResource() async {
+    String udid = Get.find(tag: "udid");
+
+    var body = {
+      "device_serial_number": udid,
+      "nfc_uid": balance.value.nfc_uid,
+      "resource_tag": choosedResource.value.resource_tag,
+    };
+
+    var _resp = await _resourceRepo.updateResource(body);
+
+    if (_resp.code != null) {
+      Get.back();
+
+      balance.value = BalanceData();
+      choosedResource.value = ResourceData();
+      balance.refresh();
+      choosedResource.refresh();
+
+      Get.bottomSheet(
+        SheetSuccess(
+          message: "Wristband updated successfully",
+        ),
+        isScrollControlled: true,
+      );
+    } else {
+      Get.bottomSheet(
+        SheetFailed(
+          errorMessage: _resp.message!,
+        ),
+        isScrollControlled: true,
+      );
     }
   }
 }

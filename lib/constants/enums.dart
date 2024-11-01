@@ -11,4 +11,5 @@ enum NFCModeType {
   UpdateAfterPay,
   UpdateAfterTopUp,
   UpdateAfterTransfer,
+  UpdateResource,
 }
