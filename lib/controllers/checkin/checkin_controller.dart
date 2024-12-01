@@ -121,6 +121,7 @@ class CheckinController extends GetxController {
     if (_resp.data != null) {
       checkinData.value = _resp.data!;
       checkinData.refresh();
+      listPairedUID.clear();
 
       var index = 0;
       for (var _data in _resp.data!.details!) {
@@ -169,6 +170,7 @@ class CheckinController extends GetxController {
             min_spending: _data.min_spending,
             max_onboard: _data.max_onboard,
             booking_type: _data.booking_type,
+            note: _data.note,
             isFromResp: _data.wristband_nfc_uid != null ? true : false,
             others: [],
           ),

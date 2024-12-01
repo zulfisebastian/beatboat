@@ -35,6 +35,7 @@ class ProfileData {
   String? email;
   String? role;
   String? status;
+  List<String>? top_up_method;
   int? is_listen_printer;
   List<MenuData>? menus;
 
@@ -45,6 +46,7 @@ class ProfileData {
     this.email,
     this.role,
     this.status,
+    this.top_up_method,
     this.is_listen_printer,
     this.menus,
   });
@@ -56,6 +58,12 @@ class ProfileData {
     email = json['email'];
     role = json['role'];
     status = json['status'];
+    if (json['top_up_method'] != null) {
+      top_up_method = <String>[];
+      json['top_up_method'].forEach((v) {
+        top_up_method?.add(v);
+      });
+    }
     is_listen_printer = json['is_listen_printer'];
     if (json['menus'] != null) {
       menus = <MenuData>[];
@@ -73,6 +81,7 @@ class ProfileData {
     data['email'] = this.email;
     data['role'] = this.role;
     data['status'] = this.status;
+    data['top_up_method'] = this.top_up_method;
     data['is_listen_printer'] = this.is_listen_printer;
     return data;
   }

@@ -34,6 +34,7 @@ class Endpoint {
   static const String topup = "/wristband/top-up";
   static const String transfer = "/wristband/transfer";
   static const String onboard = "/wristband/onboard";
+  static const String pairingNFC = "/wristband/pair-nfc";
 
   //Bartender
   static const String bartender = "/transactions";

@@ -5,6 +5,7 @@ import 'package:beatboat/controllers/base/base_controller.dart';
 import 'package:beatboat/controllers/home/home_controller.dart';
 import 'package:beatboat/pages/activity/activity.dart';
 import 'package:beatboat/pages/bartender/bartender.dart';
+import 'package:beatboat/pages/pair/pair.dart';
 import 'package:beatboat/pages/product/product.dart';
 import 'package:beatboat/pages/profile/profile.dart';
 import 'package:beatboat/utils/extensions.dart';
@@ -198,6 +199,9 @@ class _HomePageState extends State<HomePage> {
                                             type: NFCModeType.UpdateResource,
                                           ),
                                         );
+                                        return;
+                                      case "pair_nfc":
+                                        Get.to(PairPage());
                                         return;
                                       case "bartender":
                                         Get.to(BartenderPage());

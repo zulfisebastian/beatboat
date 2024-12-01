@@ -368,33 +368,53 @@ class CheckinDetailPage extends StatelessWidget {
       child: ExpansionTile(
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         tilePadding: EdgeInsets.zero,
-        title: Row(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CText(
-              _data.booking_type != "others"
-                  ? _data.resource_tag == "GA"
-                      ? "${_data.name} ${indexNo + 1}"
-                      : _data.name
-                  : "Data Onboard ${indexNo}",
-              color: _theme.accent.value,
+            Row(
+              children: [
+                CText(
+                  _data.booking_type != "others"
+                      ? _data.resource_tag == "GA"
+                          ? "${_data.name} ${indexNo + 1}"
+                          : _data.name
+                      : "Data Onboard ${indexNo}",
+                  color: _theme.accent.value,
+                ),
+                SizedBox(
+                  child: Obx(
+                    () => _checkinController.listPairedUID[index].nfc_uid == ""
+                        ? SizedBox()
+                        : Row(
+                            children: [
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Icon(
+                                Icons.check_circle_outline,
+                                color: _theme.success.value,
+                              ),
+                            ],
+                          ),
+                  ),
+                )
+              ],
             ),
-            SizedBox(
-              child: Obx(
-                () => _checkinController.listPairedUID[index].nfc_uid == ""
-                    ? SizedBox()
-                    : Row(
-                        children: [
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Icon(
-                            Icons.check_circle_outline,
-                            color: _theme.success.value,
-                          ),
-                        ],
-                      ),
-              ),
-            )
+            if (_data.note != "")
+              Container(
+                margin: EdgeInsets.only(top: 8),
+                width: OtherExt().getWidth(context),
+                // decoration: BoxDecoration(
+                //   color: _theme.line.value,
+                //   borderRadius: BorderRadius.circular(6),
+                // ),
+                // padding: EdgeInsets.all(8),
+                child: CText(
+                  _data.note,
+                  color: _theme.textSubtitle.value,
+                  fontSize: 12,
+                ),
+              )
           ],
         ),
         childrenPadding: EdgeInsets.only(
@@ -569,12 +589,13 @@ class CheckinDetailPage extends StatelessWidget {
                         "EEEE, dd MMM yyyy",
                       );
                       _checkinController.changeDOB(
-                          index,
-                          DateExt.reformat(
-                            dateTime.toString(),
-                            "yyyy-MM-dd hh:mm:ss",
-                            "yyyy-MM-dd",
-                          ));
+                        index,
+                        DateExt.reformat(
+                          dateTime.toString(),
+                          "yyyy-MM-dd hh:mm:ss",
+                          "yyyy-MM-dd",
+                        ),
+                      );
                     },
                   );
                 },

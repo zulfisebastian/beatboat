@@ -86,6 +86,7 @@ class TopUpController extends GetxController {
     String fileName = _photo.value.path.split('/').last;
 
     Get.dialog(Loading());
+    print("TYPE : $type");
     var body = (type == "EDC")
         ? FormData.fromMap({
             "voucher_code": voucherData.value.voucher_code != null

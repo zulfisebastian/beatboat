@@ -52,6 +52,8 @@ class _SheetNFCState extends State<SheetNFC> {
       _nfcController.readNFC(widget.type);
     } else if (widget.type == NFCModeType.CheckIn) {
       _nfcController.onboardNFC();
+    } else if (widget.type == NFCModeType.Pair) {
+      _nfcController.pairNFC();
     } else if (widget.type == NFCModeType.UpdateAfterPay ||
         widget.type == NFCModeType.UpdateAfterTopUp ||
         widget.type == NFCModeType.UpdateAfterTransfer) {

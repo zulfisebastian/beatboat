@@ -133,6 +133,7 @@ class DetailCheckinData {
   int? min_spending;
   int? max_onboard;
   String? booking_type;
+  String? note;
   List<DetailCheckinDataOther>? others;
 
   DetailCheckinData({
@@ -150,6 +151,7 @@ class DetailCheckinData {
     this.min_spending,
     this.max_onboard,
     this.booking_type,
+    this.note,
     this.others,
   });
 
@@ -168,6 +170,7 @@ class DetailCheckinData {
     min_spending = json['min_spending'];
     max_onboard = json['max_onboard'];
     booking_type = json['booking_type'];
+    note = json['note'];
     if (json['others'] != null) {
       others = <DetailCheckinDataOther>[];
       json['others'].forEach((v) {
@@ -192,6 +195,7 @@ class DetailCheckinData {
     data['min_spending'] = this.min_spending;
     data['max_onboard'] = this.max_onboard;
     data['booking_type'] = this.booking_type;
+    data['note'] = this.note;
     if (this.others != null) {
       data['others'] = this.others?.map((v) => v.toJson()).toList();
     }

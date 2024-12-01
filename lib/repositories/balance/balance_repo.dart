@@ -62,4 +62,18 @@ class BalanceRepo extends BaseRepo {
         return BaseResponse(message: response.errorMessage);
     }
   }
+
+  Future<BaseResponse> pairingNFC(body) async {
+    BaseResult response = await post(
+      Endpoint.pairingNFC,
+      body: body,
+    );
+    switch (response.status) {
+      case ResponseStatus.Success:
+        var _resp = BaseResponse.fromJson(response.data);
+        return _resp;
+      default:
+        return BaseResponse(message: response.errorMessage);
+    }
+  }
 }

@@ -1,18 +1,20 @@
+import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/components/customButton.dart';
 import 'package:get/get.dart';
 import 'package:beatboat/constants/dimension.dart';
 import '../../../controllers/theme/theme_controller.dart';
+import '../../controllers/base/base_controller.dart';
 import '../components/draggable_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import '../components/text/ctext.dart';
 
 class SheetTopupOption extends StatefulWidget {
-  final VoidCallback onCash;
+  final Function(String) onOther;
   final VoidCallback onEDC;
 
   SheetTopupOption({
     Key? key,
-    required this.onCash,
+    required this.onOther,
     required this.onEDC,
   }) : super(key: key);
 
@@ -22,6 +24,7 @@ class SheetTopupOption extends StatefulWidget {
 
 class _SheetTopupOptionState extends State<SheetTopupOption> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
+  final BaseController _base = Get.find(tag: 'BaseController');
 
   @override
   void initState() {
@@ -60,28 +63,41 @@ class _SheetTopupOptionState extends State<SheetTopupOption> {
               SizedBox(
                 height: CDimension.space16,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButtonBlue(
-                      "EDC",
-                      onPressed: () async {
+              ListView.separated(
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var type = _base.dataProfile.value.top_up_method![index];
+                  return CustomButtonBorderBlack(
+                    _base.dataProfile.value.top_up_method![index],
+                    width: OtherExt().getWidth(context),
+                    icon: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Icon(
+                        type == "EDC"
+                            ? Icons.credit_card
+                            : type == "CASH"
+                                ? Icons.money
+                                : Icons.widgets_outlined,
+                        size: 16,
+                        color: _theme.textTitle.value,
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (type == "EDC") {
                         widget.onEDC();
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Expanded(
-                    child: CustomButtonBlue(
-                      "CASH",
-                      onPressed: () async {
-                        widget.onCash();
-                      },
-                    ),
-                  ),
-                ],
+                      } else {
+                        widget.onOther(
+                            _base.dataProfile.value.top_up_method![index]);
+                      }
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return SizedBox(
+                    height: CDimension.space16,
+                  );
+                },
+                itemCount: _base.dataProfile.value.top_up_method!.length,
               ),
               SizedBox(
                 height: CDimension.space24,

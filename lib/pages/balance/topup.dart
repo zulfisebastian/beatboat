@@ -114,10 +114,10 @@ class _TopUpPageState extends State<TopUpPage> {
                         onOk: () {
                           Get.bottomSheet(
                             SheetTopupOption(
-                              onCash: () {
+                              onOther: (type) {
                                 _topUpController.topUpBalance(
                                   _balance.balance.value,
-                                  "CASH",
+                                  type,
                                   () {
                                     Get.to(SuccessPage(
                                       title: "Top Up Success",

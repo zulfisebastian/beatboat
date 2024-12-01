@@ -4,6 +4,7 @@ import 'package:beatboat/controllers/balance/transfer_controller.dart';
 import 'package:beatboat/controllers/checkin/checkin_controller.dart';
 import 'package:beatboat/controllers/home/home_controller.dart';
 import 'package:beatboat/controllers/package/package_controller.dart';
+import 'package:beatboat/controllers/pair/pair_controller.dart';
 import 'package:beatboat/controllers/refund/refund_controller.dart';
 import 'package:beatboat/pages/activity/activity_byid.dart';
 import 'package:beatboat/pages/home/home.dart';
@@ -245,6 +246,88 @@ class NFCController extends GetxController {
           if (_checkinController.checkinData.value.collect_signature!) {
             Get.back();
           }
+          Get.back();
+          Get.bottomSheet(
+            SheetSuccess(
+              message: "Wristband paired successfully",
+            ),
+          );
+        } else {
+          Get.back();
+          Get.bottomSheet(
+            SheetFailed(
+              errorMessage: _resp.message!,
+            ),
+          );
+        }
+      } else {
+        Get.back();
+        Get.bottomSheet(
+          SheetFailed(
+            errorMessage: _resp.message!,
+          ),
+        );
+      }
+    } catch (e) {
+      resultData.value = 'error: $e';
+      resultData.refresh();
+    }
+  }
+
+  pairNFC() async {
+    NFCTag tag = await FlutterNfcKit.poll();
+    try {
+      await FlutterNfcKit.setIosAlertMessage("Working on it...");
+
+      if (tag.standard == "ISO 14443-4 (Type B)") {
+        String result1 = await FlutterNfcKit.transceive("00B0950000");
+        String result2 =
+            await FlutterNfcKit.transceive("00A4040009A00000000386980701");
+        resultData.value = '1: $result1\n2: $result2\n';
+      } else if (tag.type == NFCTagType.iso18092) {
+        String result1 = await FlutterNfcKit.transceive("060080080100");
+        resultData.value = '1: $result1\n';
+      } else if (tag.ndefAvailable ?? false) {
+        var ndefRecords = await FlutterNfcKit.readNDEFRecords();
+        var ndefString = '';
+        for (int i = 0; i < ndefRecords.length; i++) {
+          ndefString += '${i + 1}: ${ndefRecords[i]}\n';
+        }
+        resultData.value = ndefString;
+      } else if (tag.type == NFCTagType.webusb) {
+        var r = await FlutterNfcKit.transceive("00A4040006D27600012401");
+        print(r);
+      }
+      resultData.refresh();
+      var _mapUUID =
+          RegExp(r".{2}").allMatches(tag.id).map((e) => e.group(0)).join(":");
+
+      String udid = Get.find(tag: "udid");
+
+      Get.dialog(Loading());
+      print("as $_mapUUID");
+      final PairController _pairController = Get.find(tag: "PairController");
+
+      var body = {
+        "device_serial_number": udid,
+        "type": "pair_nfc",
+        "nfc_uid": _mapUUID,
+        "customer_name": _pairController.nameCtrl.value.text,
+        "nationality": _pairController.nationalityCtrl.value.text,
+        "dob": DateExt.reformat(
+          _pairController.date.value.toString(),
+          "yyyy-MM-dd hh:mm:ss",
+          "yyyy-MM-dd",
+        ),
+        "gender": _pairController.genderCtrl.value.text.toLowerCase(),
+      };
+
+      var _resp = await _repoBalance.pairingNFC(body);
+      Get.back();
+
+      if (_resp.code != null) {
+        if (_resp.code == "SCC-001") {
+          Get.back();
           Get.back();
           Get.bottomSheet(
             SheetSuccess(

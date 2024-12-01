@@ -114,10 +114,10 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                         onOk: () {
                           Get.bottomSheet(
                             SheetTopupOption(
-                              onCash: () {
+                              onOther: (type) {
                                 _activity.topUpBalance(
                                   _activity.balance.value,
-                                  "CASH",
+                                  type,
                                   () {
                                     Get.to(SuccessPage(
                                       title: "Top Up Success",

@@ -11,6 +11,7 @@ class OnboardRequest {
   int? min_spending;
   int? max_onboard;
   String? booking_type;
+  String? note;
   bool isFromResp = false;
   List<OnboardOtherRequest>? others;
 
@@ -27,6 +28,7 @@ class OnboardRequest {
     this.min_spending,
     this.max_onboard,
     this.booking_type,
+    this.note,
     this.isFromResp = false,
     this.others,
   });
@@ -44,6 +46,7 @@ class OnboardRequest {
     min_spending = json['min_spending'];
     max_onboard = json['max_onboard'];
     booking_type = json['booking_type'];
+    note = json['note'];
     isFromResp = json['isFromResp'];
 
     if (json['others'] != null) {
@@ -67,6 +70,7 @@ class OnboardRequest {
     data['min_spending'] = this.min_spending;
     data['max_onboard'] = this.max_onboard;
     data['booking_type'] = this.booking_type;
+    data['note'] = this.note;
     data['isFromResp'] = this.isFromResp;
 
     if (this.others != null) {

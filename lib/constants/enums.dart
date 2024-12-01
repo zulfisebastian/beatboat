@@ -8,6 +8,7 @@ enum NFCModeType {
   Activity,
   Participant,
   CheckIn,
+  Pair,
   UpdateAfterPay,
   UpdateAfterTopUp,
   UpdateAfterTransfer,
