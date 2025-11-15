@@ -94,6 +94,7 @@ class NFCController extends GetxController {
         } else if (type == NFCModeType.TopUp) {
           Get.off(TopUpPage(
             nfcUid: balance.value.nfc_uid!,
+            from: "Home",
           ));
         } else if (type == NFCModeType.TransferFrom) {
           Get.back();
@@ -219,6 +220,7 @@ class NFCController extends GetxController {
               filename: fileName,
               contentType: MediaType('image', 'png'),
             ),
+            "target_group": _data.target,
           },
         );
       } else {
@@ -232,6 +234,7 @@ class NFCController extends GetxController {
             "nationality": _data.nationality,
             "dob": _data.dob,
             "gender": _data.gender!.toLowerCase(),
+            "target_group": _data.target,
           },
         );
       }
@@ -320,6 +323,7 @@ class NFCController extends GetxController {
           "yyyy-MM-dd",
         ),
         "gender": _pairController.genderCtrl.value.text.toLowerCase(),
+        "target_group": _pairController.targetGroupValue,
       };
 
       var _resp = await _repoBalance.pairingNFC(body);

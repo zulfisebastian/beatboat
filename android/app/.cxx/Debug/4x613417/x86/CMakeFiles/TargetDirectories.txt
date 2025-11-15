@@ -1,0 +1,2 @@
+/Users/zulfisebastian/freelance/flutter/beatboat/android/app/.cxx/Debug/4x613417/x86/CMakeFiles/edit_cache.dir
+/Users/zulfisebastian/freelance/flutter/beatboat/android/app/.cxx/Debug/4x613417/x86/CMakeFiles/rebuild_cache.dir

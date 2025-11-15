@@ -22,6 +22,7 @@ import '../../models/product/addon_model.dart';
 import '../../pages/transaction/splitbill.dart';
 import '../../repositories/transaction/transaction_repo.dart';
 import '../../services/databases/transaction/addon_table.dart';
+import '../../widgets/sheets/sheet_insufficient.dart';
 import '../balance/balance_controller.dart';
 import '../base/base_controller.dart';
 import '../home/home_controller.dart';
@@ -41,6 +42,8 @@ class TransactionController extends GetxController {
     scrollControllerListener();
     initAllData();
   }
+
+  RxString uid = "".obs;
 
   RxBool showScrollArrow = false.obs;
   void scrollControllerListener() async {
@@ -139,11 +142,17 @@ class TransactionController extends GetxController {
   }
 
   double getAdminTax(total) {
-    return total * 10 / 100;
+    if (listCart.any((e) => e.is_free_tax == 1)) {
+      return 0;
+    }
+    return total * _base.dataFee.value.tax / 100;
   }
 
   double getServiceTax(total) {
-    return total * 8 / 100;
+    if (listCart.any((e) => e.is_free_tax == 1)) {
+      return 0;
+    }
+    return total * _base.dataFee.value.service_tax / 100;
   }
 
   double getTotalAfterPPNCart() {
@@ -299,6 +308,7 @@ class TransactionController extends GetxController {
               "product_id": e.product_id,
               "qty": e.qty,
               "note": e.note,
+              "is_free_tax": e.is_free_tax,
               "addons": listAddons
                   .where((_data) => _data.cart_id == e.id)
                   .map(
@@ -360,7 +370,20 @@ class TransactionController extends GetxController {
       ));
     } else {
       Get.back();
-      Get.bottomSheet(SheetFailed(errorMessage: _resp.message!));
+      print(_resp);
+      if (_resp.message?.contains("insufficient balance") == true) {
+        final BalanceController _balanceController = Get.find(
+          tag: 'BalanceController',
+        );
+
+        Get.bottomSheet(SheetInsufficient(
+          uid: uid.value,
+          nominal: getTotalAfterPPNCart().toInt() -
+              _balanceController.balance.value.last_balance!.toInt(),
+        ));
+      } else {
+        Get.bottomSheet(SheetFailed(errorMessage: _resp.message!));
+      }
     }
   }
 
@@ -388,6 +411,7 @@ class TransactionController extends GetxController {
               "product_id": e.product_id,
               "qty": e.qty,
               "note": e.note,
+              "is_free_tax": e.is_free_tax,
               "addons": listAddons
                   .where((_data) => _data.cart_id == e.id)
                   .map(
@@ -632,34 +656,38 @@ class TransactionController extends GetxController {
         ),
       ]);
     }
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Tax (10%)",
-        width: 14,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: StringExt.formatRupiah(
-          getAdminTax(getTotalCartAfterDiscount()),
+    if (_base.dataFee.value.tax! > 0) {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Tax (${_base.dataFee.value.tax}%)",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
         ),
-        width: 16,
-        align: SunmiPrintAlign.RIGHT,
-      ),
-    ]);
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Service (8%)",
-        width: 14,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: StringExt.formatRupiah(
-          getServiceTax(getTotalCartAfterDiscount()),
+        ColumnMaker(
+          text: StringExt.formatRupiah(
+            getAdminTax(getTotalCartAfterDiscount()),
+          ),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
         ),
-        width: 16,
-        align: SunmiPrintAlign.RIGHT,
-      ),
-    ]);
+      ]);
+    }
+    if (_base.dataFee.value.service_tax! > 0) {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Service (${_base.dataFee.value.service_tax}%)",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
+        ),
+        ColumnMaker(
+          text: StringExt.formatRupiah(
+            getServiceTax(getTotalCartAfterDiscount()),
+          ),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
+        ),
+      ]);
+    }
     await SunmiPrinter.line();
     await SunmiPrinter.bold();
     await SunmiPrinter.printRow(cols: [
@@ -717,15 +745,12 @@ class TransactionController extends GetxController {
   printBillThermal(AddTransactionData _data) async {
     await _base.getProfile();
     for (var _printer in _base.printerThermal) {
-      // int retries = 3;
-      // while (retries > 0) {
-      //   try {
       if (listCart.indexWhere((e) => e.order_serve == _printer.value) > -1) {
         final printer = PrinterNetworkManager(_printer.ip!);
 
         PosPrintResult connect = await printer.connect();
 
-        CToast.showWithoutCOntext(
+        CToast.showWithoutContext(
           "Connecting to ${_printer.ip!}",
           Colors.black,
           Colors.white,
@@ -835,28 +860,13 @@ class TransactionController extends GetxController {
           print(printing.msg);
           await printer.disconnect();
         } else {
-          CToast.showWithoutCOntext(
+          CToast.showWithoutContext(
             connect.msg,
             Colors.red,
             Colors.white,
           );
         }
       }
-      //   } catch (e) {
-      //     retries--;
-      //     if (retries == 0) {
-      //       CToast.showWithoutCOntext(
-      //         "Failed to send print job: $e",
-      //         Colors.red,
-      //         Colors.white,
-      //       );
-      //       // Handle the final failure
-      //       print("Failed to send print job: $e");
-      //     } else {
-      //       await Future.delayed(Duration(seconds: 2)); // Backoff delay
-      //     }
-      //   }
-      // }
     }
   }
 
@@ -865,10 +875,6 @@ class TransactionController extends GetxController {
     Uint8List fileUnit8List = fileData.buffer
         .asUint8List(fileData.offsetInBytes, fileData.lengthInBytes);
     return fileUnit8List;
-  }
-
-  Future<Uint8List> _getImageFromAsset(String iconPath) async {
-    return await readFileBytes(iconPath);
   }
 
   int getTotalPricePerItem(CartData _cart) {

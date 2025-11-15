@@ -44,6 +44,8 @@ class PairController extends GetxController {
   Rx<TextEditingController> tagCtrl = TextEditingController().obs;
   Rx<DateTime> date = DateTime.now().obs;
   RxBool sameWithBooker = false.obs;
+  RxBool targetGroup = false.obs;
+  String get targetGroupValue => targetGroup.value ? "yes" : "no";
 
   RxList<String> listNationality = <String>[].obs;
   getNationality() async {

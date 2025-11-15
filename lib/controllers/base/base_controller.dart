@@ -19,6 +19,7 @@ import 'package:sunmi_printer_plus/enums.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import 'package:sunmi_printer_plus/sunmi_style.dart';
 import '../../models/auth/profile_model.dart';
+import '../../models/base/fee_model.dart';
 import '../../models/base/version_model.dart';
 import '../../repositories/auth/profile_repo.dart';
 import '../../services/databases/database_services.dart';
@@ -67,6 +68,7 @@ class BaseController extends GetxController {
     initNFC();
     triggerPrinter(500);
     getBaseVersion();
+    getFeeData();
   }
 
   RxString linkUrl = "".obs;
@@ -425,6 +427,16 @@ class BaseController extends GetxController {
     if (_resp.data != null) {
       dataVersion.value = _resp.data!;
       dataVersion.refresh();
+    }
+  }
+
+  Rx<FeeData> dataFee = FeeData().obs;
+  getFeeData() async {
+    var _resp = await _globalRepo.getFeeData();
+
+    if (_resp.data != null) {
+      dataFee.value = _resp.data!;
+      dataFee.refresh();
     }
   }
 

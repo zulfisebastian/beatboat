@@ -62,6 +62,7 @@ class SheetInsufficientBalance extends StatelessWidget {
                   Get.offAll(HomePage());
                   Get.off(TopUpPage(
                     nfcUid: nfcUid,
+                    from: "Home",
                   ));
                 },
               ),

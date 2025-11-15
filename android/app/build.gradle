@@ -24,16 +24,17 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.beatboat"
-    compileSdkVersion 34
+    compileSdkVersion 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "21"
     }
 
     sourceSets {
@@ -42,8 +43,8 @@ android {
 
     defaultConfig {
         applicationId "com.beatboat"
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion 26
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -61,4 +62,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+}

@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:signature/signature.dart';
 import '../../constants/enums.dart';
 import '../../models/balance/balance_model.dart';
@@ -26,7 +26,13 @@ class CheckinController extends GetxController {
   final scrollController = ScrollController();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Rx<TextEditingController> barcode = TextEditingController().obs;
-  QRViewController? qrController;
+  final MobileScannerController qrController = MobileScannerController();
+  var torchEnabled = false.obs;
+
+  void toggleTorch() async {
+    await qrController.toggleTorch();
+    torchEnabled.value = await qrController.torchEnabled; // Update state
+  }
 
   final typeSearch = "SCAN".obs;
   changeTypeSearch(String _type) {
@@ -68,6 +74,7 @@ class CheckinController extends GetxController {
   RxList<TextEditingController> listGenderCtrl = <TextEditingController>[].obs;
   RxList<TextEditingController> listTableCtrl = <TextEditingController>[].obs;
   RxList<TextEditingController> listTagCtrl = <TextEditingController>[].obs;
+  RxList<bool> listTargetCtrl = <bool>[].obs;
   RxList<DateTime> listDate = <DateTime>[].obs;
   RxBool sameWithBooker = false.obs;
 
@@ -80,12 +87,14 @@ class CheckinController extends GetxController {
       listDate[0] = DateFormat("yyyy-MM-dd").parse(checkinData.value.dob!);
       listDateCtrl[0].text = checkinData.value.dob!;
       listNationalityCtrl[0].text = checkinData.value.nationality!;
+      listTargetCtrl[0] = false;
       listGenderCtrl[0].text = checkinData.value.gender!;
     } else {
       listNameCtrl[0].text = "";
       listDate[0] = DateTime.now();
       listDateCtrl[0].text = "";
       listNationalityCtrl[0].text = "";
+      listTargetCtrl[0] = false;
       listGenderCtrl[0].text = "";
     }
 
@@ -117,6 +126,7 @@ class CheckinController extends GetxController {
 
     var _resp = await _transactionRepo.checkIn(body);
     Get.back();
+    // Get.back();
 
     if (_resp.data != null) {
       checkinData.value = _resp.data!;
@@ -140,6 +150,7 @@ class CheckinController extends GetxController {
                   ? _data.nationality!.capitalizeFirst
                   : ""),
         );
+        listTargetCtrl.add(false);
         listGenderCtrl.add(
           TextEditingController(
               text: _data.gender != null ? _data.gender!.capitalizeFirst : ""),
@@ -167,6 +178,7 @@ class CheckinController extends GetxController {
             nationality: listNationalityCtrl[index].text,
             dob: listDate[index].toString(),
             gender: listGenderCtrl[index].text,
+            target: listTargetCtrl[index] ? "yes" : "no",
             min_spending: _data.min_spending,
             max_onboard: _data.max_onboard,
             booking_type: _data.booking_type,
@@ -199,6 +211,7 @@ class CheckinController extends GetxController {
                     ? _others.gender!.capitalizeFirst
                     : ""),
           );
+          listTargetCtrl.add(false);
           listDate.add(
             _others.dob != null
                 ? DateFormat("yyyy-MM-dd").parse(_others.dob!)
@@ -217,6 +230,7 @@ class CheckinController extends GetxController {
               nationality: listNationalityCtrl[index].text,
               dob: listDateCtrl[index].text,
               gender: listGenderCtrl[index].text,
+              target: listTargetCtrl[index] ? "yes" : "no",
               min_spending: _data.min_spending,
               max_onboard: _data.max_onboard,
               booking_type: _others.type,
@@ -235,7 +249,7 @@ class CheckinController extends GetxController {
           data: _resp.data!,
           action: "Scan Wristband",
           onFinish: () {
-            qrController!.resumeCamera();
+            qrController.stop();
             Get.offAll(HomePage());
             Get.dialog(
               WristbandRegistered(
@@ -250,7 +264,7 @@ class CheckinController extends GetxController {
         ),
       );
     } else {
-      qrController!.resumeCamera();
+      qrController.start();
       Get.bottomSheet(
         SheetFailed(
           errorMessage: _resp.message!,
@@ -283,9 +297,18 @@ class CheckinController extends GetxController {
     checkFormDisabled();
   }
 
+  changeTarget(index, val) {
+    listTargetCtrl[index] = val;
+    listTargetCtrl.refresh();
+    listPairedUID[index].target = val ? "yes" : 'no';
+    listPairedUID.refresh();
+    checkFormDisabled();
+  }
+
   RxInt activeIndex = 0.obs;
   updatePairedUID(String _uid) {
     listPairedUID[activeIndex.value].nfc_uid = _uid;
+    listPairedUID.refresh();
     checkFormDisabled();
   }
 

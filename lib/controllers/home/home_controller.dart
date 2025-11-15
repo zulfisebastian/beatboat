@@ -10,7 +10,6 @@ import '../../models/auth/menu_model.dart';
 import '../../models/balance/balance_model.dart';
 import '../../models/resource/resource_model.dart';
 import '../../services/databases/product/category_table.dart';
-import '../../services/databases/profile/menu_table.dart';
 import '../../widgets/sheets/sheet_failed.dart';
 import '../../widgets/sheets/sheet_success.dart';
 import '../base/base_controller.dart';
@@ -69,20 +68,10 @@ class HomeController extends GetxController {
 
   RxList<MenuData> listMenu = <MenuData>[].obs;
   getDataMenu() async {
-    await _base.initConnectivity();
-    if (_base.isConnected.value) {
-      await _base.getProfile();
+    await _base.getProfile();
 
-      listMenu.value = _base.dataProfile.value.menus!;
-      listMenu.refresh();
-    } else {
-      var _resp = await MenuTable().getAllMenu();
-
-      if (_resp != null) {
-        listMenu.value = _resp;
-        listMenu.refresh();
-      }
-    }
+    listMenu.value = _base.dataProfile.value.menus!;
+    listMenu.refresh();
   }
 
   RxList<ActivityData> listActivity = <ActivityData>[].obs;

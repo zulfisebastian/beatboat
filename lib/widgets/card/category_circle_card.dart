@@ -44,9 +44,13 @@ class CategoryCircleCard extends StatelessWidget {
                     width: size + border,
                     height: size + border,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: active ? _theme.accent.value : Colors.white,
-                    ),
+                        shape: BoxShape.circle,
+                        color: active ? _theme.accent.value : Colors.white,
+                        border: Border.all(
+                          width: 1,
+                          color:
+                              active ? _theme.accent.value : _theme.line.value,
+                        )),
                   ),
                   CCachedImage(
                     width: size,

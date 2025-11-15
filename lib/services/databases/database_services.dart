@@ -34,10 +34,6 @@ class DatabaseServices {
   Future<void> _create(Database database, int version) async =>
       await BeatBoatDB().createTables(database);
 
-  Future<void> _update(Database database, int version) async {
-    await BeatBoatDB().createTables(database);
-  }
-
   Future<void> deleteDatabase() async {
     final path = await fullPath;
     return databaseFactory.deleteDatabase(path);

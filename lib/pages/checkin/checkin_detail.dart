@@ -54,6 +54,7 @@ class CheckinDetailPage extends StatelessWidget {
             onOk: () {
               Get.back();
               Get.back();
+              Get.back();
             },
           ),
         );
@@ -64,6 +65,29 @@ class CheckinDetailPage extends StatelessWidget {
           appBar: CustomAppBar(
             context: context,
             title: "Check-In Detail",
+            leading: InkWell(
+              onTap: () {
+                Get.dialog(
+                  Confirmation(
+                    title: "Warning!",
+                    subtitle: "Are you sure want to close this page?",
+                    onOk: () {
+                      Get.back();
+                      Get.back();
+                      Get.back();
+                    },
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.only(left: 16.0, right: 16),
+                child: Icon(
+                  Icons.arrow_back_rounded,
+                  color: _theme.textTitle.value,
+                  size: 20,
+                ),
+              ),
+            ),
           ),
           body: RefreshIndicator(
             onRefresh: () async {
@@ -328,6 +352,8 @@ class CheckinDetailPage extends StatelessWidget {
                                           _checkinController
                                               .listDateCtrl[_bookIndex],
                                           _checkinController
+                                              .listTargetCtrl[_bookIndex],
+                                          _checkinController
                                               .listDate[_bookIndex],
                                         );
                                       },
@@ -359,6 +385,7 @@ class CheckinDetailPage extends StatelessWidget {
     TextEditingController _nationality,
     TextEditingController _gender,
     TextEditingController _dateOfBirth,
+    bool _target,
     DateTime _dateTime,
   ) {
     return Theme(
@@ -614,6 +641,28 @@ class CheckinDetailPage extends StatelessWidget {
                       color: _theme.textTitle.value,
                     ),
                   ),
+                ),
+              ),
+              SizedBox(
+                height: CDimension.space16,
+              ),
+              Obx(
+                () => SwitchListTile(
+                  title: CText(
+                    "Target Group",
+                    color: _theme.textTitle.value,
+                  ),
+                  value: _checkinController.listTargetCtrl[index],
+                  contentPadding: EdgeInsets.zero,
+                  trackColor: WidgetStateProperty.all(
+                      _theme.accent.value.withAlpha(30)),
+                  thumbColor: WidgetStateProperty.all(_theme.accent.value),
+                  trackOutlineColor: WidgetStateProperty.all(
+                    _theme.accent.value.withAlpha(100),
+                  ),
+                  onChanged: (val) {
+                    _checkinController.changeTarget(index, val);
+                  },
                 ),
               ),
               SizedBox(

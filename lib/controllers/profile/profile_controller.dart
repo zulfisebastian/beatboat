@@ -72,7 +72,7 @@ class ProfileController extends GetxController {
     Get.back();
 
     if (_resp.code != null) {
-      CToast.showWithoutCOntext(
+      CToast.showWithoutContext(
         kitchenPrinter.value
             ? "Now this device is a kitchen printer"
             : "Now this device is not a kitchen printer",
@@ -95,7 +95,7 @@ class ProfileController extends GetxController {
 
       PosPrintResult connect = await printer.connect();
 
-      CToast.showWithoutCOntext(
+      CToast.showWithoutContext(
         "Connecting to ${_printer.ip!}",
         Colors.black,
         Colors.white,
@@ -118,7 +118,7 @@ class ProfileController extends GetxController {
         print(printing.msg);
         await printer.disconnect();
       } else {
-        CToast.showWithoutCOntext(
+        CToast.showWithoutContext(
           connect.msg,
           Colors.red,
           Colors.white,

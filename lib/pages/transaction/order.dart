@@ -26,7 +26,7 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
   final BaseController _base = Get.find(tag: 'BaseController');
-  final TransactionController _transController =
+  final TransactionController _trxCtrl =
       Get.put(TransactionController(), tag: 'TransactionController');
 
   @override
@@ -46,144 +46,87 @@ class _OrderPageState extends State<OrderPage> {
           ),
           color: Colors.white,
           child: Column(
+            spacing: 8,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CText(
-                    "Sub Total",
+              _buildSummaryRow(
+                title: CText(
+                  "Sub Total",
+                  color: _theme.textTitle.value,
+                  fontSize: 14,
+                ),
+                value: Obx(
+                  () => CText(
+                    StringExt.formatRupiah(_trxCtrl.getTotalCart()),
                     color: _theme.textTitle.value,
-                    fontSize: 14,
+                    fontSize: 16,
                   ),
-                  Obx(
+                ),
+              ),
+              if ((_base.dataFee.value.tax ?? 0) > 0)
+                _buildSummaryRow(
+                  title: Obx(
                     () => CText(
-                      StringExt.formatRupiah(
-                        _transController.getTotalCart(),
-                      ),
+                      _trxCtrl.listCart.any((e) => e.is_free_tax == 1)
+                          ? "Tax (Free)"
+                          : "Tax (${_base.dataFee.value.tax}%)",
                       color: _theme.textTitle.value,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: CDimension.space6,
-              ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     CText(
-              //       "Discount",
-              //       color: _theme.textTitle.value,
-              //       fontSize: 14,
-              //     ),
-              //     Obx(
-              //       () => CText(
-              //         "- " +
-              //             StringExt.formatRupiah(
-              //               _transController.calculateDiscount(),
-              //             ),
-              //         color: _theme.success.value,
-              //         fontSize: 14,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(
-              //   height: CDimension.space6,
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CText(
-                    "Admin Fee (10%)",
-                    color: _theme.textTitle.value,
-                    fontSize: 14,
-                  ),
-                  Obx(
+                  value: Obx(() => CText(
+                        "+ ${StringExt.formatRupiah(_trxCtrl.getAdminTax(_trxCtrl.getTotalCartAfterDiscount()))}",
+                        color: _theme.error.value,
+                        fontSize: 14,
+                      )),
+                ),
+              if ((_base.dataFee.value.service_tax ?? 0) > 0)
+                _buildSummaryRow(
+                  title: Obx(
                     () => CText(
-                      "+ " +
-                          StringExt.formatRupiah(_transController.getAdminTax(
-                            _transController.getTotalCartAfterDiscount(),
-                          )),
+                      _trxCtrl.listCart.any((e) => e.is_free_tax == 1)
+                          ? "Service Fee (Free)"
+                          : "Service Fee (${_base.dataFee.value.service_tax}%)",
+                      color: _theme.textTitle.value,
+                      fontSize: 14,
+                    ),
+                  ),
+                  value: Obx(
+                    () => CText(
+                      "+ ${StringExt.formatRupiah(_trxCtrl.getServiceTax(_trxCtrl.getTotalCartAfterDiscount()))}",
                       color: _theme.error.value,
                       fontSize: 14,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: CDimension.space6,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CText(
-                    "Service Fee (8%)",
-                    color: _theme.textTitle.value,
-                    fontSize: 14,
-                  ),
-                  Obx(
-                    () => CText(
-                      "+ " +
-                          StringExt.formatRupiah(_transController.getServiceTax(
-                            _transController.getTotalCartAfterDiscount(),
-                          )),
-                      color: _theme.error.value,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: CDimension.space6,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CText(
-                    "Total Payment",
-                    color: _theme.textTitle.value,
-                    fontSize: 14,
-                  ),
-                  Obx(
-                    () => CText(
-                      StringExt.formatRupiah(
-                        _transController.getTotalAfterPPNCart(),
-                        // _transController.getTotalCart(),
-                      ),
+                ),
+              _buildSummaryRow(
+                title: CText(
+                  "Total Payment",
+                  color: _theme.textTitle.value,
+                  fontSize: 14,
+                ),
+                value: Obx(() => CText(
+                      StringExt.formatRupiah(_trxCtrl.getTotalAfterPPNCart()),
                       color: _theme.accent.value,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                    )),
               ),
-              SizedBox(
-                height: CDimension.space16,
-              ),
+              SizedBox(height: 4),
               CustomButtonBlue(
                 "Pay",
                 width: OtherExt().getWidth(context),
                 onPressed: () async {
                   await _base.initNFC();
-                  if (_base.nfcIsAvailable.value == NFCAvailability.available) {
-                    Get.bottomSheet(
-                      SheetNFC(
-                        type: NFCModeType.Pay,
-                      ),
-                      isScrollControlled: true,
-                    );
-                  } else {
-                    Get.bottomSheet(
-                      SheetNoNFC(onTap: () {
-                        Get.back();
-                        _base.initNFC();
-                      }),
-                      isScrollControlled: true,
-                    );
-                  }
+                  Get.bottomSheet(
+                    _base.nfcIsAvailable.value == NFCAvailability.available
+                        ? SheetNFC(type: NFCModeType.Pay)
+                        : SheetNoNFC(onTap: () {
+                            Get.back();
+                            _base.initNFC();
+                          }),
+                    isScrollControlled: true,
+                  );
                 },
               ),
             ],
@@ -192,10 +135,10 @@ class _OrderPageState extends State<OrderPage> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          _transController.initAllData();
+          _trxCtrl.initAllData();
         },
         child: SingleChildScrollView(
-          controller: _transController.scrollController,
+          controller: _trxCtrl.scrollController,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -208,6 +151,20 @@ class _OrderPageState extends State<OrderPage> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Helper widget for summary rows
+  Widget _buildSummaryRow({
+    required Widget title,
+    required Widget value,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        title,
+        value,
+      ],
     );
   }
 
@@ -252,8 +209,7 @@ class _OrderPageState extends State<OrderPage> {
         ),
         Obx(
           () => ListView.separated(
-            itemCount:
-                _transController.listCart.where((e) => e.qty! > 0).length,
+            itemCount: _trxCtrl.listCart.where((e) => e.qty! > 0).length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             separatorBuilder: (BuildContext context, int index) {
@@ -268,7 +224,7 @@ class _OrderPageState extends State<OrderPage> {
             },
             itemBuilder: (BuildContext context, int index) {
               var _filtered =
-                  _transController.listCart.where((e) => e.qty! > 0).toList();
+                  _trxCtrl.listCart.where((e) => e.qty! > 0).toList();
               var _data = _filtered[index];
               return OrderCard(cart: _data);
             },

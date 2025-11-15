@@ -102,7 +102,7 @@ class PackageController extends GetxController {
 
       PosPrintResult connect = await printer.connect();
 
-      CToast.showWithoutCOntext(
+      CToast.showWithoutContext(
         "Connecting to ${_printer.ip!}",
         Colors.black,
         Colors.white,
@@ -206,7 +206,7 @@ class PackageController extends GetxController {
         print(printing.msg);
         await printer.disconnect();
       } else {
-        CToast.showWithoutCOntext(
+        CToast.showWithoutContext(
           connect.msg,
           Colors.red,
           Colors.white,

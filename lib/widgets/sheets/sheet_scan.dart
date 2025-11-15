@@ -3,7 +3,7 @@ import 'package:beatboat/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../controllers/checkin/checkin_controller.dart';
 import '../../controllers/theme/theme_controller.dart';
 import '../components/customButton.dart';
@@ -27,11 +27,9 @@ class _SheetScanState extends State<SheetScan> {
           ? Get.find(tag: 'CheckinController')
           : Get.put(CheckinController(), tag: 'CheckinController');
 
-  late Barcode result;
-
   @override
   void dispose() {
-    _controller.qrController?.dispose();
+    _controller.qrController.dispose();
     super.dispose();
   }
 
@@ -71,7 +69,7 @@ class _SheetScanState extends State<SheetScan> {
                       child: GestureDetector(
                         onTap: () {
                           _controller.changeTypeSearch("SCAN");
-                          _controller.qrController!.resumeCamera();
+                          _controller.qrController.start();
                         },
                         behavior: HitTestBehavior.opaque,
                         child: Obx(
@@ -104,7 +102,7 @@ class _SheetScanState extends State<SheetScan> {
                       child: GestureDetector(
                         onTap: () {
                           _controller.changeTypeSearch("MANUAL");
-                          _controller.qrController!.stopCamera();
+                          _controller.qrController.stop();
                         },
                         behavior: HitTestBehavior.opaque,
                         child: Obx(
@@ -151,7 +149,23 @@ class _SheetScanState extends State<SheetScan> {
                                 alignment: Alignment.center,
                                 children: [
                                   Positioned.fill(
-                                    child: _buildQrView(context),
+                                    child: MobileScanner(
+                                      controller: _controller.qrController,
+                                      onDetect: (capture) {
+                                        final List<Barcode> barcodes =
+                                            capture.barcodes;
+                                        for (final barcode in barcodes) {
+                                          debugPrint(
+                                              'Barcode found! ${barcode.rawValue}');
+
+                                          _controller.qrController.stop();
+                                          _controller.checkInEvent(
+                                            context,
+                                            barcode.rawValue,
+                                          );
+                                        }
+                                      },
+                                    ),
                                   ),
                                   Positioned(
                                     bottom: 10,
@@ -165,30 +179,26 @@ class _SheetScanState extends State<SheetScan> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          GestureDetector(
-                                            onTap: () async {
-                                              await _controller.qrController
-                                                  ?.toggleFlash();
-                                              setState(() {});
-                                            },
-                                            child: FutureBuilder(
-                                              future: _controller.qrController
-                                                  ?.getFlashStatus(),
-                                              builder: (context, snapshot) {
-                                                return Container(
-                                                  width: CDimension.space48,
-                                                  height: CDimension.space48,
-                                                  alignment: Alignment.center,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  child: SvgPicture.asset(
-                                                    "assets/icons/ic_flashlight.svg",
-                                                    width: 16,
-                                                  ),
-                                                );
+                                          Obx(
+                                            () => GestureDetector(
+                                              onTap: () async {
+                                                _controller.toggleTorch();
                                               },
+                                              child: Container(
+                                                width: 30,
+                                                height: 30,
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: SvgPicture.asset(
+                                                  _controller.torchEnabled.value
+                                                      ? "assets/icons/ic_flashlight.svg"
+                                                      : "",
+                                                  width: 16,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -250,39 +260,39 @@ class _SheetScanState extends State<SheetScan> {
     );
   }
 
-  Widget _buildQrView(BuildContext context) {
-    return QRView(
-      key: _controller.qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-        borderColor: _theme.line.value,
-        borderRadius: 5,
-        borderLength: 30,
-        borderWidth: 5,
-        overlayColor: Colors.black45,
-        cutOutWidth: OtherExt().getWidth(context) - CDimension.space48,
-        cutOutHeight: 140,
-        cutOutBottomOffset: 30,
-      ),
-      onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
-    );
-  }
+  // Widget _buildQrView(BuildContext context) {
+  //   return QRView(
+  //     key: _controller.qrKey,
+  //     onQRViewCreated: _onQRViewCreated,
+  //     overlay: QrScannerOverlayShape(
+  //       borderColor: _theme.line.value,
+  //       borderRadius: 5,
+  //       borderLength: 30,
+  //       borderWidth: 5,
+  //       overlayColor: Colors.black45,
+  //       cutOutWidth: OtherExt().getWidth(context) - CDimension.space48,
+  //       cutOutHeight: 140,
+  //       cutOutBottomOffset: 30,
+  //     ),
+  //     onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
+  //   );
+  // }
 
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this._controller.qrController = controller;
-    });
-    controller.scannedDataStream.listen((scanData) async {
-      _controller.qrController!.stopCamera();
-      _controller.checkInEvent(context, scanData.code);
-    });
-  }
+  // void _onQRViewCreated(QRViewController controller) {
+  //   setState(() {
+  //     this._controller.qrController = controller;
+  //   });
+  //   controller.scannedDataStream.listen((scanData) async {
+  //     _controller.qrController!.stopCamera();
+  //     _controller.checkInEvent(context, scanData.code);
+  //   });
+  // }
 
-  void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
-    if (!p) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
-      );
-    }
-  }
+  // void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
+  //   if (!p) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('no Permission')),
+  //     );
+  //   }
+  // }
 }

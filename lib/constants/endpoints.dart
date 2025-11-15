@@ -11,6 +11,7 @@ class Endpoint {
   static const String reason = "/refund-reason";
   static const String trigger = "/trigger-printer";
   static const String version = "/version/check";
+  static const String fee = "/tax-info";
 
   //activity
   static const String activity = "/activities";

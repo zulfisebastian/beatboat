@@ -75,6 +75,7 @@ class ProductData {
   int? show;
   String? status;
   String? order_serve;
+  int? is_free_tax;
   String? unit;
   String? image_url;
   ProductAddonData? addons;
@@ -90,6 +91,7 @@ class ProductData {
     this.stock,
     this.status,
     this.order_serve,
+    this.is_free_tax,
     this.show,
     this.unit,
     this.image_url,
@@ -107,6 +109,7 @@ class ProductData {
     stock = json['stock'];
     status = json['status'];
     order_serve = json['order_serve'];
+    is_free_tax = json['is_free_tax'];
     unit = json['unit'];
     show = json['show'];
     image_url = json['image_url'];
@@ -127,6 +130,7 @@ class ProductData {
     data['stock'] = this.stock;
     data['status'] = this.status;
     data['order_serve'] = this.order_serve;
+    data['is_free_tax'] = this.is_free_tax;
     data['unit'] = this.unit;
     data['show'] = this.show;
     data['image_url'] = this.image_url;

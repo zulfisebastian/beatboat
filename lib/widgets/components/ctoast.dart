@@ -58,13 +58,13 @@ class CToast {
     );
   }
 
-  static showWithoutCOntext(String message, Color color, Color textcolor,
+  static showWithoutContext(String message, Color color, Color textcolor,
       [ToastGravity gravity = ToastGravity.BOTTOM]) {
     Fluttertoast.showToast(
       msg: message,
-      toastLength: Toast.LENGTH_SHORT,
+      toastLength: Toast.LENGTH_LONG,
       gravity: gravity,
-      timeInSecForIosWeb: 1,
+      timeInSecForIosWeb: 5,
       backgroundColor: color,
       textColor: textcolor,
       fontSize: 16.0,

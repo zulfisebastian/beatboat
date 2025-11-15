@@ -241,6 +241,28 @@ class PairPage extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
+                    height: CDimension.space16,
+                  ),
+                  CText(
+                    "Target Group",
+                    fontSize: CFontSize.font14,
+                    color: _theme.textSubtitle.value,
+                  ),
+                  SizedBox(
+                    height: CDimension.space8,
+                  ),
+                  Obx(
+                    () => SwitchListTile(
+                      title: Text("Target Group"),
+                      value: _pairController.targetGroup.value,
+                      onChanged: (val) {
+                        _pairController.targetGroup.value = val;
+                        print(
+                            "value: ${_pairController.targetGroupValue}"); // akan "yes" atau "no"
+                      },
+                    ),
+                  ),
+                  SizedBox(
                     height: CDimension.space20,
                   ),
                   Obx(

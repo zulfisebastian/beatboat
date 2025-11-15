@@ -1,4 +1,5 @@
 import 'package:beatboat/constants/dimension.dart';
+import 'package:beatboat/controllers/base/base_controller.dart';
 import 'package:beatboat/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class SheetSplitDetail extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  final BaseController _base = Get.find(tag: 'BaseController');
   final ThemeController _theme = Get.find(tag: 'ThemeController');
   final TransactionController _transactionController =
       Get.find(tag: 'TransactionController');
@@ -118,47 +120,54 @@ class SheetSplitDetail extends StatelessWidget {
                   SizedBox(
                     height: CDimension.space16,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    spacing: 16,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CText(
-                        "Tax (10%)",
-                        color: _theme.textTitle.value,
-                        fontSize: 14,
-                      ),
-                      Obx(
-                        () => CText(
-                          StringExt.formatRupiah(
-                              _transactionController.getAdminTax(
-                            _transactionController.getTotalCartAfterDiscount(),
-                          )),
-                          color: _theme.textTitle.value,
-                          fontSize: 16,
+                      if (_base.dataFee.value.tax! > 0)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CText(
+                              "Tax (${_base.dataFee.value.tax}%)",
+                              color: _theme.textTitle.value,
+                              fontSize: 14,
+                            ),
+                            Obx(
+                              () => CText(
+                                StringExt.formatRupiah(
+                                    _transactionController.getAdminTax(
+                                  _transactionController
+                                      .getTotalCartAfterDiscount(),
+                                )),
+                                color: _theme.textTitle.value,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: CDimension.space16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CText(
-                        "Service Tax (8%)",
-                        color: _theme.textTitle.value,
-                        fontSize: 14,
-                      ),
-                      Obx(
-                        () => CText(
-                          StringExt.formatRupiah(
-                              _transactionController.getServiceTax(
-                            _transactionController.getTotalCartAfterDiscount(),
-                          )),
-                          color: _theme.textTitle.value,
-                          fontSize: 16,
+                      if (_base.dataFee.value.service_tax! > 0)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CText(
+                              "Service Fee (${_base.dataFee.value.tax}%)",
+                              color: _theme.textTitle.value,
+                              fontSize: 14,
+                            ),
+                            Obx(
+                              () => CText(
+                                StringExt.formatRupiah(
+                                    _transactionController.getServiceTax(
+                                  _transactionController
+                                      .getTotalCartAfterDiscount(),
+                                )),
+                                color: _theme.textTitle.value,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
                     ],
                   ),
                   SizedBox(

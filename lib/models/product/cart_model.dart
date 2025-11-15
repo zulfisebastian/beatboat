@@ -10,6 +10,7 @@ class CartData {
   int? stock;
   String? status;
   String? order_serve;
+  int? is_free_tax;
   String? unit;
   String? image_url;
   String? note;
@@ -28,6 +29,7 @@ class CartData {
       this.stock,
       this.status,
       this.order_serve,
+      this.is_free_tax,
       this.unit,
       this.image_url,
       this.note,
@@ -46,6 +48,7 @@ class CartData {
     stock = json['stock'];
     status = json['status'];
     order_serve = json['order_serve'];
+    is_free_tax = json['is_free_tax'];
     unit = json['unit'];
     image_url = json['image_url'];
     note = json['note'];
@@ -66,6 +69,7 @@ class CartData {
     data['stock'] = this.stock;
     data['status'] = this.status;
     data['order_serve'] = this.order_serve;
+    data['is_free_tax'] = this.is_free_tax;
     data['unit'] = this.unit;
     data['image_url'] = this.image_url;
     data['note'] = this.note;

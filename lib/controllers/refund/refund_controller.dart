@@ -183,11 +183,11 @@ class RefundController extends GetxController {
   }
 
   double getAdminTax(total) {
-    return total * 10 / 100;
+    return total * _base.dataFee.value.tax / 100;
   }
 
   double getServiceTax(total) {
-    return total * 8 / 100;
+    return total * _base.dataFee.value.service_tax / 100;
   }
 
   double getTotalAfterPPNCart() {
@@ -332,34 +332,38 @@ class RefundController extends GetxController {
         align: SunmiPrintAlign.RIGHT,
       ),
     ]);
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Tax (10%)",
-        width: 14,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: StringExt.formatRupiah(
-          getAdminTax(getTotalCart()),
+    if (_base.dataFee.value.tax! > 0) {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Tax (${_base.dataFee.value.tax}%)",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
         ),
-        width: 16,
-        align: SunmiPrintAlign.RIGHT,
-      ),
-    ]);
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Service (8%)",
-        width: 14,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: StringExt.formatRupiah(
-          getServiceTax(getTotalCart()),
+        ColumnMaker(
+          text: StringExt.formatRupiah(
+            getAdminTax(getTotalCart()),
+          ),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
         ),
-        width: 16,
-        align: SunmiPrintAlign.RIGHT,
-      ),
-    ]);
+      ]);
+    }
+    if (_base.dataFee.value.service_tax! > 0) {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Service (${_base.dataFee.value.service_tax}%)",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
+        ),
+        ColumnMaker(
+          text: StringExt.formatRupiah(
+            getServiceTax(getTotalCart()),
+          ),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
+        ),
+      ]);
+    }
     await SunmiPrinter.line();
     await SunmiPrinter.bold();
     await SunmiPrinter.printRow(cols: [
@@ -427,7 +431,7 @@ class RefundController extends GetxController {
 
         PosPrintResult connect = await printer.connect();
 
-        CToast.showWithoutCOntext(
+        CToast.showWithoutContext(
           "Connecting to ${_printer.ip!}",
           Colors.black,
           Colors.white,
@@ -531,7 +535,7 @@ class RefundController extends GetxController {
           print(printing.msg);
           await printer.disconnect();
         } else {
-          CToast.showWithoutCOntext(
+          CToast.showWithoutContext(
             connect.msg,
             Colors.red,
             Colors.white,

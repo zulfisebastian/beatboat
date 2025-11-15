@@ -147,10 +147,13 @@ class _SplitBillPageState extends State<SplitBillPage> {
                                 onTap: () {
                                   if (_base.checkMenu("topup")) {
                                     Get.to(
-                                      TopUpPage(nfcUid: _item.nfc_uid!),
+                                      TopUpPage(
+                                        nfcUid: _item.nfc_uid!,
+                                        from: "Split Bill",
+                                      ),
                                     );
                                   } else {
-                                    CToast.showWithoutCOntext(
+                                    CToast.showWithoutContext(
                                       "You dont have permission to topup",
                                       _theme.error.value,
                                       Colors.white,

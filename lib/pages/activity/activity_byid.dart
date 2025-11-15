@@ -116,13 +116,7 @@ class _ActivityByIdPageState extends State<ActivityByIdPage> {
                               );
                             },
                           )
-                        : Container(
-                            child: Column(
-                              children: [
-                                //
-                              ],
-                            ),
-                          ),
+                        : SizedBox(),
                   ),
                 ],
               ),

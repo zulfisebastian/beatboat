@@ -68,7 +68,7 @@ class BartenderController extends GetxController {
     Get.back();
 
     if (_resp.code != null) {
-      CToast.showWithoutCOntext(
+      CToast.showWithoutContext(
         "Success Mark As Done",
         Colors.black87,
         Colors.white,

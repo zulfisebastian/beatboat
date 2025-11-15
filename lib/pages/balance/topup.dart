@@ -22,10 +22,14 @@ import '../../widgets/components/text/ctext.dart';
 
 class TopUpPage extends StatefulWidget {
   final String nfcUid;
+  final int? nominal;
+  final String from;
 
   const TopUpPage({
     Key? key,
     required this.nfcUid,
+    required this.from,
+    this.nominal,
   }) : super(key: key);
 
   @override
@@ -36,14 +40,21 @@ class _TopUpPageState extends State<TopUpPage> {
   final ThemeController _theme = Get.find(tag: 'ThemeController');
   final TopUpController _topUpController =
       Get.put(TopUpController(), tag: 'TopUpController');
-  final BalanceController _balance = Get.put(
-    BalanceController(),
-    tag: 'BalanceController',
-  );
+  final BalanceController _balance = Get.isRegistered(tag: "BalanceController")
+      ? Get.find(tag: "BalanceController")
+      : Get.put(
+          BalanceController(),
+          tag: 'BalanceController',
+        );
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.nominal != null) {
+        _topUpController.changeAmount(widget.nominal!);
+      }
+    });
     _balance.checkBalance(widget.nfcUid);
   }
 
@@ -146,10 +157,18 @@ class _TopUpPageState extends State<TopUpPage> {
                                             "Congratulations, Your balance has been added successfully",
                                         action: "Done Top Up!",
                                         onFinish: () {
-                                          final HomeController _homeController =
-                                              Get.find(tag: 'HomeController');
-                                          _homeController.initAllData();
-                                          Get.offAll(HomePage());
+                                          if (widget.from == "Transaction") {
+                                            _balance
+                                                .checkBalance(widget.nfcUid);
+                                            Get.back();
+                                            Get.back();
+                                          } else {
+                                            final HomeController
+                                                _homeController =
+                                                Get.find(tag: 'HomeController');
+                                            _homeController.initAllData();
+                                            Get.offAll(HomePage());
+                                          }
                                         },
                                       ));
                                     },

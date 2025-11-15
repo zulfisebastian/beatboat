@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:beatboat/utils/extensions.dart';
 import 'package:beatboat/widgets/sheets/sheet_filter.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
@@ -242,17 +245,48 @@ class _ProductPageState extends State<ProductPage> {
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(16),
-                                                          child: Image.network(
-                                                            _data.image_url ??
-                                                                Endpoint
-                                                                    .defaultFood,
-                                                            width: (OtherExt()
-                                                                        .getWidth(
-                                                                            context) -
-                                                                    50) /
-                                                                3,
-                                                            height: 120,
-                                                            fit: BoxFit.cover,
+                                                          child:
+                                                              Transform.rotate(
+                                                            angle: math
+                                                                .pi, // 180 derajat
+                                                            child: ExtendedImage
+                                                                .network(
+                                                              _data.image_url ??
+                                                                  Endpoint
+                                                                      .defaultFood,
+                                                              width: (OtherExt()
+                                                                          .getWidth(
+                                                                              context) -
+                                                                      50) /
+                                                                  3,
+                                                              height: 120,
+                                                              fit: BoxFit.cover,
+                                                              cache: true,
+                                                              clearMemoryCacheWhenDispose:
+                                                                  true,
+                                                              enableLoadState:
+                                                                  false,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          0),
+                                                              loadStateChanged:
+                                                                  (state) {
+                                                                if (state
+                                                                        .extendedImageLoadState ==
+                                                                    LoadState
+                                                                        .completed) {
+                                                                  return ExtendedRawImage(
+                                                                    image: state
+                                                                        .extendedImageInfo
+                                                                        ?.image,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  );
+                                                                }
+                                                                return const SizedBox();
+                                                              },
+                                                            ),
                                                           ),
                                                         ),
                                                       ),

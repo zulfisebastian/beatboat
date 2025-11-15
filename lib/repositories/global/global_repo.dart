@@ -5,6 +5,7 @@ import 'package:beatboat/models/global/reason_model.dart';
 import 'package:beatboat/models/global/trigger_model.dart';
 import '../../../models/base/base_result.dart';
 import '../../constants/endpoints.dart';
+import '../../models/base/fee_model.dart';
 import '../../models/base/version_model.dart';
 import '../base/base_repo.dart';
 
@@ -83,6 +84,18 @@ class GlobalRepo extends BaseRepo {
         return PrinterResponse.fromJson(response.data);
       default:
         return PrinterResponse(message: response.errorMessage);
+    }
+  }
+
+  Future<FeeResponse> getFeeData() async {
+    BaseResult response = await get(
+      Endpoint.fee,
+    );
+    switch (response.status) {
+      case ResponseStatus.Success:
+        return FeeResponse.fromJson(response.data);
+      default:
+        return FeeResponse(status: false, message: response.errorMessage);
     }
   }
 }

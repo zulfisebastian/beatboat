@@ -211,30 +211,34 @@ class TransactionDetailController extends GetxController {
         ),
       ]);
     }
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Tax (10%)",
-        width: 14,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: StringExt.formatRupiah(_data.tax),
-        width: 16,
-        align: SunmiPrintAlign.RIGHT,
-      ),
-    ]);
-    await SunmiPrinter.printRow(cols: [
-      ColumnMaker(
-        text: "Service (8%)",
-        width: 14,
-        align: SunmiPrintAlign.LEFT,
-      ),
-      ColumnMaker(
-        text: StringExt.formatRupiah(_data.service_tax),
-        width: 16,
-        align: SunmiPrintAlign.RIGHT,
-      ),
-    ]);
+    if (_base.dataFee.value.tax! > 0) {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Tax (${_base.dataFee.value.tax}%)",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
+        ),
+        ColumnMaker(
+          text: StringExt.formatRupiah(_data.tax),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
+        ),
+      ]);
+    }
+    if (_base.dataFee.value.service_tax! > 0) {
+      await SunmiPrinter.printRow(cols: [
+        ColumnMaker(
+          text: "Service (${_base.dataFee.value.service_tax}%)",
+          width: 14,
+          align: SunmiPrintAlign.LEFT,
+        ),
+        ColumnMaker(
+          text: StringExt.formatRupiah(_data.service_tax),
+          width: 16,
+          align: SunmiPrintAlign.RIGHT,
+        ),
+      ]);
+    }
     await SunmiPrinter.line();
     await SunmiPrinter.bold();
     await SunmiPrinter.printRow(cols: [
@@ -300,7 +304,7 @@ class TransactionDetailController extends GetxController {
 
       PosPrintResult connect = await printer.connect();
 
-      CToast.showWithoutCOntext(
+      CToast.showWithoutContext(
         "Connecting to ${_printer.ip!}",
         Colors.black,
         Colors.white,
@@ -409,7 +413,7 @@ class TransactionDetailController extends GetxController {
         print(printing.msg);
         await printer.disconnect();
       } else {
-        CToast.showWithoutCOntext(
+        CToast.showWithoutContext(
           connect.msg,
           Colors.red,
           Colors.white,

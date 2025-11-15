@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:beatboat/controllers/theme/theme_controller.dart';
 import 'package:beatboat/models/product/addon_model.dart';
 import 'package:beatboat/models/product/cart_model.dart';
 import 'package:beatboat/models/product/category_model.dart';
@@ -19,6 +20,7 @@ import '../base/base_controller.dart';
 
 class ProductController extends GetxController {
   final BaseController _base = Get.find(tag: "BaseController");
+  final ThemeController _theme = Get.find(tag: "ThemeController");
   final scrollController = ScrollController();
   Rx<TextEditingController> search = TextEditingController().obs;
 
@@ -172,30 +174,52 @@ class ProductController extends GetxController {
     listAddons.refresh();
   }
 
-  addProductToCart(ProductData _product) async {
-    CartData _cart = new CartData();
-    _cart.id = DateTime.now().toString();
-    _cart.product_id = _product.id;
-    _cart.category_id = _product.category_id;
-    _cart.sku = _product.sku;
-    _cart.name = _product.name;
-    _cart.description = _product.description;
-    _cart.buy_price = _product.buy_price;
-    _cart.sell_price = _product.sell_price;
-    _cart.stock = _product.stock;
-    _cart.status = _product.status;
-    _cart.order_serve = _product.order_serve;
-    _cart.unit = _product.unit;
-    _cart.image_url = _product.image_url;
-    _cart.note = "";
-    _cart.qty = 1;
-    _cart.min_selection =
-        _product.addons != null ? _product.addons!.min_selection : 0;
-    _cart.qty = 1;
-    CartTable().addCart(_cart);
+  addProductToCart(ProductData product) async {
+    final hasTaxFree = listCart.any((e) => e.is_free_tax == 1);
+    final hasTaxed = listCart.any((e) => e.is_free_tax == 0);
+
+    if (product.is_free_tax == 1 && hasTaxed) {
+      CToast.showWithoutContext(
+        "You can't choose tax-free product because you already have taxed products in the cart.",
+        _theme.error.value,
+        _theme.white.value,
+      );
+      return;
+    }
+
+    if (product.is_free_tax == 0 && hasTaxFree) {
+      CToast.showWithoutContext(
+        "You can't choose taxed product because you already have tax-free products in the cart.",
+        _theme.error.value,
+        _theme.white.value,
+      );
+      return;
+    }
+
+    final cart = CartData()
+      ..id = DateTime.now().toString()
+      ..product_id = product.id
+      ..category_id = product.category_id
+      ..sku = product.sku
+      ..name = product.name
+      ..description = product.description
+      ..buy_price = product.buy_price
+      ..sell_price = product.sell_price
+      ..stock = product.stock
+      ..status = product.status
+      ..order_serve = product.order_serve
+      ..is_free_tax = product.is_free_tax
+      ..unit = product.unit
+      ..image_url = product.image_url
+      ..note = ""
+      ..qty = 1
+      ..min_selection = product.addons?.min_selection ?? 0;
+
+    await CartTable().addCart(cart);
     await renewListCart();
+
     Get.bottomSheet(
-      SheetProduct(data: _cart),
+      SheetProduct(data: cart),
       isScrollControlled: true,
     );
   }
@@ -432,7 +456,7 @@ class ProductController extends GetxController {
         Get.back();
       }
     } else {
-      CToast.showWithoutCOntext(
+      CToast.showWithoutContext(
         "Stock Adjust Failed",
         Colors.red,
         Colors.white,
