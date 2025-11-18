@@ -162,6 +162,8 @@ class _TopUpPageState extends State<TopUpPage> {
                                                 .checkBalance(widget.nfcUid);
                                             Get.back();
                                             Get.back();
+                                            Get.back();
+                                            Get.back();
                                           } else {
                                             final HomeController
                                                 _homeController =
